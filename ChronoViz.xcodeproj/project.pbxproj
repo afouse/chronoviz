@@ -962,6 +962,7 @@
 			children = (
 				BBFD9869109B4F0F0099758A /* Analysis Plugins */,
 				BB1A4ECB1497D6F000F2998E /* App Plugins */,
+				BB51C6731B9D1CB7003E4A56 /* Core */,
 				BBCE785610961F6E0061BFD4 /* Data */,
 				BB395B3D0F92B3190044CFC5 /* Deprecated */,
 				BB823AB213F0637200778076 /* Ethnographer++ */,
@@ -975,47 +976,6 @@
 				BB594BFB10B313C3005FDA38 /* Views */,
 				BB3E88A50FF046D200B4AB4F /* Visualizers */,
 				BBED4C7A13CBA207005BD330 /* Windows */,
-				BB3E88B20FF04A8C00B4AB4F /* Annotation.h */,
-				BB3E88B30FF04A8C00B4AB4F /* Annotation.m */,
-				BB3D1EBD1035D85200DB8628 /* AnnotationCategory.h */,
-				BB3D1EBE1035D85200DB8628 /* AnnotationCategory.m */,
-				BB5D3DEC10CD979000D82E5D /* AnnotationCategoryFilter.h */,
-				BB5D3DED10CD979000D82E5D /* AnnotationCategoryFilter.m */,
-				BB6BA7581058092400324E0E /* AnnotationDocument.h */,
-				BB6BA7591058092500324E0E /* AnnotationDocument.m */,
-				BBC57DF50FF52893001C8E9F /* AnnotationFileType.h */,
-				BBC57DF60FF52893001C8E9F /* AnnotationFileType.m */,
-				BB5D3DEF10CD9B7200D82E5D /* AnnotationFilter.h */,
-				BB5D3DF010CD9B7200D82E5D /* AnnotationFilter.m */,
-				BBB7777B0FFA7FBA00319D2E /* AnnotationHover.h */,
-				BBB7777C0FFA7FBA00319D2E /* AnnotationHover.m */,
-				BB1B10220FF2A57C009A99A6 /* AnnotationInspector.h */,
-				BB1B10230FF2A57C009A99A6 /* AnnotationInspector.m */,
-				BBCC3C901185615F00477D82 /* AnnotationQuickEntry.h */,
-				BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */,
-				BBFE228A11A9D7DC00D4C96D /* AnnotationSearchFilter.h */,
-				BBFE228B11A9D7DC00D4C96D /* AnnotationSearchFilter.m */,
-				BB3E88AB0FF0475600B4AB4F /* AnnotationXMLParser.h */,
-				BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */,
-				BB01592E0EACE34300B41B99 /* AppController.h */,
-				BB01592F0EACE34300B41B99 /* AppController.m */,
-				BBCCA71713A7CCB1007DB565 /* DPActivityLog.h */,
-				BBCCA71813A7CCB1007DB565 /* DPActivityLog.m */,
-				BB342EE311D278F000893573 /* DPConsole.h */,
-				BB342EE411D278F000893573 /* DPConsole.m */,
-				BBCAE90712D29D1A00EDC2D9 /* DPConstants.h */,
-				BBCAE90812D29D1A00EDC2D9 /* DPConstants.m */,
-				BBCB3C3A16530CC400EFAFC0 /* DPDocumentTemplate.h */,
-				BBCB3C3B16530CC400EFAFC0 /* DPDocumentTemplate.m */,
-				BBCAE8FE12D29BAE00EDC2D9 /* DPStateRecording.h */,
-				BB2E93E21338FA3000F3C090 /* DPURLHandler.h */,
-				BB2E93E31338FA3000F3C090 /* DPURLHandler.m */,
-				BB49DD1411CABAEA00F9C601 /* DPViewManager.h */,
-				BB49DD1511CABAEA00F9C601 /* DPViewManager.m */,
-				BB8456380F15417F004F187E /* SegmentBoundary.h */,
-				BB8456390F15417F004F187E /* SegmentBoundary.m */,
-				BBC57EE90FF566A7001C8E9F /* VideoProperties.h */,
-				BBC57EEA0FF566A7001C8E9F /* VideoProperties.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1052,12 +1012,12 @@
 		29B97314FDCFA39411CA2CEA /* Annotation */ = {
 			isa = PBXGroup;
 			children = (
-				BB51C6711B9D19F4003E4A56 /* README.md */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
+				BB51C6711B9D19F4003E4A56 /* README.md */,
 			);
 			name = Annotation;
 			sourceTree = "<group>";
@@ -1308,6 +1268,54 @@
 				BB3F72E9125A450000BF226C /* FeedbackController.m */,
 			);
 			path = Feedback;
+			sourceTree = "<group>";
+		};
+		BB51C6731B9D1CB7003E4A56 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				BB3E88B20FF04A8C00B4AB4F /* Annotation.h */,
+				BB3E88B30FF04A8C00B4AB4F /* Annotation.m */,
+				BB3D1EBD1035D85200DB8628 /* AnnotationCategory.h */,
+				BB3D1EBE1035D85200DB8628 /* AnnotationCategory.m */,
+				BB5D3DEC10CD979000D82E5D /* AnnotationCategoryFilter.h */,
+				BB5D3DED10CD979000D82E5D /* AnnotationCategoryFilter.m */,
+				BB6BA7581058092400324E0E /* AnnotationDocument.h */,
+				BB6BA7591058092500324E0E /* AnnotationDocument.m */,
+				BBC57DF50FF52893001C8E9F /* AnnotationFileType.h */,
+				BBC57DF60FF52893001C8E9F /* AnnotationFileType.m */,
+				BB5D3DEF10CD9B7200D82E5D /* AnnotationFilter.h */,
+				BB5D3DF010CD9B7200D82E5D /* AnnotationFilter.m */,
+				BBB7777B0FFA7FBA00319D2E /* AnnotationHover.h */,
+				BBB7777C0FFA7FBA00319D2E /* AnnotationHover.m */,
+				BB1B10220FF2A57C009A99A6 /* AnnotationInspector.h */,
+				BB1B10230FF2A57C009A99A6 /* AnnotationInspector.m */,
+				BBCC3C901185615F00477D82 /* AnnotationQuickEntry.h */,
+				BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */,
+				BBFE228A11A9D7DC00D4C96D /* AnnotationSearchFilter.h */,
+				BBFE228B11A9D7DC00D4C96D /* AnnotationSearchFilter.m */,
+				BB3E88AB0FF0475600B4AB4F /* AnnotationXMLParser.h */,
+				BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */,
+				BB01592E0EACE34300B41B99 /* AppController.h */,
+				BB01592F0EACE34300B41B99 /* AppController.m */,
+				BBCCA71713A7CCB1007DB565 /* DPActivityLog.h */,
+				BBCCA71813A7CCB1007DB565 /* DPActivityLog.m */,
+				BB342EE311D278F000893573 /* DPConsole.h */,
+				BB342EE411D278F000893573 /* DPConsole.m */,
+				BBCAE90712D29D1A00EDC2D9 /* DPConstants.h */,
+				BBCAE90812D29D1A00EDC2D9 /* DPConstants.m */,
+				BBCB3C3A16530CC400EFAFC0 /* DPDocumentTemplate.h */,
+				BBCB3C3B16530CC400EFAFC0 /* DPDocumentTemplate.m */,
+				BBCAE8FE12D29BAE00EDC2D9 /* DPStateRecording.h */,
+				BB2E93E21338FA3000F3C090 /* DPURLHandler.h */,
+				BB2E93E31338FA3000F3C090 /* DPURLHandler.m */,
+				BB49DD1411CABAEA00F9C601 /* DPViewManager.h */,
+				BB49DD1511CABAEA00F9C601 /* DPViewManager.m */,
+				BB8456380F15417F004F187E /* SegmentBoundary.h */,
+				BB8456390F15417F004F187E /* SegmentBoundary.m */,
+				BBC57EE90FF566A7001C8E9F /* VideoProperties.h */,
+				BBC57EEA0FF566A7001C8E9F /* VideoProperties.m */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 		BB594BFB10B313C3005FDA38 /* Views */ = {
