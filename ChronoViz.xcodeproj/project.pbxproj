@@ -566,7 +566,7 @@
 		BB51270D1304C111003F6E24 /* DPExportCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPExportCategories.h; sourceTree = "<group>"; };
 		BB51270E1304C111003F6E24 /* DPExportCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPExportCategories.m; sourceTree = "<group>"; };
 		BB516BA81051BC42002F45F4 /* annotationfileicon1.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = annotationfileicon1.icns; sourceTree = "<group>"; };
-		BB51C6711B9D19F4003E4A56 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = Resources/README.md; sourceTree = "<group>"; };
+		BB51C6711B9D19F4003E4A56 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BB560007115BE9CF00D6B2E8 /* OverviewTimelineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverviewTimelineView.h; sourceTree = "<group>"; };
 		BB560008115BE9CF00D6B2E8 /* OverviewTimelineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OverviewTimelineView.m; sourceTree = "<group>"; };
 		BB594C6410B3860A005FDA38 /* ColorTaggedTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorTaggedTextCell.h; sourceTree = "<group>"; };
