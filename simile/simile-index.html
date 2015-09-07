@@ -1,0 +1,77 @@
+<html>
+<head>
+<title><!-- Title --> Annotations</title>
+<style type="text/css">
+BODY {
+	font-family:sans-serif;
+	font-size:smaller
+}
+</style>
+<script src = "src/ajax/api/simile-ajax-api.js" type="text/javascript"></script>
+<script src = "src/timeline/api/timeline-api.js?bundle=true"
+	 type="text/javascript"></script>
+<script type = "text/javascript">
+
+ var tl;
+ function onLoad() {
+   var eventSource = new Timeline.DefaultEventSource();
+   
+   var bandInfos = [
+	 
+     Timeline.createBandInfo({
+         eventSource:    eventSource,
+         date:           "<!-- Date -->",
+         width:          "80%", 
+         intervalUnit:   Timeline.DateTime.SECOND, 
+         intervalPixels: 20
+     }),
+     
+	 Timeline.createBandInfo({
+	 	overview: 		true,
+	 	eventSource:	eventSource,
+		date:			"<!-- Date -->",
+		width:			"30%",
+		intervalUnit:	Timeline.DateTime.MINUTE,
+		intervalPixels:	100
+	 }),
+	
+   ];
+   
+   bandInfos[1].syncWith = 0;
+   bandInfos[1].highlight = true;
+  
+    
+   tl = Timeline.create(document.getElementById("my-timeline"), bandInfos);
+   Timeline.loadXML("annotations.xml", function(xml, url) { eventSource.loadXML(xml, url); });
+ 
+ }
+
+ var resizeTimerID = null;
+ function onResize() {
+     if (resizeTimerID == null) {
+         resizeTimerID = window.setTimeout(function() {
+             resizeTimerID = null;
+             tl.layout();
+         }, 500);
+     }
+ }
+</script>
+</head>
+<body onLoad="onLoad();" onResize="onResize();">
+<h1><!-- Title --></h1>
+<script>
+function playPause() {
+var myVideo = document.getElementsByTagName('video')[0];
+if (myVideo.paused) myVideo.play();
+else myVideo.pause();
+}
+</script>
+<div style="text-align:center;">
+<video onMouseDown="playPause();" style="border:2px solid #aaa; width: 480px; margin-bottom: 5px;" src="<!-- VideoFile -->"></video>
+</div>
+<div id="my-timeline" style="height: 400px; border: 2px solid #aaa"></div>
+<noscript>
+This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
+</noscript>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <title><!-- Title --></title>
+          <script type="text/javascript">
+function playPause() {
+var myVideo = document.getElementsByTagName('video')[0];
+if (myVideo.paused) myVideo.play();
+else myVideo.pause();
+}
+function goToTime(t) {
+	var myVideo = document.getElementsByTagName('video')[0];
+	myVideo.currentTime = t;
+}
+</script>
+    
+    <script type="text/javascript" src="protovis.js"></script>
+    <style type="text/css">
+      body {
+		margin: 0;
+		padding: 0;
+		background-color: #333;
+	  }
+      #center {
+      	width: 870px;
+      	margin: 0 auto 0 auto;
+	    padding: 30px 20px 60px 20px;
+	    background-color: #fff;
+	    text-align:center;
+      	}
+      #fig {
+        width: 830px;
+        height: <!-- FigureHeight -->px;
+      }
+    </style>
+  </head>
+  
+  <body>
+
+  <div id="center">
+	<h1><!-- Title --></h1>
+    <div style="text-align:center;">
+		<video onMouseDown="playPause();" style="border:2px solid #aaa; width: 480px; margin-bottom: 5px;" src="<!-- VideoFile -->"></video>
+	</div>
+	<div id="fig">
+    <script type="text/javascript+protovis">
+
+	<!-- data -->
+
+      /* Sizing and scales. */
+      var w = 800,
+          h = <!-- ChartHeight -->;
+          /* x = pv.Scale.linear(data, function(d) d.time).range(0, w), */
+          /* y = pv.Scale.linear(data, function(d) d.val).range(0, h); */
+
+      /* The root panel. */
+      var visContainer = new pv.Panel()
+      	  .data(data)
+          .width(w)
+          .height(h + 10)
+          .bottom(20)
+          .left(20)
+          .right(10)
+          .top(5);
+
+	var vis = visContainer.add(pv.Panel)
+		 .def("i", -1)
+	     .def("x", function(d) pv.Scale.linear(d.values, function(v) v.time).range(0, w))
+         .def("y", function(d) pv.Scale.linear(d.values, function(v) v.val).range(0, h))
+		 .bottom(10);
+
+ 	/* The label: either the job name, or the month and value. */
+      vis.add(pv.Label)
+          .bottom(-10)
+          .textBaseline("top")
+          .left(0)
+          .font("140% Gill Sans,sans-serif")
+          .textAlign("left")
+          .textStyle("#000")
+          .text(function(d) d.name);
+
+
+      /* Y-axis and ticks. */
+      
+      vis.add(pv.Rule)
+          .data(function() vis.y().ticks())
+          .visible(function() !(this.index % 2))
+          .bottom(function(d) Math.round(vis.y()(d)) - .5)
+          .strokeStyle(function(d) d ? "#eee" : "#000")
+        .anchor("left").add(pv.Label)
+          .text(function(d) d.toFixed());
+
+      /* X-axis and ticks. */
+      
+      vis.add(pv.Rule)
+      	.bottom(.5);
+      
+      vis.add(pv.Rule)
+          .data(function() vis.x().ticks())
+          .visible(function(d) d > 0)
+          .left(function(d) Math.round(vis.x()(d)) - .5)
+          .bottom(-5)
+          .height(5)
+        .anchor("bottom").add(pv.Label)
+          .text(function(d) d.toFixed());
+
+      /* The area with top line. */
+      vis.add(pv.Area)
+          .data(function(d) d.values)
+          .bottom(0)
+          .left(function(d) vis.x()(d.time))
+          .height(function(d) vis.y()(d.val))
+          .fillStyle(null)
+        .anchor("top").add(pv.Line)
+          .lineWidth(3)
+          .fillStyle(null);
+
+      /* The mouseover dot. */
+      vis.add(pv.Dot)
+          .visible(function() vis.i() >= 0)
+          .left(function() vis.i())
+          .bottom(function(d) vis.y()(d.values[vis.i()].val))
+          .fillStyle("#ff7f0e")
+          .strokeStyle(null)
+          .size(10);
+
+      /* An invisible bar to capture events (without flickering). */
+      vis.add(pv.Bar)
+          .fillStyle("rgba(0,0,0,.001)")
+          .event("mouseout", function() vis.i(-1))
+          .event("mousemove", function() vis.i(vis.mouse().x))
+          .event("click",function(d) goToTime(d.values[vis.mouse().x].time));
+
+      visContainer.render();
+
+    </script>
+  </div></div></body>
+</html>
