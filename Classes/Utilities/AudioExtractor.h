@@ -8,7 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QTKit/QTKit.h>
-#import <QuickTime/QuickTime.h>
 #import "DataSource.h"
 #import "DPConstants.h"
 
@@ -16,10 +15,10 @@
 
 	id <DataSourceDelegate> delegate;
 	QTMovie *movie;
-	Movie mCloneMovie;
+	//Movie mCloneMovie;
 	
 	NSMutableArray *subsetArray;
-	int subsetSize;
+	NSInteger subsetSize;
     NSTimeInterval sampleSize;
 	QTTimeRange subsetTime;
 	
@@ -34,7 +33,7 @@
 }
 
 @property NSTimeInterval sampleSize;
-@property DPSubsetMethod subsetMethod;
+@property (nonatomic,assign) DPSubsetMethod subsetMethod;
 
 - (id)initWithQTMovie:(QTMovie*)theMovie;
 - (void)setDelegate:(id <DataSourceDelegate>)theDelegate;

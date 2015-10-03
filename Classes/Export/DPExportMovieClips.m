@@ -12,7 +12,6 @@
 #import "AnnotationDocument.h"
 #import "VideoProperties.h"
 #import "NSStringTimeCodes.h"
-#import <QuickTime/QuickTime.h>
 
 @interface DPExportMovieClips (Private) 
 
@@ -296,6 +295,8 @@
 // Add the artist name metadata item to a movie file
 -(void) addMovieInfoMetaData:(QTMovie *)aQTMovie infoString:(NSString *)aNameStr
 {
+    NSLog(@"Metadata export needs to be updated for AV Foundation!");
+    /*
 	NSLog(@"Write meta data: %@",aNameStr);
 	
     QTMetaDataRef   metaDataRef;
@@ -348,6 +349,7 @@
 		
         QTMetaDataRelease(metaDataRef);
     }
+     */
 }
 
 // Return the default language set by the user 

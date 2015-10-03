@@ -26,7 +26,7 @@
 #import "AnnotationSet.h"
 #import "VideoDataSource.h"
 #import "CompoundDataSource.h"
-#import "Sparkle.framework/Headers/SUUpdater.h"
+#import <Sparkle/SUUpdater.h>
 #import <CoreServices/CoreServices.h>
 
 NSString * const MediaChangedNotification = @"MediaChangedNotification";

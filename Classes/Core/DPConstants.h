@@ -8,12 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef enum {
-	DPSubsetMethodSample	 = 0,
-	DPSubsetMethodMax  = 10,
-	DPSubsetMethodAverage	 = 20,
-    DPSubsetMethodRMS = 30
-} DPSubsetMethod;
+typedef NS_ENUM(NSInteger, DPSubsetMethod)  {
+	DPSubsetMethodSample,
+	DPSubsetMethodMax,
+	DPSubsetMethodAverage,
+    DPSubsetMethodRMS
+};
 
 extern int const DataPrismSelectTool;
 extern int const DataPrismZoomTool;
