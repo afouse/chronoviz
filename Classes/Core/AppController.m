@@ -2707,9 +2707,7 @@ static AppController *currentApp = nil;
     else if ([menuName isEqualToString:@"Help"])
     {
         NSMenu *help = [[[NSApp mainMenu] itemWithTitle:@"Help"] submenu];
-        //NSInteger separatorIndex = [help indexOfItem:[NSMenuItem separatorItem]];
-        [help insertItem:menuItem atIndex:[[help itemArray] count] - 2];
-//        [help addItem:menuItem];
+        [help addItem:menuItem];
     }
 	
 }

@@ -74,6 +74,8 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		[self setWantsLayer:YES];
 		[[self layer] setBackgroundColor:CGColorCreateGenericGray(0.05, 1.0)];
 		
+        self.layerUsesCoreImageFilters = true;
+        
 		controlBackground = CGColorCreateGenericGray(0.8, 0.5);
 		controlBackgroundActive = CGColorCreateGenericGray(0.8, 1.0);
 		
