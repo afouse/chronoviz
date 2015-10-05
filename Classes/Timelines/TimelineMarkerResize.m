@@ -109,7 +109,7 @@
 	
 	CGContextBeginPath(theContext);
 	CGContextAddPath(theContext, theCircle );
-	if(NO)
+	if(/* DISABLES CODE */ (NO))
 	{
 		CGContextSetRGBStrokeColor(theContext, 0.9f, 0.9f, 0.9f, 1.0f);
 		CGContextSetLineWidth(theContext, 2.0f);

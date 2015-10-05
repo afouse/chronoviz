@@ -506,7 +506,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	if(([movies count] > 1) || [[[self window] windowController] isKindOfClass:[MovieViewerController class]])
 	{
 		CGFloat controlWidth = 130;
-		CGFloat controlHeight = 21;
+		CGFloat controlHeight = 23;
 		
 		CGColorRef darkgrey = CGColorCreateGenericGray(0.1, 1.0);
 		
@@ -520,7 +520,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		
 		CATextLayer *controlTextLayer = [CATextLayer layer];
 		controlTextLayer.font = @"Helvetica Bold";
-		controlTextLayer.fontSize = 16.0;
+		controlTextLayer.fontSize = 14.0;
 		controlTextLayer.alignmentMode = kCAAlignmentCenter;
 		controlTextLayer.autoresizingMask = (kCALayerMaxYMargin | kCALayerMinXMargin);
 		controlTextLayer.bounds = CGRectMake(0.0, 0.0, controlWidth, 14);
