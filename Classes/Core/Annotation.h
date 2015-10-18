@@ -10,6 +10,7 @@
 #import <QTKit/QTKit.h>
 #import "SegmentBoundary.h"
 @class AnnotationCategory;
+@class SpatialTimeSeriesData;
 
 extern NSString * const AnnotationUpdatedNotification;
 extern NSString * const AnnotationSelectedNotification;
@@ -74,6 +75,7 @@ extern NSString * const AnnotationSelectedNotification;
 @property(retain) NSDate *modificationDate;
 @property(retain) NSString *creationUser;
 @property(retain) NSString *modificationUser;
+@property(retain) SpatialTimeSeriesData *spatialData;
 
 -(id)initWithTimeInterval:(NSTimeInterval)interval;
 -(id)initWithStart:(NSDate *)time sinceDate:(NSDate*)referenceDate;

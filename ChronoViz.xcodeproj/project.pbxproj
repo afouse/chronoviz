@@ -30,6 +30,8 @@
 		BB08C25310A3476700F188AD /* ImageSequenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB08C25210A3476700F188AD /* ImageSequenceController.m */; };
 		BB08C25510A3478800F188AD /* ImageSequence.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB08C25410A3478800F188AD /* ImageSequence.xib */; };
 		BB0AD1E213CCB46E0067E239 /* CompoundDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0AD1E113CCB46E0067E239 /* CompoundDataSource.m */; };
+		BB0B51271BD42D1900353842 /* DPSpatialAnnotationWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0B51261BD42D1900353842 /* DPSpatialAnnotationWindowController.m */; };
+		BB0B51291BD42D6B00353842 /* DPSpatialAnnotationWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB0B51281BD42D6B00353842 /* DPSpatialAnnotationWindow.xib */; };
 		BB0CA82C11547B510042BF4C /* AnotoNotesData.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0CA82B11547B510042BF4C /* AnotoNotesData.m */; };
 		BB0EA59B0ED60C7C00A71883 /* InteractionAddSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0EA59A0ED60C7C00A71883 /* InteractionAddSegment.m */; };
 		BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E97E1BC062F4001C4365 /* AVFoundation.framework */; };
@@ -423,6 +425,9 @@
 		BB08C25410A3478800F188AD /* ImageSequence.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageSequence.xib; sourceTree = "<group>"; };
 		BB0AD1E013CCB46E0067E239 /* CompoundDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompoundDataSource.h; sourceTree = "<group>"; };
 		BB0AD1E113CCB46E0067E239 /* CompoundDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompoundDataSource.m; sourceTree = "<group>"; };
+		BB0B51251BD42D1900353842 /* DPSpatialAnnotationWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPSpatialAnnotationWindowController.h; sourceTree = "<group>"; };
+		BB0B51261BD42D1900353842 /* DPSpatialAnnotationWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPSpatialAnnotationWindowController.m; sourceTree = "<group>"; };
+		BB0B51281BD42D6B00353842 /* DPSpatialAnnotationWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DPSpatialAnnotationWindow.xib; sourceTree = "<group>"; };
 		BB0CA82A11547B510042BF4C /* AnotoNotesData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnotoNotesData.h; sourceTree = "<group>"; };
 		BB0CA82B11547B510042BF4C /* AnotoNotesData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnotoNotesData.m; sourceTree = "<group>"; };
 		BB0EA5990ED60C7C00A71883 /* InteractionAddSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InteractionAddSegment.h; sourceTree = "<group>"; };
@@ -1404,6 +1409,9 @@
 		BBA9571813D5E68900066301 /* Spatial Data */ = {
 			isa = PBXGroup;
 			children = (
+				BB0B51251BD42D1900353842 /* DPSpatialAnnotationWindowController.h */,
+				BB0B51261BD42D1900353842 /* DPSpatialAnnotationWindowController.m */,
+				BB0B51281BD42D6B00353842 /* DPSpatialAnnotationWindow.xib */,
 				BB3728CE1419633200675C6E /* DPRadialDataView.h */,
 				BB3728CF1419633200675C6E /* DPRadialDataView.m */,
 				BB19EB34141684DC002E4CC6 /* DPSpatialConnectionsLayer.h */,
@@ -1837,6 +1845,7 @@
 				BB1CD95013B1B02C00955AF0 /* activityMaskImageBlue.png in Resources */,
 				BB1CD95113B1B02C00955AF0 /* activityMaskImageGreen.png in Resources */,
 				BBED4C7813CB9B7E005BD330 /* LinkedFiles.xib in Resources */,
+				BB0B51291BD42D6B00353842 /* DPSpatialAnnotationWindow.xib in Resources */,
 				BB90B5B913E35CF50021DFA0 /* DocumentVariablesWindow.xib in Resources */,
 				BB823BAC13F44C0900778076 /* EthnographerTemplateManagementWindow.xib in Resources */,
 				BB823C6313F4922B00778076 /* EthnographerRequestProjectWindow.xib in Resources */,
@@ -1904,6 +1913,7 @@
 				BBB7793F0FFAC06B00319D2E /* MultiTimelineView.m in Sources */,
 				BB7B88FB100CFDE800A18DAF /* ColorCell.m in Sources */,
 				BB7B88FC100CFDE800A18DAF /* DateToRelativeTimeStringTransformer.m in Sources */,
+				BB0B51271BD42D1900353842 /* DPSpatialAnnotationWindowController.m in Sources */,
 				BB7B88FD100CFDE800A18DAF /* NSColorHexadecimalValue.m in Sources */,
 				BB7B88FE100CFDE800A18DAF /* TimelineMarker.m in Sources */,
 				BB7B88FF100CFDE800A18DAF /* TimelineMarkerResize.m in Sources */,

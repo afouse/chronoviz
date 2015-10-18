@@ -11,6 +11,7 @@
 #import "AnnotationDocument.h"
 #import "VideoProperties.h"
 #import "MovieViewerController.h"
+#import "DPSpatialAnnotationWindowController.h"
 #import "Annotation.h"
 #import "DPConstants.h"
 #import <QuartzCore/CoreAnimation.h>
@@ -929,25 +930,29 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		if(video)
 		{
 			
-			MovieViewerController *movieViewer = nil;
+			NSWindowController *movieViewer = nil;
 			
-			for(id view in [[AppController currentApp] annotationViews])
-			{
-				if([view isKindOfClass:[MovieViewerController class]])
-				{
-					if([view videoProperties] == video)
-					{
-						movieViewer = (MovieViewerController*)view;
-					}
-				}
-			}
+//			for(id view in [[AppController currentApp] annotationViews])
+//			{
+//				if([view isKindOfClass:[MovieViewerController class]])
+//				{
+//					if([view videoProperties] == video)
+//					{
+//						movieViewer = (MovieViewerController*)view;
+//					}
+//				}
+//			}
 			
 			if(!movieViewer)
 			{
-				movieViewer = [[MovieViewerController alloc] init];	
-				[movieViewer setVideoProperties:video];
-				[[AppController currentApp] addAnnotationView:movieViewer];
+				//movieViewer = [[MovieViewerController alloc] init];
+                DPSpatialAnnotationWindowController* spatialAnnotationController = [[DPSpatialAnnotationWindowController alloc] init];
+                [spatialAnnotationController window];
+				[spatialAnnotationController setVideoProperties:video];
+                [[AppController currentApp] addDataWindow:spatialAnnotationController];
+				[[AppController currentApp] addAnnotationView:[spatialAnnotationController annotationView]];
 				[movieViewer release];
+                movieViewer = spatialAnnotationController;
 			}
 			
 			[[movieViewer window] setFrameOrigin:aPoint];
