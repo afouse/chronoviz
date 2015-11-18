@@ -7,6 +7,7 @@
 //
 
 #import "DPSpatialDataView.h"
+#import "Annotation.h"
 #import "TimeCodedData.h"
 #import "SpatialTimeSeriesData.h"
 #import "OrientedSpatialTimeSeriesData.h"
@@ -41,12 +42,15 @@
 
 - (void)createDefaultConnections;
 
+- (void)updateCurrentAnnotation;
+
 - (SpatialTimeSeriesData*)dataSetWithVariable:(NSString*)variable andSource:(DataSource*)source;
 
 @end
 
 @implementation DPSpatialDataView
 
+@synthesize currentMouseDataLocation;
 @synthesize subsetData;
 @synthesize connectedPaths,blurPaths,pathTailTime,pathOpacity,aggregatePaths,staticPaths,indicatorSize;
 @synthesize selectionView;
@@ -131,6 +135,9 @@
         [data removeObserver:self forKeyPath:@"xOffset"];
         [data removeObserver:self forKeyPath:@"yOffset"];
     }
+    
+    self.currentAnnotation = nil;
+    self.annotationCategory = nil;
     
     [dataSets release];
     [subsets release];
@@ -1061,6 +1068,67 @@
     
 }
 
+#pragma mark Annotation
+- (void)updateCurrentAnnotation {
+    if(self.currentAnnotation) {
+        TimeCodedSpatialPoint *spatialPt = [[TimeCodedSpatialPoint alloc] init];
+        spatialPt.time = currentTime;
+        spatialPt.x = self.currentMouseDataLocation.x;
+        spatialPt.y = self.currentMouseDataLocation.y;
+        
+        [self.currentAnnotation.spatialData addPoint:spatialPt];
+        
+        if([self.currentAnnotation.spatialData.dataPoints count] > 1) {
+            [self.currentAnnotation setIsDuration:YES];
+            [self.currentAnnotation setEndTime:currentTime];
+        }
+        
+        [spatialPt release];
+    }
+}
+
+#pragma mark Mouse Events
+
+- (void)mouseDown:(NSEvent *)theEvent
+{
+    if(self.enableAnnotation)
+    {
+        Annotation* annotation = [[Annotation alloc] initWithQTTime:currentTime];
+        [annotation setCategory:self.annotationCategory];
+        [[AnnotationDocument currentDocument] addAnnotation:annotation];
+        [self setCurrentAnnotation:annotation];
+        [annotation release];
+        
+        SpatialTimeSeriesData *annotationData = [[SpatialTimeSeriesData alloc] init];
+        [annotation setSpatialData:annotationData];
+        [annotationData release];
+        [self addData:annotationData];
+        
+        NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        self.currentMouseDataLocation = [backgroundProvider dataPointForViewPoint:NSPointToCGPoint(pt)];
+        
+        [self updateCurrentAnnotation];
+    }
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent
+{
+    if(self.currentAnnotation)
+    {
+        NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        self.currentMouseDataLocation = [backgroundProvider dataPointForViewPoint:NSPointToCGPoint(pt)];
+    }
+}
+
+- (void)mouseUp:(NSEvent *)theEvent
+{
+    if(self.currentAnnotation)
+    {
+        self.currentAnnotation = nil;
+    }
+}
+
+
 
 #pragma mark AnnotationView Methods
 
@@ -1141,6 +1209,10 @@
     //NSLog(@"Spatial Update Background Bounds: %f %f",[backgroundLayer bounds].size.width,[backgroundLayer bounds].size.height);
     
     [backgroundProvider setDisplayBounds:[backgroundLayer bounds]];
+    
+    if(self.currentAnnotation) {
+        [self updateCurrentAnnotation];
+    }
     
     for(SpatialTimeSeriesData *data in dataSets)
     {

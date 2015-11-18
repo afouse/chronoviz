@@ -10,6 +10,7 @@
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
 #import "AnnotationPlaybackControllerView.h"
+@class AnnotationCategory;
 @class TimeCodedData;
 @class TimeCodedSpatialPoint;
 @class DPMaskedSelectionView;
@@ -89,6 +90,11 @@
 @property BOOL showPosition;
 @property BOOL showConnections;
 @property BOOL subsetData;
+
+@property BOOL enableAnnotation;
+@property(retain) AnnotationCategory* annotationCategory;
+@property(retain) Annotation* currentAnnotation;
+@property CGPoint currentMouseDataLocation;
 
 @property BOOL connectedPaths;
 @property BOOL blurPaths;

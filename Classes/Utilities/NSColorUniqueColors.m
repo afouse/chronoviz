@@ -178,19 +178,30 @@
 
 -(CGFloat)distanceFromColor:(NSColor*)otherColor
 {
-    CMProfileRef labProfile;
+    //CMProfileRef labProfile;
     
 //    CGFloat whitePoint[3] = {0.95047, 1.0, 1.08883};
 //    CGFloat blackPoint[3] = {0, 0, 0};
 //    CGFloat range[4] = {-127, 127, -127, 127};
 //    CGColorSpaceRef labSpace = CGColorSpaceCreateLab(whitePoint, blackPoint, range);
     
-    CMGetDefaultProfileBySpace (cmLabData, &labProfile);
+    //CMGetDefaultProfileBySpace (cmLabData, &labProfile);
     
-    NSColorSpace *labColorSpace = [[[NSColorSpace alloc]
-                                    initWithColorSyncProfile:labProfile] autorelease];
-    CMCloseProfile (labProfile);
+    //NSColorSpace *labColorSpace = [[[NSColorSpace alloc]
+    //                                initWithColorSyncProfile:labProfile] autorelease];
+    //CMCloseProfile (labProfile);
 
+//    NSString* labProfilePath = @"/System/Library/ColorSync/Profiles/Generic Lab Profile.icc";
+//    NSData* labProfileData = [NSData dataWithContentsOfFile:labProfilePath];
+//    NSColorSpace* labColorSpace = [[NSColorSpace alloc] initWithICCProfileData:labProfileData];
+    
+    CGFloat whitePoint[3] = { 96.720, 100, 81.427 };
+    CGFloat blackPoint[3] = { 0, 0, 0 };
+    CGFloat range[4] = { 0, 1, 0, 1 };
+    CGColorSpaceRef LAB = CGColorSpaceCreateLab(whitePoint, blackPoint, range);
+    
+    NSColorSpace* labColorSpace = [[NSColorSpace alloc] initWithCGColorSpace:LAB];
+    
     NSColor *myLabColor = [self colorUsingColorSpace:labColorSpace];
     unsigned myComponentCount = [myLabColor numberOfComponents];
     CGFloat myComponents[myComponentCount];
