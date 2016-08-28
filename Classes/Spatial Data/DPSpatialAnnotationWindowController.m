@@ -112,6 +112,7 @@
         [[self window] setTitle:[properties title]];
         [[self spatialDataView] setBackgroundMovie:[[self videoProperties] movie]];
         [[self spatialDataView] setEnableAnnotation:YES];
+        [[self spatialDataView] setStaticPaths:YES];
         
         NSString *categoryName = @"Spatial Annotations";
         AnnotationCategory *spatial = [[AnnotationDocument currentDocument] categoryForName:categoryName];

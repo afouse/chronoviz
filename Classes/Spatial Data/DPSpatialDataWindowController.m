@@ -220,8 +220,8 @@
 - (IBAction)changeVisualizationAction:(id)sender {
     if([sender isKindOfClass:[NSSegmentedControl class]])
 	{
-		int clickedSegment = [sender selectedSegment];
-		int clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
+		NSInteger clickedSegment = [sender selectedSegment];
+		NSInteger clickedSegmentTag = [[sender cell] tagForSegment:clickedSegment];
 		if(clickedSegmentTag == 0)
 		{
 			[spatialDataView setShowPosition:!spatialDataView.showPosition];

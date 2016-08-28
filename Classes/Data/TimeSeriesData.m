@@ -11,7 +11,7 @@
 #import "NSStringParsing.h"
 #import "DataSource.h"
 
-int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
+NSInteger afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	
 	TimeCodedDataPoint *point1 = (TimeCodedDataPoint*)obj1;
 	TimeCodedDataPoint *point2 = (TimeCodedDataPoint*)obj2;

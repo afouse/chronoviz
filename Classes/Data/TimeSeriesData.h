@@ -12,7 +12,7 @@
 @class DataSource;
 @class TimeCodedDataPoint;
 
-int afTimeCodedPointSort( id obj1, id obj2, void *context );
+NSInteger afTimeCodedPointSort( id obj1, id obj2, void *context );
 
 @interface TimeSeriesData : TimeCodedData {
 	

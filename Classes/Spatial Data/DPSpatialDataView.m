@@ -1124,8 +1124,11 @@
 {
     if(self.currentAnnotation)
     {
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:DPDataSetUpdatedNotification object:self.currentAnnotation.spatialData];
         self.currentAnnotation = nil;
     }
+
 }
 
 
