@@ -7,7 +7,6 @@
 //
 
 #import "DPLogFileUploader.h"
-#import "FileUploader.h"
 #import "DataPrismLog.h"
 #import "DPConstants.h"
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -57,97 +56,13 @@ static DPLogFileUploader* defaultLogFileUploader = nil;
 
 - (BOOL)uploadLogFilesWithCallbackTarget:(id)target selector:(SEL)selector
 {
-	callbackTarget = target;
-	callbackSelector = selector;
-	
-	BOOL connected = YES;
-	SCNetworkReachabilityRef googleTarget;
-	googleTarget = SCNetworkReachabilityCreateWithName(NULL,"adamfouse.com");
-	if (googleTarget != NULL) {
-		SCNetworkConnectionFlags flags;
-		
-		SCNetworkReachabilityGetFlags(googleTarget, &flags);
-		
-		if(flags & kSCNetworkFlagsConnectionRequired)
-		{
-			connected = NO;
-		}
-		
-		CFRelease(googleTarget);
-		
-		if(!connected)
-		{
-			return NO;
-		}
-	}
-	
-	
-	
-	NSError *err = nil;
-	
-	cancelUpload = NO;
-	[uploadFile release];
-	[argumentList release];
-	[logsDirectory release];
-	
-	NSFileManager *mgr = [NSFileManager defaultManager];
-	logsDirectory = [[DataPrismLog defaultLogsDirectory] retain];
-	
-	NSTask *task = [[NSTask alloc] init];
-	[task setCurrentDirectoryPath:logsDirectory];
-	[task setLaunchPath:@"/usr/bin/zip"];
-	NSString *format = @"%m-%d-%H-%M-%S";
-	NSString *date = [[NSDate date] descriptionWithCalendarFormat:format timeZone:nil locale:nil];
-	argumentList = [[NSMutableArray array] retain];
-	uploadFile = [[NSString stringWithFormat:@"Upload-%@",date] retain];
-	[argumentList addObject:uploadFile];
-	NSArray *files = [mgr contentsOfDirectoryAtPath:logsDirectory error:&err];
-	BOOL filesToUpload = NO;
-	for(NSString *file in files)
-	{
-		if([[file pathExtension] isEqualToString:@"txt"] || [[file pathExtension] isEqualToString:@"xml"] )
-		{
-			[argumentList addObject:file];
-			filesToUpload = YES;
-		}
-	}
-	if(filesToUpload)
-	{
-		[task setArguments:argumentList];
-		NSLog(@"Uploading files at: %@",[task currentDirectoryPath]);
-		
-		[uploadProgress setUsesThreadedAnimation:YES];
-		[uploadProgress setIndeterminate:YES];
-		[uploadWindow makeKeyAndOrderFront:self];
-		[uploadProgress startAnimation:self];
-		
-		[task launch];
-		[task waitUntilExit];
-		if([task terminationStatus] == 0)
-		{
-			FileUploader *uploader = [FileUploader standardFileUploader];
-			[uploader setDelegate:self];
-			
-			NSString *file = [logsDirectory stringByAppendingPathComponent:[uploadFile stringByAppendingPathExtension:@"zip"]];
-			
-			[uploader uploadFile:file withProgressIndicator:uploadProgress];
-		}
-		else
-		{
-			[self finishUploadAttempt];	
-		}
-		
-		
-	}
-	
-	[task release];
 	
     return YES;
 }
 
 - (IBAction)cancelUpload:(id)sender
 {
-	[[FileUploader standardFileUploader] cancelUpload:self];
+
 	
 }
 

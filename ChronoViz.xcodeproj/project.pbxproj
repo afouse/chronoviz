@@ -83,7 +83,6 @@
 		BB3E6AFA119389E500F2AD0F /* DPExportPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E6AF9119389E500F2AD0F /* DPExportPDF.m */; };
 		BB3E88AD0FF0475600B4AB4F /* AnnotationXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */; };
 		BB3E88B40FF04A8C00B4AB4F /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E88B30FF04A8C00B4AB4F /* Annotation.m */; };
-		BB3F72EA125A450000BF226C /* FeedbackController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3F72E9125A450000BF226C /* FeedbackController.m */; };
 		BB3F72EC125A458000BF226C /* FeedbackWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB3F72EB125A458000BF226C /* FeedbackWindow.xib */; };
 		BB40616113D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB40616013D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m */; };
 		BB43C5070ED3287A0058B3DF /* InteractionLog.m in Sources */ = {isa = PBXBuildFile; fileRef = BB43C5060ED3287A0058B3DF /* InteractionLog.m */; };
@@ -133,9 +132,6 @@
 		BB7071D1158A4D6A00F798E2 /* EthnographerTrajectoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7071D0158A4D6A00F798E2 /* EthnographerTrajectoryData.m */; };
 		BB7071D4158A527900F798E2 /* DPDataSelectionPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7071D3158A527900F798E2 /* DPDataSelectionPanel.m */; };
 		BB7071D6158A52C300F798E2 /* DPDataSelectionPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB7071D5158A52C300F798E2 /* DPDataSelectionPanel.xib */; };
-		BB7378FD125B8C4700D20712 /* Connection.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB7378FC125B8C4700D20712 /* Connection.framework */; };
-		BB737900125B8C6700D20712 /* Connection.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BB7378FC125B8C4700D20712 /* Connection.framework */; };
-		BB737942125B8D2500D20712 /* FileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BB737941125B8D2500D20712 /* FileUploader.m */; };
 		BB7674AF134E2341008F76A3 /* CategoryListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7674AE134E2341008F76A3 /* CategoryListCell.m */; };
 		BB76EF7B1336D2520002CF56 /* NSColorUniqueColors.m in Sources */ = {isa = PBXBuildFile; fileRef = BB76EF7A1336D2520002CF56 /* NSColorUniqueColors.m */; };
 		BB78D13113551FD9003DCC4F /* NSString+NDCarbonUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = BB78D12F13551FD9003DCC4F /* NSString+NDCarbonUtilities.m */; };
@@ -259,6 +255,8 @@
 		BBA378F412B7DC920038A551 /* InteractionAnnotationEdit.h in Headers */ = {isa = PBXBuildFile; fileRef = BBECFAE210F54A2500F7A54B /* InteractionAnnotationEdit.h */; };
 		BBA378F612B7DC920038A551 /* DataPrismLog.h in Headers */ = {isa = PBXBuildFile; fileRef = BBD30A8211E687BC00CA996C /* DataPrismLog.h */; };
 		BBA378F912B7DCBC0038A551 /* Annotation.h in Headers */ = {isa = PBXBuildFile; fileRef = BB3E88B20FF04A8C00B4AB4F /* Annotation.h */; };
+		BBA3D4621D7DB19B0028717D /* BGHUDAppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA3D4611D7DB19B0028717D /* BGHUDAppKit.framework */; };
+		BBA3D4631D7DB19B0028717D /* BGHUDAppKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBA3D4611D7DB19B0028717D /* BGHUDAppKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BBA640731187ADD000580E89 /* PrioritySplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA640721187ADD000580E89 /* PrioritySplitViewDelegate.m */; };
 		BBA6892F15E4385E0007E528 /* DPExportTranscript.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA6892E15E4385E0007E528 /* DPExportTranscript.m */; };
 		BBAFE55610B61383003E4EE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */; };
@@ -306,8 +304,6 @@
 		BBCC108112EFA7160041EEB1 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCC108012EFA7160041EEB1 /* IOBluetooth.framework */; };
 		BBCC3BEB1185409800477D82 /* NSMenuPopUpMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3BEA1185409800477D82 /* NSMenuPopUpMenu.m */; };
 		BBCC3C921185615F00477D82 /* AnnotationQuickEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */; };
-		BBCC3CC81185F1FB00477D82 /* BGHUDAppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCC3CC71185F1FB00477D82 /* BGHUDAppKit.framework */; };
-		BBCC3CCD1185F24900477D82 /* BGHUDAppKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBCC3CC71185F1FB00477D82 /* BGHUDAppKit.framework */; };
 		BBCC3DAA11860AEA00477D82 /* AFHUDOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3DA911860AEA00477D82 /* AFHUDOutlineView.m */; };
 		BBCCA71913A7CCB1007DB565 /* DPActivityLog.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCCA71813A7CCB1007DB565 /* DPActivityLog.m */; };
 		BBCCA74F13A8679C007DB565 /* ActivityFramesVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCCA74E13A8679C007DB565 /* ActivityFramesVisualizer.m */; };
@@ -380,9 +376,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BBA3D4631D7DB19B0028717D /* BGHUDAppKit.framework in CopyFiles */,
 				BBB3DC07132FCD37002D6BD5 /* Sparkle.framework in CopyFiles */,
-				BB737900125B8C6700D20712 /* Connection.framework in CopyFiles */,
-				BBCC3CCD1185F24900477D82 /* BGHUDAppKit.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,8 +521,6 @@
 		BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationXMLParser.m; sourceTree = "<group>"; };
 		BB3E88B20FF04A8C00B4AB4F /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		BB3E88B30FF04A8C00B4AB4F /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
-		BB3F72E8125A450000BF226C /* FeedbackController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedbackController.h; sourceTree = "<group>"; };
-		BB3F72E9125A450000BF226C /* FeedbackController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedbackController.m; sourceTree = "<group>"; };
 		BB3F72EB125A458000BF226C /* FeedbackWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeedbackWindow.xib; sourceTree = "<group>"; };
 		BB40615F13D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorMappedTimeSeriesVisualizer.h; sourceTree = "<group>"; };
 		BB40616013D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorMappedTimeSeriesVisualizer.m; sourceTree = "<group>"; };
@@ -607,9 +600,6 @@
 		BB7071D2158A527900F798E2 /* DPDataSelectionPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPDataSelectionPanel.h; sourceTree = "<group>"; };
 		BB7071D3158A527900F798E2 /* DPDataSelectionPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPDataSelectionPanel.m; sourceTree = "<group>"; };
 		BB7071D5158A52C300F798E2 /* DPDataSelectionPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DPDataSelectionPanel.xib; sourceTree = "<group>"; };
-		BB7378FC125B8C4700D20712 /* Connection.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Connection.framework; path = /Users/afouse/Development/ConnectionKit/build/Release/Connection.framework; sourceTree = "<absolute>"; };
-		BB737940125B8D2500D20712 /* FileUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUploader.h; sourceTree = "<group>"; };
-		BB737941125B8D2500D20712 /* FileUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileUploader.m; sourceTree = "<group>"; };
 		BB7674AD134E2341008F76A3 /* CategoryListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryListCell.h; sourceTree = "<group>"; };
 		BB7674AE134E2341008F76A3 /* CategoryListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryListCell.m; sourceTree = "<group>"; };
 		BB76EF791336D2520002CF56 /* NSColorUniqueColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColorUniqueColors.h; sourceTree = "<group>"; };
@@ -742,6 +732,7 @@
 		BB9E28C214FEE1B300957754 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		BB9E28C314FEE1B300957754 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
 		BBA378E712B7DC610038A551 /* libChronoVizLogging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libChronoVizLogging.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BBA3D4611D7DB19B0028717D /* BGHUDAppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BGHUDAppKit.framework; sourceTree = "<group>"; };
 		BBA640711187ADD000580E89 /* PrioritySplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrioritySplitViewDelegate.h; sourceTree = "<group>"; };
 		BBA640721187ADD000580E89 /* PrioritySplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrioritySplitViewDelegate.m; sourceTree = "<group>"; };
 		BBA6892D15E4385E0007E528 /* DPExportTranscript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPExportTranscript.h; sourceTree = "<group>"; };
@@ -803,7 +794,6 @@
 		BBCC3BEA1185409800477D82 /* NSMenuPopUpMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenuPopUpMenu.m; sourceTree = "<group>"; };
 		BBCC3C901185615F00477D82 /* AnnotationQuickEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationQuickEntry.h; sourceTree = "<group>"; };
 		BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationQuickEntry.m; sourceTree = "<group>"; };
-		BBCC3CC71185F1FB00477D82 /* BGHUDAppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BGHUDAppKit.framework; path = "/Users/afouse/Development/Sample Code/binarygod-BGHUDAppKit-0.6-0-g715e06e/build/Release/BGHUDAppKit.framework"; sourceTree = "<absolute>"; };
 		BBCC3DA811860AEA00477D82 /* AFHUDOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHUDOutlineView.h; sourceTree = "<group>"; };
 		BBCC3DA911860AEA00477D82 /* AFHUDOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHUDOutlineView.m; sourceTree = "<group>"; };
 		BBCCA71713A7CCB1007DB565 /* DPActivityLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPActivityLog.h; sourceTree = "<group>"; };
@@ -924,6 +914,7 @@
 			files = (
 				BB1A4ECE14992C5800F2998E /* Accelerate.framework in Frameworks */,
 				BB6E5A59148EB7F3008AC067 /* libsqlite3.dylib in Frameworks */,
+				BBA3D4621D7DB19B0028717D /* BGHUDAppKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				BB0159670EACEA3E00B41B99 /* QTKit.framework in Frameworks */,
 				BB440C510F3CA1CE0058483C /* QuartzCore.framework in Frameworks */,
@@ -932,8 +923,6 @@
 				BBAFE55610B61383003E4EE7 /* SystemConfiguration.framework in Frameworks */,
 				BB4620BD10D167B700FCF5BD /* QuickTime.framework in Frameworks */,
 				BB92B6F8113637CA00C50DF2 /* AudioToolbox.framework in Frameworks */,
-				BBCC3CC81185F1FB00477D82 /* BGHUDAppKit.framework in Frameworks */,
-				BB7378FD125B8C4700D20712 /* Connection.framework in Frameworks */,
 				BBCC108112EFA7160041EEB1 /* IOBluetooth.framework in Frameworks */,
 				BBB3DBF0132FCCFD002D6BD5 /* Sparkle.framework in Frameworks */,
 				BB823BEC13F45BB400778076 /* Quartz.framework in Frameworks */,
@@ -1012,6 +1001,7 @@
 		29B97314FDCFA39411CA2CEA /* Annotation */ = {
 			isa = PBXGroup;
 			children = (
+				BBA3D4611D7DB19B0028717D /* BGHUDAppKit.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -1122,8 +1112,6 @@
 				BB80A2CC1523C77800E821E4 /* Cocoa.framework */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 				BB92B6F7113637CA00C50DF2 /* AudioToolbox.framework */,
-				BBCC3CC71185F1FB00477D82 /* BGHUDAppKit.framework */,
-				BB7378FC125B8C4700D20712 /* Connection.framework */,
 				BBCC108012EFA7160041EEB1 /* IOBluetooth.framework */,
 			);
 			name = Frameworks;
@@ -1264,8 +1252,6 @@
 		BB3F72E7125A44AD00BF226C /* Feedback */ = {
 			isa = PBXGroup;
 			children = (
-				BB3F72E8125A450000BF226C /* FeedbackController.h */,
-				BB3F72E9125A450000BF226C /* FeedbackController.m */,
 			);
 			path = Feedback;
 			sourceTree = "<group>";
@@ -1575,8 +1561,6 @@
 				BB79494F1476CE0200D15CDD /* DPTimeUtilities.m */,
 				BB7B88F1100CFDE800A18DAF /* DateToRelativeTimeStringTransformer.h */,
 				BB7B88F2100CFDE800A18DAF /* DateToRelativeTimeStringTransformer.m */,
-				BB737940125B8D2500D20712 /* FileUploader.h */,
-				BB737941125B8D2500D20712 /* FileUploader.m */,
 				BBC57EEC0FF579A6001C8E9F /* MAAttachedWindow.h */,
 				BBC57EED0FF579A6001C8E9F /* MAAttachedWindow.m */,
 				BB78D13013551FD9003DCC4F /* NDSDKCompatibility.h */,
@@ -2040,8 +2024,6 @@
 				BB8DF65311F88E8A007E6030 /* PluginDataSet.m in Sources */,
 				BBBCE20E1220490F006ECE98 /* SpatialAnnotationOverlay.m in Sources */,
 				BBE8DBDD1254ECFC005C805A /* NSStringMD5.m in Sources */,
-				BB3F72EA125A450000BF226C /* FeedbackController.m in Sources */,
-				BB737942125B8D2500D20712 /* FileUploader.m in Sources */,
 				BB9DE79012B1517000EF1656 /* DPLogFileUploader.m in Sources */,
 				BBCAE90912D29D1A00EDC2D9 /* DPConstants.m in Sources */,
 				BB32273512D7CBDE00FB476C /* MultipleTimeSeriesVisualizer.m in Sources */,
@@ -2297,7 +2279,8 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../Sample Code/binarygod-BGHUDAppKit-0.6-0-g715e06e/build/Release\"",
 					"\"$(SRCROOT)/../ConnectionKit/build/Release\"",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -2306,6 +2289,7 @@
 				GCC_PREFIX_HEADER = "Other Sources/ChronoViz_Prefix.pch";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = ChronoViz;
 				VALID_ARCHS = i386;
@@ -2323,13 +2307,15 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/../Sample Code/binarygod-BGHUDAppKit-0.6-0-g715e06e/build/Release\"",
 					"\"$(SRCROOT)/../ConnectionKit/build/Release\"",
-					"\"$(SRCROOT)\"",
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Other Sources/ChronoViz_Prefix.pch";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = ChronoViz;
 				VALID_ARCHS = i386;
