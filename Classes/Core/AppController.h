@@ -103,6 +103,7 @@
 	IBOutlet NSMenu *analysisMenu;
 	IBOutlet NSMenu *viewMenu;
     IBOutlet NSMenu *savedStatesMenu;
+    IBOutlet NSMenuItem *cacheKeyframesMenuItem;
 	
 	QTMovie *mMovie;
 	NSString *movieFileName;
@@ -302,6 +303,7 @@
 - (IBAction)removeCurrentAnnotation:(id)sender;
 - (IBAction)showVideoProperties:(id)sender;
 - (IBAction)updateAllKeyframes:(id)sender;
+- (IBAction)toggleCacheKeyframes:(id)sender;
 - (void)loadAnnotations:(NSString*)filename;
 - (BOOL)deleteKeyframeFile:(Annotation*)annotation;
 - (void)updateAnnotationKeyframe:(Annotation*)annotation;

@@ -828,6 +828,8 @@ static AppController *currentApp = nil;
 	
     [self refreshSavedStatesMenu];
     
+    [cacheKeyframesMenuItem setState:(annotationDoc.cacheAnnotationImages ? NSOnState : NSOffState)];
+    
 	[mMovieWindow makeKeyAndOrderFront:self];
 	
 	if(saveInteractions)
@@ -2061,6 +2063,32 @@ static AppController *currentApp = nil;
 	
 }
 
+- (IBAction)toggleCacheKeyframes:(id)sender
+{
+    annotationDoc.cacheAnnotationImages = !annotationDoc.cacheAnnotationImages;
+    if([sender isKindOfClass:[NSMenuItem class]])
+    {
+        NSMenuItem *menuItem = (NSMenuItem*)sender;
+        [menuItem setState:(annotationDoc.cacheAnnotationImages ? NSOnState : NSOffState)];
+    }
+    if(!annotationDoc.cacheAnnotationImages)
+    {
+        
+        NSAlert *clearStatesAlert = [[NSAlert alloc] init];
+        [clearStatesAlert setMessageText:@"Do you want to delete the existing cached annotation images?"];
+        [clearStatesAlert addButtonWithTitle:@"Delete Images"];
+        [clearStatesAlert addButtonWithTitle:@"Keep Images"];
+        
+        NSInteger response = [clearStatesAlert runModal];
+        
+        if(response == NSAlertFirstButtonReturn)
+        {
+            [self updateAllKeyframes:nil];
+        }
+        
+    }
+}
+
 - (void)updateAnnotationKeyframe:(Annotation*)annotation
 {
 	if([annotation keyframeImage])
@@ -2103,6 +2131,7 @@ static AppController *currentApp = nil;
 			NSError *error;
 			return [[NSFileManager defaultManager] removeItemAtPath:imageFile error:&error];
 		}
+        [annotation setImage:nil];
 	}
 	return NO;
 }
