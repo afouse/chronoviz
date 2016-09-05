@@ -26,7 +26,8 @@
 #import "AnnotationSet.h"
 #import "VideoDataSource.h"
 #import "CompoundDataSource.h"
-#import "Sparkle.framework/Headers/SUUpdater.h"
+//#import "Sparkle.framework/Headers/SUUpdater.h"
+#import <Sparkle/SUUpdater.h>
 #import <CoreServices/CoreServices.h>
 
 NSString * const MediaChangedNotification = @"MediaChangedNotification";
@@ -60,6 +61,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 
 @synthesize modified;
 @synthesize activityLog;
+@synthesize cacheAnnotationImages;
 
 + (AnnotationDocument*)currentDocument
 {
@@ -273,6 +275,13 @@ int const DPCurrentDocumentFormatVersion = 1;
             [self release];
             return nil;
         }
+        
+        if([documentProperties valueForKey:AFCacheFrameImagesKey]) {
+            self.cacheAnnotationImages = [[documentProperties valueForKey:AFCacheFrameImagesKey] boolValue];
+        } else {
+            self.cacheAnnotationImages = YES;
+        }
+        
         
         savedLayouts = [[documentProperties valueForKey:@"DPSavedLayouts"] mutableCopy];
 		if(!savedLayouts)
@@ -1492,6 +1501,8 @@ int const DPCurrentDocumentFormatVersion = 1;
 	[documentProperties setObject:categoriesData forKey:@"DPCategories"];
 	
 	[documentProperties setObject:[[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleVersion"] forKey:@"DPChronoVizVersion"];
+    
+    [documentProperties setObject:[NSNumber numberWithBool:self.cacheAnnotationImages] forKey:AFCacheFrameImagesKey];
 	
     if(self.activityLog && [[NSUserDefaults standardUserDefaults] boolForKey:AFTrackActivityKey])
     {

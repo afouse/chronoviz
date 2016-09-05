@@ -2078,16 +2078,18 @@ static AppController *currentApp = nil;
 		
 		NSImage *image = [mMovie frameImageAtTime:[annotation startTime]];
 		[annotation setFrameRepresentation:image];
-		for(NSImageRep *imageRep in [image representations])
-		{
-			if([imageRep isKindOfClass:[NSBitmapImageRep class]])
-			{
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
-				NSData *imageData = [(NSBitmapImageRep*)imageRep representationUsingType:NSJPEGFileType properties:imageProps];
-				[imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
-			}
-		}
-		[annotation setImage:[NSURL URLWithString:[NSString stringWithFormat:@"images/%@",imageName]]];
+        if(annotationDoc.cacheAnnotationImages) {
+            for(NSImageRep *imageRep in [image representations])
+            {
+                if([imageRep isKindOfClass:[NSBitmapImageRep class]])
+                {
+                    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
+                    NSData *imageData = [(NSBitmapImageRep*)imageRep representationUsingType:NSJPEGFileType properties:imageProps];
+                    [imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
+                }
+            }
+            [annotation setImage:[NSURL URLWithString:[NSString stringWithFormat:@"images/%@",imageName]]];
+        }
 	}
 }
 
@@ -2112,9 +2114,11 @@ static AppController *currentApp = nil;
 	{
 		[self updateAnnotationKeyframe:annotation];
 	}
-	NSImage *image = [[NSImage alloc] initWithContentsOfFile:[[annotationDoc annotationsDirectory] stringByAppendingPathComponent:[[annotation image] relativeString]]];
-	[annotation setFrameRepresentation:image];
-	[image release];
+    if(annotationDoc.cacheAnnotationImages) {
+        NSImage *image = [[NSImage alloc] initWithContentsOfFile:[[annotationDoc annotationsDirectory] stringByAppendingPathComponent:[[annotation image] relativeString]]];
+        [annotation setFrameRepresentation:image];
+        [image release];
+    }
 }
 
 - (void)addAnnotation:(Annotation*)annotation

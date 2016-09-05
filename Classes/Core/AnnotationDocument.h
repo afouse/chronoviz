@@ -50,9 +50,12 @@ extern int const DPCurrentDocumentFormatVersion;
 	
 	BOOL modified;
 	BOOL loaded;
+
+    BOOL cacheAnnotationImages;
 }
 
 @property BOOL modified;
+@property BOOL cacheAnnotationImages;
 @property(retain) DPActivityLog* activityLog;
 
 + (AnnotationDocument*)currentDocument;
