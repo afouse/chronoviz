@@ -13,7 +13,6 @@
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
 		BB0159470EACE4BC00B41B99 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159450EACE4BC00B41B99 /* play.png */; };
 		BB0159480EACE4BC00B41B99 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159460EACE4BC00B41B99 /* pause.png */; };
-		BB0159670EACEA3E00B41B99 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB0159660EACEA3E00B41B99 /* QTKit.framework */; };
 		BB018C6C1157DC4B00811843 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB018C6A1157DC4B00811843 /* MainMenu.xib */; };
 		BB01911A138C5D9F003FEDCE /* DPApplicationSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = BB019119138C5D9F003FEDCE /* DPApplicationSupport.m */; };
 		BB048DEE10A88F93006AB5CF /* black.gif in Resources */ = {isa = PBXBuildFile; fileRef = BB048DED10A88F93006AB5CF /* black.gif */; };
@@ -111,7 +110,7 @@
 		BB5043151445216500C4B169 /* DPSpatialDataImageBase.m in Sources */ = {isa = PBXBuildFile; fileRef = BB5043141445216500C4B169 /* DPSpatialDataImageBase.m */; };
 		BB51270F1304C111003F6E24 /* DPExportCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = BB51270E1304C111003F6E24 /* DPExportCategories.m */; };
 		BB516BA91051BC42002F45F4 /* annotationfileicon1.icns in Resources */ = {isa = PBXBuildFile; fileRef = BB516BA81051BC42002F45F4 /* annotationfileicon1.icns */; };
-		BB51C6721B9D19F4003E4A56 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = BB51C6711B9D19F4003E4A56 /* README.md */; };
+		BB51C6721B9D19F4003E4A56 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BB51C6711B9D19F4003E4A56 /* README.md */; };
 		BB560009115BE9CF00D6B2E8 /* OverviewTimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB560008115BE9CF00D6B2E8 /* OverviewTimelineView.m */; };
 		BB594C6610B3860A005FDA38 /* ColorTaggedTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB594C6510B3860A005FDA38 /* ColorTaggedTextCell.m */; };
 		BB5D3DA110CD81A400D82E5D /* AnnotationFilters.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB5D3DA010CD81A400D82E5D /* AnnotationFilters.xib */; };
@@ -129,7 +128,6 @@
 		BB6A69EF13317DF6001D2076 /* EthnographerNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6A69EE13317DF6001D2076 /* EthnographerNotesView.m */; };
 		BB6BA75A1058092500324E0E /* AnnotationDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6BA7591058092500324E0E /* AnnotationDocument.m */; };
 		BB6E5A54148D7E60008AC067 /* DPExportTimeSeries.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E5A53148D7E60008AC067 /* DPExportTimeSeries.m */; };
-		BB6E5A59148EB7F3008AC067 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = BB6E5A58148EB7F3008AC067 /* libsqlite3.dylib */; };
 		BB6E5A5B149005D7008AC067 /* EthnographerInstallerWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB6E5A5A149005D6008AC067 /* EthnographerInstallerWindow.xib */; };
 		BB6E5A6214901C71008AC067 /* EthnographerInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6E5A6114901C70008AC067 /* EthnographerInstaller.m */; };
 		BB7071D1158A4D6A00F798E2 /* EthnographerTrajectoryData.m in Sources */ = {isa = PBXBuildFile; fileRef = BB7071D0158A4D6A00F798E2 /* EthnographerTrajectoryData.m */; };
@@ -258,6 +256,8 @@
 		BBA378F912B7DCBC0038A551 /* Annotation.h in Headers */ = {isa = PBXBuildFile; fileRef = BB3E88B20FF04A8C00B4AB4F /* Annotation.h */; };
 		BBA640731187ADD000580E89 /* PrioritySplitViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA640721187ADD000580E89 /* PrioritySplitViewDelegate.m */; };
 		BBA6892F15E4385E0007E528 /* DPExportTranscript.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA6892E15E4385E0007E528 /* DPExportTranscript.m */; };
+		BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA73E681F5CDADB0086098F /* libsqlite3.tbd */; };
+		BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */; };
 		BBAFE55610B61383003E4EE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */; };
 		BBB3DC0F132FCF0B002D6BD5 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = BBB3DC0E132FCF0B002D6BD5 /* dsa_pub.pem */; };
 		BBB7777D0FFA7FBA00319D2E /* AnnotationHover.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7777C0FFA7FBA00319D2E /* AnnotationHover.m */; };
@@ -394,7 +394,6 @@
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		BB0159460EACE4BC00B41B99 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
-		BB0159660EACEA3E00B41B99 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
 		BB018C6B1157DC4B00811843 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		BB019118138C5D9F003FEDCE /* DPApplicationSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPApplicationSupport.h; sourceTree = "<group>"; };
 		BB019119138C5D9F003FEDCE /* DPApplicationSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPApplicationSupport.m; sourceTree = "<group>"; };
@@ -531,7 +530,6 @@
 		BB43E3830F29421E00083EC6 /* TimelineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineView.h; sourceTree = "<group>"; };
 		BB43E3840F29421E00083EC6 /* TimelineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimelineView.m; sourceTree = "<group>"; };
 		BB440C500F3CA1CE0058483C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = /System/Library/Frameworks/QuartzCore.framework; sourceTree = "<absolute>"; };
-		BB4620BC10D167B700FCF5BD /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = System/Library/Frameworks/QuickTime.framework; sourceTree = SDKROOT; };
 		BB4865B712E52C5200BC2BB8 /* AddTimeline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AddTimeline.png; sourceTree = "<group>"; };
 		BB49DD1411CABAEA00F9C601 /* DPViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPViewManager.h; sourceTree = "<group>"; };
 		BB49DD1511CABAEA00F9C601 /* DPViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPViewManager.m; sourceTree = "<group>"; };
@@ -589,7 +587,6 @@
 		BB6BA7591058092500324E0E /* AnnotationDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationDocument.m; sourceTree = "<group>"; };
 		BB6E5A52148D7E60008AC067 /* DPExportTimeSeries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPExportTimeSeries.h; sourceTree = "<group>"; };
 		BB6E5A53148D7E60008AC067 /* DPExportTimeSeries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPExportTimeSeries.m; sourceTree = "<group>"; };
-		BB6E5A58148EB7F3008AC067 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		BB6E5A5A149005D6008AC067 /* EthnographerInstallerWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EthnographerInstallerWindow.xib; sourceTree = "<group>"; };
 		BB6E5A6014901C70008AC067 /* EthnographerInstaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EthnographerInstaller.h; sourceTree = "<group>"; };
 		BB6E5A6114901C70008AC067 /* EthnographerInstaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EthnographerInstaller.m; sourceTree = "<group>"; };
@@ -730,6 +727,8 @@
 		BBA640721187ADD000580E89 /* PrioritySplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrioritySplitViewDelegate.m; sourceTree = "<group>"; };
 		BBA6892D15E4385E0007E528 /* DPExportTranscript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPExportTranscript.h; sourceTree = "<group>"; };
 		BBA6892E15E4385E0007E528 /* DPExportTranscript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPExportTranscript.m; sourceTree = "<group>"; };
+		BBA73E681F5CDADB0086098F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		BBB3DC0E132FCF0B002D6BD5 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		BBB7777B0FFA7FBA00319D2E /* AnnotationHover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationHover.h; sourceTree = "<group>"; };
@@ -904,12 +903,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */,
+				BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */,
 				BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */,
 				BB1A4ECE14992C5800F2998E /* Accelerate.framework in Frameworks */,
-				BB6E5A59148EB7F3008AC067 /* libsqlite3.dylib in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				BB12E9851BC0779D001C4365 /* BGHUDAppKit.framework in Frameworks */,
-				BB0159670EACEA3E00B41B99 /* QTKit.framework in Frameworks */,
 				BB440C510F3CA1CE0058483C /* QuartzCore.framework in Frameworks */,
 				BB7E7AEC1045CD94002D4874 /* WebKit.framework in Frameworks */,
 				BB12E9811BC06B30001C4365 /* Sparkle.framework in Frameworks */,
@@ -1088,18 +1087,17 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */,
+				BBA73E681F5CDADB0086098F /* libsqlite3.tbd */,
 				BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */,
 				BB12E9801BC06B30001C4365 /* Sparkle.framework */,
 				BB12E97E1BC062F4001C4365 /* AVFoundation.framework */,
 				BB823BEB13F45BB400778076 /* Quartz.framework */,
 				BB1A4ECD14992C5700F2998E /* Accelerate.framework */,
-				BB6E5A58148EB7F3008AC067 /* libsqlite3.dylib */,
 				BB7E7AEB1045CD94002D4874 /* WebKit.framework */,
 				BB440C500F3CA1CE0058483C /* QuartzCore.framework */,
 				BBD57246106AAF31007568DA /* Python.framework */,
-				BB0159660EACEA3E00B41B99 /* QTKit.framework */,
 				BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */,
-				BB4620BC10D167B700FCF5BD /* QuickTime.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				BB80A2CC1523C77800E821E4 /* Cocoa.framework */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
@@ -1774,6 +1772,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB51C6721B9D19F4003E4A56 /* README.md in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				BB0159470EACE4BC00B41B99 /* play.png in Resources */,
 				BB0159480EACE4BC00B41B99 /* pause.png in Resources */,
@@ -1913,7 +1912,6 @@
 				BB2F232A1029F9BC0005DBBD /* FilmstripVisualizer.m in Sources */,
 				BB3D1EBF1035D85200DB8628 /* AnnotationCategory.m in Sources */,
 				BBC738BA103B1DD6003006C6 /* AnnotationVisualizer.m in Sources */,
-				BB51C6721B9D19F4003E4A56 /* README.md in Sources */,
 				BBF7FF14103CA8E40094BEA2 /* AnnotationFilmstripVisualizer.m in Sources */,
 				BB9A1F111043497F0069E6EB /* TimeSeriesData.m in Sources */,
 				BB9A1F1410434C800069E6EB /* TimeSeriesVisualizer.m in Sources */,
@@ -2270,7 +2268,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = ChronoViz;
 				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
@@ -2296,7 +2294,7 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_NAME = ChronoViz;
 				VALID_ARCHS = x86_64;
 				WRAPPER_EXTENSION = app;
