@@ -58,6 +58,7 @@ NSString * const AFUseQuickTimeXKey = @"UseQuickTimeX";
 NSString * const AFUseStaticMapKey = @"UseStaticMap";
 NSString * const AFEnableChronoVizRemoteKey = @"EnableChronoVizRemote";
 NSString * const AFTrackActivityKey = @"TrackActivity";
+NSString * const AFTimebaseKey = @"Timebase";
 
 NSInteger const AFCategoryShortcutInsert = 0;
 NSInteger const AFCategoryShortcutEditor = 1;

@@ -14,20 +14,20 @@
 @synthesize autoCreated;
 @synthesize highlighted;
 
--(id)initFromApp:(id)theApp atTime:(QTTime)time
+-(id)initFromApp:(id)theApp atTime:(CMTime)time
 {
 	self = [super init];
 	if (self != nil)
 	{
-		if(time.timeValue < 0)
-			time.timeValue = 0;
+		if(time.value < 0)
+			time.value = 0;
 		mTime = time;
 		self.autoCreated = NO;
 	}
 	return self;
 }
 
--(id)initAtTime:(QTTime)time
+-(id)initAtTime:(CMTime)time
 {
 	return [self initFromApp:nil atTime:time];
 }
@@ -38,7 +38,7 @@
 }
 
 
--(QTTime)time
+-(CMTime)time
 {
 	return mTime;
 }

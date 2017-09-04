@@ -47,9 +47,9 @@ static NSUInteger defaultTimeFormat = (DPTimeCodeAutomaticMask | DPTimeCodeDecis
 		
 		NSDateComponents *timeComponents = [gregorian components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:theDate];
 		
-		NSInteger hours = [timeComponents hour];
-		NSInteger minutes = [timeComponents minute];
-		NSInteger seconds = [timeComponents second];
+		int hours = (int)[timeComponents hour];
+		int minutes = (int)[timeComponents minute];
+		int seconds = (int)[timeComponents second];
 		
 		NSString *timeOfDay = nil;
 		if(hours > 11)
@@ -136,24 +136,21 @@ static NSUInteger defaultTimeFormat = (DPTimeCodeAutomaticMask | DPTimeCodeDecis
 
 #pragma mark QTTime to String
 
-+ (NSString*)stringWithQTTime:(QTTime)time
++ (NSString*)stringWithCMTime:(CMTime)time
 {
-	NSTimeInterval interval;
-	QTGetTimeInterval(time, &interval);
+    NSTimeInterval interval = CMTimeGetSeconds(time);
 	return [NSString stringWithTimeInterval:interval];
 }
 
-+ (NSString*)stringWithQTTime:(QTTime)time sinceDate:(NSDate*)date
++ (NSString*)stringWithCMTime:(CMTime)time sinceDate:(NSDate*)date
 {
-	NSTimeInterval interval;
-	QTGetTimeInterval(time, &interval);
+	NSTimeInterval interval = CMTimeGetSeconds(time);
 	return [NSString stringWithTimeInterval:interval sinceDate:date];
 }
 
-+ (NSString*)stringWithQTTime:(QTTime)time sinceDate:(NSDate*)date withOptions:(NSUInteger)optionsMask
++ (NSString*)stringWithCMTime:(CMTime)time sinceDate:(NSDate*)date withOptions:(NSUInteger)optionsMask
 {
-	NSTimeInterval interval;
-	QTGetTimeInterval(time, &interval);
+	NSTimeInterval interval = CMTimeGetSeconds(time);
 	return [NSString stringWithTimeInterval:interval sinceDate:date withOptions:optionsMask];
 }
 
@@ -169,7 +166,7 @@ static NSUInteger defaultTimeFormat = (DPTimeCodeAutomaticMask | DPTimeCodeDecis
             absString = [absString substringFromIndex:1];
         }
         NSArray *components = [absString componentsSeparatedByString:@":"];
-        int count = [components count];
+        NSUInteger count = [components count];
         if(count == 3)
         {
             return (([[components objectAtIndex:0] floatValue] * 3600.0) +

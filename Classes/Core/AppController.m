@@ -167,6 +167,7 @@ static AppController *currentApp = nil;
         [defaultValues setObject:[NSNumber numberWithBool:NO] forKey:@"EthnographerKeepTempAnnotationFiles"];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFUseStaticMapKey];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFTrackActivityKey];
+        [defaultValues setObject:[NSNumber numberWithInteger:600] forKey:AFTimebaseKey];
 		
 		[defaultValues setObject:@"" forKey:AFUserIDKey];
 		[defaultValues setObject:@"" forKey:AFUserNameKey];

@@ -41,32 +41,23 @@ static NSDictionary* colorMap = nil;
 
 -(id)initWithTimeInterval:(NSTimeInterval)interval
 {
-	return [self initWithQTTime:QTMakeTimeWithTimeInterval(interval) andTitle:@"" andAnnotation:@""];
+    int32_t timebase = [(AnnotationDocument*)document defaultTimebase];
+	return [self initWithCMTime:CMTimeMakeWithSeconds(interval,timebase) andTitle:@"" andAnnotation:@""];
 }
 
 -(id)initWithStart:(NSDate *)time sinceDate:(NSDate*)referenceDate
 {
-	QTTime qttime = QTMakeTimeWithTimeInterval([time timeIntervalSinceDate:referenceDate]);
-	return [self initWithQTTime:qttime andTitle:@"" andAnnotation:@""];
+    int32_t timebase = [(AnnotationDocument*)document defaultTimebase];
+	CMTime cmtime = CMTimeMakeWithSeconds([time timeIntervalSinceDate:referenceDate],timebase);
+	return [self initWithCMTime:cmtime andTitle:@"" andAnnotation:@""];
 }
 
--(id)initWithQTTime:(QTTime)time
+-(id)initWithCMTime:(CMTime)time
 {
-	return [self initWithQTTime:time andTitle:@"" andAnnotation:@""];
+	return [self initWithCMTime:time andTitle:@"" andAnnotation:@""];
 }
 
-//-(id)initWithQTTime:(QTTime)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation;
-//{
-//	double timepoint = ((double)time.timeValue)/((double)time.timeScale);
-//	NSDate *theStart = [[[NSDate alloc] initWithTimeInterval:timepoint sinceDate:defaultReferenceDate] autorelease];
-//	
-//	Annotation* ann = [self initWithStart:theStart andTitle:theTitle andAnnotation:theAnnotation];
-//	//[ann setStartTime:time];
-//	
-//	return ann;
-//}
-
--(id)initWithQTTime:(QTTime)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation
+-(id)initWithCMTime:(CMTime)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation
 {
 	self = [super initAtTime:time];
 	if (self != nil) {
@@ -115,27 +106,26 @@ static NSDictionary* colorMap = nil;
 
 #pragma mark Times
 
--(QTTime)time
+-(CMTime)time
 {
 	return startTime;
 }
 
--(QTTimeRange)range
+-(CMTimeRange)range
 {
 	if(isDuration)
 	{
-		//return QTMakeTimeRange(startTime,QTTimeDecrement(endTime, startTime));
-		return QTMakeTimeRange(startTime, QTMakeTime(endTime.timeValue - startTime.timeValue, startTime.timeScale));	
+        return CMTimeRangeFromTimeToTime(startTime, endTime);
 	}
 	else
 	{
-		return QTMakeTimeRange(startTime, QTMakeTime(0,startTime.timeScale));
+		return CMTimeRangeMake(startTime, CMTimeMake(0,startTime.timescale));
 	}
 }
 
--(void)setStartTime:(QTTime)qttime
+-(void)setStartTime:(CMTime)cmtime
 {
-	if(QTTimeCompare(startTime,qttime) != NSOrderedSame)
+	if(CMTimeCompare(startTime,cmtime) != NSOrderedSame)
 	{
 		[self willChangeValueForKey:@"startTime"];
         [self willChangeValueForKey:@"startTimeString"];
@@ -145,20 +135,10 @@ static NSDictionary* colorMap = nil;
 		[[undoManager prepareWithInvocationTarget:self] setStartTime:startTime];
 		[undoManager setActionName:@"Change Annotation Position"];
 		
-		DataPrismLog* log = [[AppController currentApp] interactionLog];
-		[log addEditOfAnnotation:self forAttribute:@"StartTime" withTime:qttime];
-		
-		startTime = qttime;
-		
-		//startTime = QTMakeTimeScaled(qttime, startTime.timeScale);
-		//double timepoint = ((double)qttime.timeValue)/((double)qttime.timeScale);
-		//[start release];
-		//start = [[NSDate alloc] initWithTimeInterval:timepoint sinceDate:[self referenceDate]];
+		startTime = cmtime;
 		
 		if(![self isDuration])
 		{
-			//[end release];
-			//end = [start retain];
 			endTime = startTime;
 		}
 		
@@ -170,9 +150,9 @@ static NSDictionary* colorMap = nil;
 	}
 }
 
--(void)setEndTime:(QTTime)qttime
+-(void)setEndTime:(CMTime)cmtime
 {
-	if(QTTimeCompare(endTime,qttime) != NSOrderedSame)
+	if(CMTimeCompare(endTime,cmtime) != NSOrderedSame)
 	{
 		[self willChangeValueForKey:@"endTime"];
         [self willChangeValueForKey:@"endTimeString"];
@@ -182,13 +162,7 @@ static NSDictionary* colorMap = nil;
 		[[undoManager prepareWithInvocationTarget:self] setEndTime:endTime];
 		[undoManager setActionName:@"Change Annotation Position"];
 		
-		DataPrismLog* log = [[AppController currentApp] interactionLog];
-		[log addEditOfAnnotation:self forAttribute:@"EndTime" withTime:qttime];
-		
-		endTime = QTMakeTimeScaled(qttime,startTime.timeScale);
-		//double timepoint = ((double)qttime.timeValue)/((double)qttime.timeScale);
-		//[end release];
-		//end = [[NSDate alloc] initWithTimeInterval:timepoint sinceDate:[self referenceDate]];
+		endTime = CMTimeConvertScale(cmtime, startTime.timescale, kCMTimeRoundingMethod_QuickTime);
 		
 		[self didChangeValueForKey:@"end"];
         [self didChangeValueForKey:@"endTimeString"];
@@ -198,13 +172,13 @@ static NSDictionary* colorMap = nil;
 	}		
 }
 
--(QTTime)startTime
+-(CMTime)startTime
 {
 	return startTime;
 }
 
 
--(QTTime)endTime
+-(CMTime)endTime
 {
 	return endTime;
 }
@@ -212,37 +186,33 @@ static NSDictionary* colorMap = nil;
 -(void)setStartTimeString:(NSString *)startTimeString
 {
     NSTimeInterval seconds = [startTimeString timeInterval];
-    [self setStartTime:QTMakeTimeWithTimeInterval(seconds)];
+    [self setStartTime:CMTimeMakeWithSeconds(seconds, startTime.timescale)];
 }
 
 -(void)setEndTimeString:(NSString *)endTimeString
 {
     NSTimeInterval seconds = [endTimeString timeInterval];
-    [self setEndTime:QTMakeTimeWithTimeInterval(seconds)];
+    [self setEndTime:CMTimeMakeWithSeconds(seconds, startTime.timescale)];
 }
 
 - (NSString*)startTimeString
 {
-    return [NSString stringWithQTTime:[self startTime]];
+    return [NSString stringWithCMTime:[self startTime]];
 }
 
 - (NSString*)endTimeString
 {
-    return [NSString stringWithQTTime:[self endTime]];
+    return [NSString stringWithCMTime:[self endTime]];
 }
 
 - (NSTimeInterval)startTimeSeconds
 {
-	NSTimeInterval startTimeInterval;
-	QTGetTimeInterval([self startTime], &startTimeInterval);
-	return startTimeInterval;
+	return CMTimeGetSeconds([self startTime]);
 }
 
 - (NSTimeInterval)endTimeSeconds
 {
-	NSTimeInterval endTimeInterval;
-	QTGetTimeInterval([self endTime], &endTimeInterval);
-	return endTimeInterval;
+    return CMTimeGetSeconds([self endTime]);
 }
 
 
@@ -480,44 +450,6 @@ static NSDictionary* colorMap = nil;
 	}
 }
 
-//+ (void)setDefaultReferenceDate:(NSDate *)date
-//{
-//	[date retain];
-//	[defaultReferenceDate release];
-//	defaultReferenceDate = date;
-//}
-
-//+ (NSString*)secondsToString:(double)totalSeconds
-//{
-//	int minutes = totalSeconds/60;
-//	int seconds = totalSeconds - minutes*60;
-//	int deciseconds = (totalSeconds - (minutes*60 + seconds)) * 10;
-//	
-//	return [NSString stringWithFormat:@"%02i:%02i.%i",minutes,seconds,deciseconds];
-//}
-//
-//+ (NSString*)timeToString:(QTTime)time
-//{
-//	float totalSeconds = (float)time.timeValue/(float)time.timeScale;
-//	int minutes = totalSeconds/60;
-//	int seconds = totalSeconds - minutes*60;
-//	int deciseconds = roundf((totalSeconds - (minutes*60 + seconds)) * 10);
-//	
-//	if(deciseconds == 10)
-//	{
-//		seconds++;
-//		deciseconds = 0;
-//	}
-//	
-//	if(minutes > 90)
-//	{
-//		int hours = minutes/60;
-//		minutes = minutes - (hours*60);
-//		return [NSString stringWithFormat:@"%02i:%02i:%02i.%i",hours,minutes,seconds,deciseconds];
-//	}
-//	
-//	return [NSString stringWithFormat:@"%02i:%02i.%i",minutes,seconds,deciseconds];
-//}
 
 + (NSColor*)colorForString:(NSString*)colorName
 {

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <CoreMedia/CoreMedia.h>
 #import "SegmentBoundary.h"
 @class AnnotationCategory;
 
@@ -34,8 +34,8 @@ extern NSString * const AnnotationSelectedNotification;
 	
 	NSString *annotation;
 	
-	QTTime startTime;
-	QTTime endTime;
+    CMTime startTime;
+	CMTime endTime;
 	
 	BOOL isCategory;
 	BOOL keyframeImage;
@@ -54,8 +54,8 @@ extern NSString * const AnnotationSelectedNotification;
 @property BOOL selected;
 @property BOOL isDuration;
 @property BOOL isCategory;
-@property QTTime startTime;
-@property QTTime endTime;
+@property CMTime startTime;
+@property CMTime endTime;
 @property(assign) id document;
 @property(assign) NSXMLElement *xmlRepresentation;
 @property(retain) NSImage *frameRepresentation;
@@ -77,8 +77,8 @@ extern NSString * const AnnotationSelectedNotification;
 
 -(id)initWithTimeInterval:(NSTimeInterval)interval;
 -(id)initWithStart:(NSDate *)time sinceDate:(NSDate*)referenceDate;
--(id)initWithQTTime:(QTTime)time;
--(id)initWithQTTime:(QTTime)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation;
+-(id)initWithCMTime:(CMTime)time;
+-(id)initWithCMTime:(CMTime)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation;
 //-(id)initWithStart:(NSDate *)time andTitle:(NSString *)theTitle andAnnotation:(NSString *)theAnnotation;
 
 -(void)setUpdated;
@@ -93,7 +93,7 @@ extern NSString * const AnnotationSelectedNotification;
 -(NSArray*)keywords;
 -(void)setKeywords:(NSArray*)theKeywords;
 
--(QTTimeRange)range;
+-(CMTimeRange)range;
 
 - (NSTimeInterval)startTimeSeconds;
 - (NSTimeInterval)endTimeSeconds;
