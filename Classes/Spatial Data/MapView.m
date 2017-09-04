@@ -17,6 +17,7 @@
 #import "NSArrayAFBinarySearch.h"
 #import "AnnotationFilter.h"
 #import "AnnotationFiltersController.h"
+#import "DPConstants.h"
 #import <QTKit/QTKit.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
@@ -118,6 +119,9 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
     }
     
 
+    updateDelay = [[NSUserDefaults standardUserDefaults] floatForKey:AFMapDelayKey];
+    NSLog(@"Map Delay: %f",updateDelay);
+    
     
 	mapView = [[WebView alloc] initWithFrame:NSMakeRect(0,0,[self frame].size.width,[self frame].size.height) frameName:nil groupName:nil];
 	[mapView setFrameLoadDelegate:self];
@@ -367,7 +371,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 		
 		if (loadTimer == nil) {
 			NSLog(@"Start map timer");
-			loadTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
+			loadTimer = [NSTimer scheduledTimerWithTimeInterval:updateDelay
 														 target:self
 													   selector:@selector(updateDisplay:)
 													   userInfo:nil
@@ -746,7 +750,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	[mapLayer setAffineTransform:CGAffineTransformMakeScale(2.0, 2.0)];
 	[CATransaction commit];
 	if (loadTimer == nil) {
-		loadTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
+		loadTimer = [NSTimer scheduledTimerWithTimeInterval:updateDelay
 													 target:self
 												   selector:@selector(updateDisplay:)
 												   userInfo:nil
@@ -766,7 +770,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	[mapLayer setAffineTransform:CGAffineTransformMakeScale(0.5, 0.5)];
 	[CATransaction commit];
 	if (loadTimer == nil) {
-		loadTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
+		loadTimer = [NSTimer scheduledTimerWithTimeInterval:updateDelay
 													 target:self
 												   selector:@selector(updateDisplay:)
 												   userInfo:nil
@@ -880,7 +884,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	[map evaluateWebScript:zoomString];
 	updateDate = [[NSDate date] retain];
 	if (loadTimer == nil) {
-		loadTimer = [NSTimer scheduledTimerWithTimeInterval:0.1
+		loadTimer = [NSTimer scheduledTimerWithTimeInterval:updateDelay
 													 target:self
 												   selector:@selector(updateDisplay:)
 												   userInfo:nil

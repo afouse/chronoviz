@@ -67,6 +67,8 @@ extern NSString * const AFMapTypeTerrain;
 	BOOL showPath;
 	
 	BOOL staticMap;
+    
+    CGFloat updateDelay;
 }
 
 @property BOOL dragTool;

@@ -108,7 +108,7 @@
 		BB5043151445216500C4B169 /* DPSpatialDataImageBase.m in Sources */ = {isa = PBXBuildFile; fileRef = BB5043141445216500C4B169 /* DPSpatialDataImageBase.m */; };
 		BB51270F1304C111003F6E24 /* DPExportCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = BB51270E1304C111003F6E24 /* DPExportCategories.m */; };
 		BB516BA91051BC42002F45F4 /* annotationfileicon1.icns in Resources */ = {isa = PBXBuildFile; fileRef = BB516BA81051BC42002F45F4 /* annotationfileicon1.icns */; };
-		BB51C6721B9D19F4003E4A56 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = BB51C6711B9D19F4003E4A56 /* README.md */; };
+		BB51C6721B9D19F4003E4A56 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BB51C6711B9D19F4003E4A56 /* README.md */; };
 		BB560009115BE9CF00D6B2E8 /* OverviewTimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB560008115BE9CF00D6B2E8 /* OverviewTimelineView.m */; };
 		BB594C6610B3860A005FDA38 /* ColorTaggedTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BB594C6510B3860A005FDA38 /* ColorTaggedTextCell.m */; };
 		BB5D3DA110CD81A400D82E5D /* AnnotationFilters.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB5D3DA010CD81A400D82E5D /* AnnotationFilters.xib */; };
@@ -1795,6 +1795,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB51C6721B9D19F4003E4A56 /* README.md in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				BB0159470EACE4BC00B41B99 /* play.png in Resources */,
 				BB0159480EACE4BC00B41B99 /* pause.png in Resources */,
@@ -1934,7 +1935,6 @@
 				BB2F232A1029F9BC0005DBBD /* FilmstripVisualizer.m in Sources */,
 				BB3D1EBF1035D85200DB8628 /* AnnotationCategory.m in Sources */,
 				BBC738BA103B1DD6003006C6 /* AnnotationVisualizer.m in Sources */,
-				BB51C6721B9D19F4003E4A56 /* README.md in Sources */,
 				BBF7FF14103CA8E40094BEA2 /* AnnotationFilmstripVisualizer.m in Sources */,
 				BB9A1F111043497F0069E6EB /* TimeSeriesData.m in Sources */,
 				BB9A1F1410434C800069E6EB /* TimeSeriesVisualizer.m in Sources */,

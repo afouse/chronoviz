@@ -66,6 +66,7 @@ extern NSString * const AFUseStaticMapKey;
 extern NSString * const AFEnableChronoVizRemoteKey;
 extern NSString * const AFTrackActivityKey;
 extern NSString * const AFCacheFrameImagesKey;
+extern NSString * const AFMapDelayKey;
 
 extern NSInteger const AFCategoryShortcutInsert;
 extern NSInteger const AFCategoryShortcutEditor;
