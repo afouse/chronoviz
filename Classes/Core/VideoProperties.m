@@ -16,7 +16,6 @@
 #import "AudioExtractor.h"
 #import "NSStringUUID.h"
 #import <Accelerate/Accelerate.h>
-#import <QTKit/QTKit.h>
 
 NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboardType";
 
@@ -98,7 +97,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 		[self setLocalVideo:NO];
 		//[self setCategoryColors:[NSMutableDictionary dictionary]];
 		[self setCategories:[NSArray array]];
-		offset = QTZeroTime;
+		offset = kCMTimeZero;
 		
 	}
 	return self;
@@ -106,12 +105,12 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 
 - (BOOL)hasVideo
 {
-	return [[movie attributeForKey:QTMovieHasVideoAttribute] boolValue];
+    return ([[movie tracksWithMediaType:AVMediaTypeVideo] count] != 0);
 }
 
 - (BOOL)hasAudio
 {
-	return [[movie attributeForKey:QTMovieHasAudioAttribute] boolValue];
+	return ([[movie tracksWithMediaType:AVMediaTypeAudio] count] != 0);
 }
 
 #pragma mark Movie Loading

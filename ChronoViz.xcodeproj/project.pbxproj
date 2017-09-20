@@ -258,6 +258,8 @@
 		BBA6892F15E4385E0007E528 /* DPExportTranscript.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA6892E15E4385E0007E528 /* DPExportTranscript.m */; };
 		BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA73E681F5CDADB0086098F /* libsqlite3.tbd */; };
 		BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */; };
+		BBA73E7A1F637DFB0086098F /* AFAVAssetCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA73E791F637DFB0086098F /* AFAVAssetCreator.m */; };
+		BBA73E7C1F6383840086098F /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBA73E7B1F6383840086098F /* QTKit.framework */; };
 		BBAFE55610B61383003E4EE7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */; };
 		BBB3DC0F132FCF0B002D6BD5 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = BBB3DC0E132FCF0B002D6BD5 /* dsa_pub.pem */; };
 		BBB7777D0FFA7FBA00319D2E /* AnnotationHover.m in Sources */ = {isa = PBXBuildFile; fileRef = BBB7777C0FFA7FBA00319D2E /* AnnotationHover.m */; };
@@ -729,6 +731,9 @@
 		BBA6892E15E4385E0007E528 /* DPExportTranscript.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPExportTranscript.m; sourceTree = "<group>"; };
 		BBA73E681F5CDADB0086098F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		BBA73E781F637DFB0086098F /* AFAVAssetCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFAVAssetCreator.h; sourceTree = "<group>"; };
+		BBA73E791F637DFB0086098F /* AFAVAssetCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFAVAssetCreator.m; sourceTree = "<group>"; };
+		BBA73E7B1F6383840086098F /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
 		BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
 		BBB3DC0E132FCF0B002D6BD5 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		BBB7777B0FFA7FBA00319D2E /* AnnotationHover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationHover.h; sourceTree = "<group>"; };
@@ -903,6 +908,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBA73E7C1F6383840086098F /* QTKit.framework in Frameworks */,
 				BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */,
 				BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */,
 				BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */,
@@ -1087,6 +1093,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BBA73E7B1F6383840086098F /* QTKit.framework */,
 				BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */,
 				BBA73E681F5CDADB0086098F /* libsqlite3.tbd */,
 				BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */,
@@ -1500,6 +1507,8 @@
 				BBEAA97810F25682009B421B /* AFAlignmentSlider.m */,
 				BBEAA97A10F2569A009B421B /* AFAlignmentSliderCell.h */,
 				BBEAA97B10F2569A009B421B /* AFAlignmentSliderCell.m */,
+				BBA73E781F637DFB0086098F /* AFAVAssetCreator.h */,
+				BBA73E791F637DFB0086098F /* AFAVAssetCreator.m */,
 				BBE9ACF9162098C300E81861 /* AFDeletionTableView.h */,
 				BBE9ACFA162098C300E81861 /* AFDeletionTableView.m */,
 				BB4C1D8D13FD6949004BEEFC /* AFGradientView.h */,
@@ -1993,6 +2002,7 @@
 				BB342D7411CFD05A00893573 /* DPBluetoothPen.m in Sources */,
 				BB342EDF11D277E500893573 /* DPConsoleWindowController.m in Sources */,
 				BB342EE511D278F000893573 /* DPConsole.m in Sources */,
+				BBA73E7A1F637DFB0086098F /* AFAVAssetCreator.m in Sources */,
 				BB342F5F11D2D04200893573 /* NSStringTimeCodes.m in Sources */,
 				BBD30A8411E687BC00CA996C /* DataPrismLog.m in Sources */,
 				BB8DF65311F88E8A007E6030 /* PluginDataSet.m in Sources */,

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class AnnotationCategory;
 
 extern NSString * const DPVideoPropertiesPasteboardType;
@@ -28,7 +28,7 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 	NSString *title;
 	NSString *description;
 	NSDate *startDate;
-	QTTime offset;
+	CMTime offset;
 	NSTimeInterval startTime;
     
 	NSArray *categories;
@@ -41,11 +41,11 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 @property(retain) NSString *title;
 @property(retain) NSString *description;
 @property(retain) NSDate *startDate;
-@property(retain) QTMovie *movie;
+@property(retain) AVAsset *movie;
 @property BOOL enabled;
 @property BOOL muted;
 @property BOOL localVideo;
-@property QTTime offset;
+@property CMTime offset;
 @property NSTimeInterval startTime;
 
 - (id)initWithVideoFile:(NSString*)videoFile;
