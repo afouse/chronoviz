@@ -17,12 +17,11 @@ extern NSString * const DPVideoPropertiesPasteboardType;
     NSString *uuid;
     
 	NSString *videoFile;
-	QTMovie* movie;
+	AVAsset* movie;
 	BOOL loaded;
 	NSArray* audioSubset;
 	
 	BOOL enabled;
-	BOOL muted;
 	BOOL localVideo;
 	
 	NSString *title;
@@ -52,7 +51,7 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 - (id)initFromFile:(NSString*)file;
 - (void)saveToFile:(NSString*)file;
 
-- (QTMovie*)loadMovie;
+- (AVAsset*)loadMovie;
 - (BOOL)hasVideo;
 - (BOOL)hasAudio;
 
@@ -60,7 +59,5 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 
 - (NSArray*)categories;
 - (void)setCategories:(NSArray*)array;
-
-- (NSTimeInterval)computeAlignment:(VideoProperties*)otherProps;
 
 @end
