@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "TimelineMarker.h"
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
@@ -29,7 +29,7 @@
 	TimelineView *superTimelineView;
 	TimelineView *subTimelineView;
 	
-	QTTimeRange range;
+	CMTimeRange range;
 	NSString *label;
 	
 	// For timelines that are tied to a particular annotation
@@ -130,7 +130,7 @@
 @property BOOL visualizeMultipleTimeSeries;
 @property BOOL whiteBackground;
 @property double playheadPosition;
-@property QTTimeRange range;
+@property CMTimeRange range;
 @property(assign) TimelineMarker *highlightedMarker;
 @property(assign) TimelineView *superTimelineView;
 @property(assign) TimelineView *subTimelineView;

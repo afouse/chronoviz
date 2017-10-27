@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "DPConstants.h"
 #import "DPStateRecording.h"
 #import "AnnotationView.h"
@@ -96,7 +96,7 @@
 	NSString *backupAnnotationFile;
 	AnnotationDocument *annotationDoc;
 	Annotation *selectedAnnotation;
-	QTTimeRange currentSelection;
+	CMTimeRange currentSelection;
 	
 	IBOutlet NSMenu *fileMenu;
 	IBOutlet NSMenu *exportMenu;
@@ -104,7 +104,9 @@
 	IBOutlet NSMenu *viewMenu;
     IBOutlet NSMenu *savedStatesMenu;
 	
-	QTMovie *mMovie;
+	AVAsset *mMovie;
+    AVPlayerItem *playerItem;
+    AVPlayer *player;
 	NSString *movieFileName;
 	BOOL loadingMovie;
 	
@@ -177,7 +179,8 @@
 }
 
 @property(readonly) AnnotationDocument *document; 
-@property(readonly) QTMovie* mMovie;
+@property(readonly) AVAsset* mMovie;
+@property(readonly) AVPlayerItem* playerItem;
 @property(readonly) VideoFrameLoader *frameLoader;
 @property(readonly) NSUndoManager *undoManager;
 @property(readonly) LinkedFilesController *linkedFilesController;
@@ -205,11 +208,11 @@
 - (void)bringVideoToFront;
 - (void)continueTermination;
 
-- (void)setMovie:(QTMovie *)movie;
-- (QTMovie *)movie;
-- (QTMovie *)mMovie;
-- (QTTime)currentTime;
-- (QTTimeRange)currentSelection;
+- (void)setMovie:(AVAsset *)movie;
+- (AVAsset *)movie;
+- (AVAsset *)mMovie;
+- (CMTime)currentTime;
+- (CMTimeRange)currentSelection;
 //- (ImageSequenceView *)imageSequenceView;
 - (NSWindow *)window;
 - (AnnotationDocument *)document;
@@ -254,7 +257,7 @@
 - (void)showDocumentLoading:(id)sender;
 - (void)endDocumentLoading:(id)sender;
 
-- (void)moveToTime:(QTTime)time fromSender:(id)sender;
+- (void)moveToTime:(CMTime)time fromSender:(id)sender;
 - (void)setRate:(float)rate fromSender:(id)source;
 - (void)resumePlaying;
 
@@ -322,8 +325,8 @@
 - (IBAction)zoomButtonClicked:(id)sender;
 - (IBAction)zoomIn:(id)sender;
 - (IBAction)zoomOut:(id)sender;
-- (void)zoomToTimeRange:(QTTimeRange)timeRange;
-- (void)zoomInToTime:(QTTime)time;
+- (void)zoomToTimeRange:(CMTimeRange)timeRange;
+- (void)zoomInToTime:(CMTime)time;
 - (void)setOverviewVisible:(BOOL)isVisible;
 
 - (IBAction)outputLog:(id)sender;

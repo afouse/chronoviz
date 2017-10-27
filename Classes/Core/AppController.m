@@ -85,7 +85,6 @@
 #import "DPSpatialDataWindowController.h"
 #import "AnnotationViewController.h"
 #import "DPPluginManager.h"
-#import <QTKit/QTKit.h>
 
 NSString * const KeyframeTimelineMenuTitle = @"Keyframes";
 NSString * const AudioTimelineMenuTitle = @"Audio Waveform";
@@ -598,7 +597,7 @@ static AppController *currentApp = nil;
 	}
     
     NSArray *existingMovies = [mMovieView movies];
-    for(QTMovie* movie in existingMovies)
+    for(AVAsset* movie in existingMovies)
     {
         [mMovieView removeMovie:movie];
     }
@@ -764,8 +763,7 @@ static AppController *currentApp = nil;
 	annotationDoc = doc;
 	tempAnnotationDoc = NO;
 	
-    NSTimeInterval interval;
-    QTGetTimeInterval([[self movie] duration], &interval);
+    NSTimeInterval interval = CMTimeGetSeconds([[self movie] duration]);
     
     AnnotationVisualizer *viz = [[AnnotationVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
     [[timelineView baseTimeline] setSegmentVisualizer:viz];
@@ -847,7 +845,7 @@ static AppController *currentApp = nil;
 	[self didChangeValueForKey:@"document"];
 }
 
-- (void)setMovie:(QTMovie *)movie;
+- (void)setMovie:(AVAsset *)movie;
 {
 	[self willChangeValueForKey:@"mMovie"];
 	
@@ -859,12 +857,10 @@ static AppController *currentApp = nil;
 	[mMovie release];
 	mMovie = movie;
 	
-	[mMovie setAttribute:0 forKey:QTMovieLoopsAttribute];
 	[mMovieView setMovie:mMovie];
 	
 	// Set up the timeline
-	NSTimeInterval interval;
-	QTGetTimeInterval([mMovie duration], &interval);
+    NSTimeInterval interval = CMTimeGetSeconds([mMovie duration]);
 	if(absoluteTime && (interval > (60*60*6)))
 	{
 		DateVisualizer *dateViz = [[DateVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
@@ -902,11 +898,6 @@ static AppController *currentApp = nil;
 	
 	//[frameLoader loadAllFramesForMovie:mMovie];
 	
-	// Set up logging
-	[log setTimeScale:[mMovie duration].timeScale];
-	NSLog(@"Movie Duration: %qi / %ld",[mMovie duration].timeValue,[mMovie duration].timeScale);
-	[log reset];
-	
 	loadingMovie = NO;
 	
 	[self updateDisplay:nil];
@@ -922,8 +913,7 @@ static AppController *currentApp = nil;
 	NSMutableArray *filters = [NSMutableArray arrayWithCapacity:[annotationViews count]];
 	NSMutableArray *windowOrder = [NSMutableArray arrayWithCapacity:[annotationViews count]];
     
-	NSTimeInterval time;
-	QTGetTimeInterval([self currentTime], &time);
+    NSTimeInterval time = CMTimeGetSeconds([self currentTime]);
 	
     NSString *mainViewClass = NSStringFromClass([mainView class]);
     NSData *mainViewStateData = nil;
@@ -939,7 +929,7 @@ static AppController *currentApp = nil;
     NSMutableArray *movieIDs = [NSMutableArray array];
 	NSMutableArray *movieTitles = [NSMutableArray array];
     NSMutableArray *movieEnabledStates = [NSMutableArray array];
-	for(QTMovie *movie in [mMovieView movies])
+	for(AVAsset *movie in [mMovieView movies])
 	{
         for(VideoProperties* video in [[AnnotationDocument currentDocument] allMediaProperties])
         {
@@ -962,7 +952,7 @@ static AppController *currentApp = nil;
     NSObject* storedRange = nil;
     if(visibleOverviewTimeline)
     {
-        storedRange = QTStringFromTimeRange([overviewTimelineView selection]);
+        storedRange = [NSValue valueWithCMTimeRange:[overviewTimelineView selection]];
     }
     else
     {
@@ -1096,7 +1086,7 @@ static AppController *currentApp = nil;
 			[mMovieWindow setFrame:NSRectFromString([rects objectAtIndex:i]) display:YES];
 			NSDictionary *mainStateDict = [NSKeyedUnarchiver unarchiveObjectWithData:state];
 			NSTimeInterval time = [[mainStateDict objectForKey:@"CurrentTime"] floatValue];
-			[self moveToTime:QTMakeTimeWithTimeInterval(time) fromSender:self];
+			[self moveToTime:CMTimeMakeWithSeconds(time, [mMovie duration].timescale) fromSender:self];
 			
             NSString* mainViewSavedClass = [mainStateDict objectForKey:@"MainViewClass"];
             NSData* mainViewStateData = [mainStateDict objectForKey:@"MainViewStateData"];
@@ -1117,7 +1107,7 @@ static AppController *currentApp = nil;
                 {
                     NSArray *movieEnabledStates = [mainStateDict objectForKey:@"MovieEnabledStates"];
                     NSArray *existingMovies = [mMovieView movies];
-                    for(QTMovie* movie in existingMovies)
+                    for(AVAsset* movie in existingMovies)
                     {
                         [mMovieView removeMovie:movie];
                     }
@@ -1161,7 +1151,7 @@ static AppController *currentApp = nil;
             NSObject* timelineSelection = [mainStateDict objectForKey:@"TimelineSelectedRange"];
             if(timelineSelection && (timelineSelection != [NSNull null]))
             {
-                [self zoomToTimeRange:QTTimeRangeFromString((NSString*)timelineSelection)];
+                [self zoomToTimeRange:[(NSValue*)timelineSelection CMTimeRangeValue]];
             }
             else
             {
@@ -1494,7 +1484,6 @@ static AppController *currentApp = nil;
 	}
 	else
 	{
-		//return ([[filename pathExtension] isEqualToString:@"annotation"] || [QTMovie canInitWithFile:filename]);
 		return ([[filename pathExtension] isEqualToString:@"annotation"]
                 || [[filename pathExtension] isEqualToString:@"chronoviztemplate"]
                 || [VideoDataSource validateFileName:filename]);
@@ -1851,8 +1840,6 @@ static AppController *currentApp = nil;
 		if([properties hasVideo])
 		{
 			MovieViewerController *movieViewer = [[MovieViewerController alloc] init];
-			//QTMovie *newMovie = [properties movie];
-			//NSSize contentSize = [[newMovie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
 			//[[movieViewer movieView] setMovie:[properties movie]];
 			[movieViewer setVideoProperties:properties];
 			//[[movieViewer window] setContentSize:contentSize];
@@ -1971,7 +1958,7 @@ static AppController *currentApp = nil;
 		paused = YES;
 	}
 	
-	Annotation *annotation = [[Annotation alloc] initWithQTTime:[mMovie currentTime]];
+	Annotation *annotation = [[Annotation alloc] initWithCMTime:[playerItem currentTime]];
 	[annotation setAnnotation:@"New Annotation…"];
 
 	[annotationDoc addAnnotation:annotation];
@@ -2531,7 +2518,7 @@ static AppController *currentApp = nil;
 	
 	float timelineHeight = [timelineView bounds].size.height;
 	float footer = [[mMovieWindow contentView] bounds].size.height - [splitView bounds].size.height;
-	NSSize contentSize = [[mMovie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+	NSSize contentSize = (NSSize)[[[mMovie tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 	contentSize.width = contentSize.width * zoomFactor;
 	contentSize.height = contentSize.height * zoomFactor;
 	contentSize.height += (footer + timelineHeight + [splitView dividerThickness]);
@@ -2904,14 +2891,14 @@ static AppController *currentApp = nil;
 
 - (IBAction)zoomIn:(id)sender
 {
-	QTTimeRange selection = [overviewTimelineView selection];
-	selection.time.timeValue = selection.time.timeValue + selection.duration.timeValue/4;
-	selection.duration.timeValue = selection.duration.timeValue/2;
-	selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+	CMTimeRange selection = [overviewTimelineView selection];
+	selection.start.value = selection.start.value + selection.duration.value/4;
+	selection.duration.value = selection.duration.value/2;
+	selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
-	
-	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+    
+	if(([overviewTimelineView frame].size.height < 10)
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
@@ -2919,54 +2906,52 @@ static AppController *currentApp = nil;
 
 - (IBAction)zoomOut:(id)sender
 {	
-	QTTimeRange selection = [overviewTimelineView selection];
+	CMTimeRange selection = [overviewTimelineView selection];
 	
-	if(QTTimeCompare(selection.duration, [mMovie duration]) == NSOrderedAscending)
+	if(CMTimeCompare(selection.duration, [mMovie duration]) == NSOrderedAscending)
 	{
-		selection.duration.timeValue = selection.duration.timeValue * 2;
-		selection.time.timeValue = selection.time.timeValue - selection.duration.timeValue/4;
-		selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+		selection.duration.value = selection.duration.value * 2;
+		selection.start.value = selection.start.value - selection.duration.timeValue/4;
+		selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 		[overviewTimelineView setSelection:selection animate:YES];
 		
 		if(([overviewTimelineView frame].size.height > 0)
-		   && QTEqualTimeRanges(selection, [overviewTimelineView range]))
+		   && CMTimeRangeEqual(selection, [overviewTimelineView range]))
 		{
 			[self setOverviewVisible:NO];
 		}
 	}
 }
 
-- (void)zoomInToTime:(QTTime)time
+- (void)zoomInToTime:(CMTime)time
 {		
-	QTTimeRange selection = [overviewTimelineView selection];
-	selection.duration.timeValue = selection.duration.timeValue/2;
-	QTTime halfduration = selection.duration;
-	halfduration.timeValue = halfduration.timeValue/2;
-	selection.time = QTTimeDecrement(time,halfduration);	
+	CMTimeRange selection = [overviewTimelineView selection];
+	selection.duration.value = selection.duration.value/2;
+	CMTime halfduration = selection.duration;
+	halfduration.value = halfduration.value/2;
+	selection.start = CMTimeSubtract(time,halfduration);
 		
-	selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+	selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
 	
 	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
-//	
-//	[[NSCursor closedHandCursor] set];
 }
 
-- (void)zoomToTimeRange:(QTTimeRange)timeRange
+- (void)zoomToTimeRange:(CMTimeRange)timeRange
 {
-	QTTimeRange selection = QTIntersectionTimeRange(timeRange, [overviewTimelineView range]);
+	CMTimeRange selection = CMTimeRangeGetIntersection(timeRange, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
 	
 	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
-    else if (QTEqualTimeRanges(selection, [overviewTimelineView range]))
+    else if (CMTimeRangeEqual(selection, [overviewTimelineView range]))
     {
         [self setOverviewVisible:NO];
     }
@@ -3327,33 +3312,23 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepForward:(id)sender
 {
-	QTTime newTime = QTTimeIncrement([mMovie currentTime], QTMakeTimeWithTimeInterval(stepSize));
-	if(QTTimeCompare([mMovie duration],newTime) == NSOrderedAscending)
+	CMTime newTime = CMTimeAdd([playerItem currentTime], CMTimeMakeWithSeconds(stepSize,[playerItem currentTime].timescale));
+	if(CMTimeCompare([mMovie duration],newTime) == NSOrderedAscending)
 	{
 		newTime = [mMovie duration];
-	}	
-	
-//	currentTime.timeValue = currentTime.timeValue + currentTime.timeScale*stepSize;
-//	if(currentTime.timeValue > [mMovie duration].timeValue)
-//		currentTime.timeValue = [mMovie duration].timeValue;
+	}
 	
 	[self moveToTime:newTime fromSender:sender];
 }
 
 - (IBAction)stepBack:(id)sender
 {
-	QTTime newTime = QTTimeDecrement([mMovie currentTime], QTMakeTimeWithTimeInterval(stepSize));
-	if(QTTimeCompare(QTZeroTime,newTime) == NSOrderedDescending)
+	CMTime newTime = CMTimeSubtract([playerItem currentTime], CMTimeMakeWithSeconds(stepSize,[playerItem currentTime].timescale));
+	if(CMTimeCompare(kCMTimeZero,newTime) == NSOrderedDescending)
 	{
-		newTime = QTZeroTime;
+		newTime = kCMTimeZero;
 	}	
 	[self moveToTime:newTime fromSender:sender];
-	
-//	QTTime currentTime = [mMovie currentTime];
-//	currentTime.timeValue = currentTime.timeValue - currentTime.timeScale*stepSize;
-//	if(currentTime.timeValue < 0)
-//		currentTime.timeValue = 0;
-//	[self moveToTime:currentTime fromSender:sender];
 }
 
 - (IBAction)stepOneFrameForward:(id)sender

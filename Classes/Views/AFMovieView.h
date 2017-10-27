@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class AppController;
 @class MovieViewerController;
 @class VideoProperties;
@@ -29,7 +29,7 @@
 	int resizeMovieIndex;
 	NSPoint resizeMoviePoint;
 	
-	QTMovie *dragMovie;
+	AVAsset *dragMovie;
 	
 	NSCursor *magnifyCursor;
 	
@@ -41,15 +41,15 @@
 
 - (void)setLocalControl:(MovieViewerController*)controller;
 
-- (void)setMovie:(QTMovie*)movie;
-- (void)addMovie:(QTMovie*)movie;
-- (void)removeMovie:(QTMovie*)movie;
-- (QTMovie*)movie;
+- (void)setMovie:(AVAsset*)movie;
+- (void)addMovie:(AVAsset*)movie;
+- (void)removeMovie:(AVAsset*)movie;
+- (AVAsset*)movie;
 - (NSArray*)movies;
 
-- (void)zoomInMovie:(QTMovie*)movie;
-- (void)zoomOutMovie:(QTMovie*)movie;
-- (void)zoomInMovie:(QTMovie*)movie toPoint:(CGPoint)pt;
+- (void)zoomInMovie:(AVAsset*)movie;
+- (void)zoomOutMovie:(AVAsset*)movie;
+- (void)zoomInMovie:(AVAsset*)movie toPoint:(CGPoint)pt;
 - (IBAction)zoomIn:(id)sender;
 - (IBAction)zoomOut:(id)sender;
 
