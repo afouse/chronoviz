@@ -845,7 +845,7 @@ static AppController *currentApp = nil;
 	[self didChangeValueForKey:@"document"];
 }
 
-- (void)setMovie:(AVAsset *)movie;
+- (void)setMainVideo:(VideoProperties *)video;
 {
 	[self willChangeValueForKey:@"mMovie"];
 	
@@ -853,6 +853,12 @@ static AppController *currentApp = nil;
 	
 	[inspector setAnnotation:nil];
 	
+    [video retain];
+    [mainVideo release];
+    mainVideo = video;
+    
+    AVAsset *movie = [mainVideo movie];
+    
 	[movie retain];
 	[mMovie release];
 	mMovie = movie;
@@ -1958,7 +1964,7 @@ static AppController *currentApp = nil;
 		paused = YES;
 	}
 	
-	Annotation *annotation = [[Annotation alloc] initWithCMTime:[playerItem currentTime]];
+	Annotation *annotation = [[Annotation alloc] initWithCMTime:[mainVideo.playerItem currentTime]];
 	[annotation setAnnotation:@"New Annotation…"];
 
 	[annotationDoc addAnnotation:annotation];
@@ -2053,7 +2059,7 @@ static AppController *currentApp = nil;
 {
 	if([annotation keyframeImage])
 	{
-		double timecode = [annotation startTimeSeconds]*[mMovie currentTime].timeScale;
+		double timecode = [annotation startTimeSeconds]*[mainVideo.playerItem currentTime].timescale;
 		NSString *imageName = [NSString stringWithFormat:@"%i.jpg",(int)round(timecode)];
 		
 		// If the file isn't changing, then we're done (unless we're forcing an update)
@@ -2106,9 +2112,6 @@ static AppController *currentApp = nil;
 
 - (void)addAnnotation:(Annotation*)annotation
 {
-	[log addSegmentationPoint:[annotation startTime]];
-	
-	//[timelineView addAnnotation:annotation];
 	
 	for(id <AnnotationView> view in annotationViews)
 	{
@@ -2170,7 +2173,7 @@ static AppController *currentApp = nil;
 	
 	[quickEntry setEntryTarget:self];
 	[quickEntry setEntrySelector:@selector(resumePlaying)];
-	[quickEntry displayQuickEntryWindowAtTime:[mMovie currentTime]
+	[quickEntry displayQuickEntryWindowAtTime:[mainVideo.playerItem currentTime]
 								   inTimeline:[timelineView activeTimeline]
 								  forCategory:category];
 }
@@ -3178,19 +3181,19 @@ static AppController *currentApp = nil;
 	return documentVariablesController;
 }
 
-- (QTTime)currentTime
+- (CMTime)currentTime
 {
-	return [mMovie currentTime];
+	return [mainVideo.playerItem currentTime];
 }
 
-- (QTTimeRange)currentSelection
+- (CMTimeRange)currentSelection
 {
 	return currentSelection;
 }
 
-- (QTTime)currentMovieTime
+- (CMTime)currentMovieTime
 {
-	return [mMovie currentTime];
+	return [self currentTime];
 }
 
 #pragma mark Time Control
@@ -3558,15 +3561,12 @@ static AppController *currentApp = nil;
 //	}
 }
 
-- (void)moveToTime:(QTTime)time fromSender:(id)sender
+- (void)moveToTime:(CMTime)time fromSender:(id)sender
 {
-	if(time.timeValue < 0)
+	if(time.value < 0)
 	{
-		time.timeValue = 0;
+		time.value = 0;
 	}
-	[[annotationDoc activityLog] addJumpFrom:[mMovie currentTime] to:time];
-	InteractionJump *jump = [log addJumpFrom:[mMovie currentTime] to:time];
-	[jump setSource:[self processInteractionSource:sender]];
 	[mMovie setCurrentTime:time];
 	for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
 	{
@@ -3587,7 +3587,8 @@ static AppController *currentApp = nil;
 	[self updateDisplay:nil];
 }
 
-- (void)setTimeSelection:(QTTimeRange)range
+
+- (void)setTimeSelection:(CMTimeRange)range
 {
 	currentSelection = range;
 	[self updateDisplay:nil];

@@ -18,6 +18,8 @@ extern NSString * const DPVideoPropertiesPasteboardType;
     
 	NSString *videoFile;
 	AVAsset* movie;
+    AVPlayerItem *playerItem;
+    AVPlayer *player;
 	BOOL loaded;
 	NSArray* audioSubset;
 	
@@ -31,7 +33,10 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 	NSTimeInterval startTime;
     
 	NSArray *categories;
-
+    
+    BOOL isSeekInProgress;
+    CMTime chaseTime;
+    AVPlayerItemStatus playerItemStatus;
 }
 
 @property(readonly) NSString *uuid;
@@ -41,6 +46,8 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 @property(retain) NSString *description;
 @property(retain) NSDate *startDate;
 @property(retain) AVAsset *movie;
+@property(retain) AVPlayerItem *playerItem;
+@property(retain) AVPlayer *player;
 @property BOOL enabled;
 @property BOOL muted;
 @property BOOL localVideo;
@@ -54,6 +61,11 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 - (AVAsset*)loadMovie;
 - (BOOL)hasVideo;
 - (BOOL)hasAudio;
+
+// Video Playback Control
+
+- (void)seekToTime:(CMTime)seektime;
+- (CMTime)currentTime;
 
 // Legacy File Support
 

@@ -105,8 +105,7 @@
     IBOutlet NSMenu *savedStatesMenu;
 	
 	AVAsset *mMovie;
-    AVPlayerItem *playerItem;
-    AVPlayer *player;
+    VideoProperties *mainVideo;
 	NSString *movieFileName;
 	BOOL loadingMovie;
 	
@@ -208,7 +207,7 @@
 - (void)bringVideoToFront;
 - (void)continueTermination;
 
-- (void)setMovie:(AVAsset *)movie;
+- (void)setMainVideo:(VideoProperties *)video;
 - (AVAsset *)movie;
 - (AVAsset *)mMovie;
 - (CMTime)currentTime;

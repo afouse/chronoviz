@@ -18,6 +18,7 @@
 #import <Accelerate/Accelerate.h>
 
 NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboardType";
+static const NSString *ItemStatusContext;
 
 @interface VideoProperties (SerializationSupport)
 
@@ -124,7 +125,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
     
     NSURL* fileURL = [NSURL fileURLWithPath:videoFile];
     AVAsset *asset = [AVAsset assetWithURL:fileURL];
-    NSArray *assetKeysToLoadAndTest = @[@"playable", @"hasProtectedContent", @"tracks"];
+    NSArray *assetKeysToLoadAndTest = @[@"tracks"];
     [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
         
         // The asset invokes its completion handler on an arbitrary queue when loading is complete.
@@ -151,23 +152,66 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 {
     // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
     // We set up playback of the asset here.
-    
-    // First test whether the values of each of the keys we need have been successfully loaded.
+
     for (NSString *key in keys)
     {
         NSError *error = nil;
         
-        if ([asset statusOfValueForKey:key error:&error] == AVKeyValueStatusFailed)
-        {
-            NSLog(@"Error loading movie: %@",[error localizedDescription]);
-            return;
+        AVKeyValueStatus status = [asset statusOfValueForKey:key error:&error];
+        
+        if (status == AVKeyValueStatusLoaded) {
+            self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
+            // ensure that this is done before the playerItem is associated with the player
+            
+            [self.playerItem addObserver:self forKeyPath:@"status"
+                                 options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+//            [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                     selector:@selector(playerItemDidReachEnd:)
+//                                                         name:AVPlayerItemDidPlayToEndTimeNotification
+//                                                       object:self.playerItem];
+            self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+            loaded = true;
+        }
+        else {
+            // You should deal with the error appropriately.
+            NSLog(@"The asset's tracks were not loaded:\n%@", [error localizedDescription]);
         }
     }
-    
-    loaded = true;
+
 }
 
-
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString *,id> *)change
+                       context:(void *)context {
+    // Only handle observations for the PlayerItemContext
+    if (context != &ItemStatusContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
+    }
+    
+    if ([keyPath isEqualToString:@"status"]) {
+        AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
+        // Get the status change from the change dictionary
+        NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
+        if ([statusNumber isKindOfClass:[NSNumber class]]) {
+            status = statusNumber.integerValue;
+            playerItemStatus = status;
+        }
+        // Switch over the status
+        switch (status) {
+            case AVPlayerItemStatusReadyToPlay:
+                // Ready to Play
+                break;
+            case AVPlayerItemStatusFailed:
+                // Failed. Examine AVPlayerItem.error
+                break;
+            case AVPlayerItemStatusUnknown:
+                // Not ready
+                break;
+        }
+    }
+}
 
 - (AVAsset*)movie
 {
@@ -240,6 +284,47 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 	[array retain];
 	[categories release];
 	categories = array;
+}
+
+#pragma mark Video Control
+
+- (void)seekToTime:(CMTime)newChaseTime
+{
+    
+    if (CMTIME_COMPARE_INLINE(newChaseTime, !=, chaseTime))
+    {
+        chaseTime = newChaseTime;
+        
+        if (!isSeekInProgress)
+            [self trySeekToChaseTime];
+    }
+}
+
+- (void)trySeekToChaseTime
+{
+    if (playerItemStatus == AVPlayerItemStatusUnknown)
+    {
+        // wait until item becomes ready (KVO player.currentItem.status)
+    }
+    else if (playerItemStatus == AVPlayerItemStatusReadyToPlay)
+    {
+        [self actuallySeekToTime];
+    }
+}
+
+- (void)actuallySeekToTime
+{
+    isSeekInProgress = YES;
+    CMTime seekTimeInProgress = chaseTime;
+    [player seekToTime:seekTimeInProgress toleranceBefore:kCMTimeZero
+              toleranceAfter:kCMTimeZero completionHandler:
+     ^(BOOL isFinished)
+     {
+         if (CMTIME_COMPARE_INLINE(seekTimeInProgress, ==, chaseTime))
+             isSeekInProgress = NO;
+         else
+             [self trySeekToChaseTime];
+     }];
 }
 
 #pragma mark File Coding
