@@ -6,7 +6,6 @@
 //  Copyright 2009 Adam Fouse. All rights reserved.
 //
 
-#import <QTKit/QTKit.h>
 #import "TimelineView.h"
 #import "SegmentBoundary.h"
 #import "TimelineMarker.h"
@@ -108,7 +107,7 @@
 		magnifyCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"MagnifyingGlassGray.png"]
 												hotSpot:NSMakePoint(7, 10)];
 		
-		[self setRange:QTMakeTimeRange(QTMakeTime(0, 600), QTMakeTime(600,600))];
+		[self setRange:CMTimeRangeMake(CMTimeMake(0,600),CMTimeMake(600,600))];
     }
     return self;
 }
@@ -301,12 +300,12 @@
 	}
 }
 
-- (BOOL)setRangeFromBeginTime:(QTTime)begin andEndTime:(QTTime)end
+- (BOOL)setRangeFromBeginTime:(CMTime)begin andEndTime:(CMTime)end
 {
-	if(QTTimeCompare(begin, end) == NSOrderedAscending)
+	if(CMTimeCompare(begin, end) == NSOrderedAscending)
 	{
-		QTTimeRange newRange = QTMakeTimeRange(begin, QTTimeDecrement(end, begin));
-		if(!QTEqualTimeRanges(range, newRange))
+		CMTimeRange newRange = CMTimeRangeMake(begin, CMTimeSubtract(end, begin));
+		if(!CMTimeRangeEqual(range, newRange))
 		{
 			[self setRange:newRange];
 			return YES;
@@ -352,7 +351,7 @@
 }
 
 
-- (void)setMovie:(QTMovie *)mov
+- (void)setMovie:(AVAsset *)mov
 {
 	[self setSelected:nil];
 	[mov retain];
@@ -365,12 +364,12 @@
         [self showTimes:YES];
     }
     
-	[self setRange:QTMakeTimeRange(QTZeroTime, [movie duration])];
+	[self setRange:CMTimeRangeMake(kCMTimeZero, [movie duration])];
 	
 	[self redrawAllSegments];
 }
 
-- (QTMovie*)movie
+- (AVAsset*)movie
 {
 	return movie;
 }
@@ -845,17 +844,12 @@
 {
 	if(linkedToMovie && movie)
 	{
-		NSTimeInterval movieTime;
-		NSTimeInterval rangeStart;
-		NSTimeInterval rangeDuration;
-		
-		QTGetTimeInterval([movie currentTime], &movieTime);
-		QTGetTimeInterval([self range].time, &rangeStart);
-		QTGetTimeInterval([self range].duration, &rangeDuration);
+		NSTimeInterval movieTime = CMTimeGetSeconds([[AppController currentApp] currentTime]);
+		NSTimeInterval rangeStart = CMTimeGetSeconds([self range].start);
+		NSTimeInterval rangeDuration = CMTimeGetSeconds([self range].duration);
 		
 		return (movieTime - rangeStart)/rangeDuration;
 		
-		//return ([movie currentTime].timeValue - [self range].time.timeValue)/(float)[self range].duration.timeValue;
 	} else 
 	{
 		return playheadPosition;
@@ -964,29 +958,22 @@
 	}
 }
 
--(NSPoint)pointFromTime:(QTTime)time
+-(NSPoint)pointFromTime:(CMTime)time
 {
-	NSTimeInterval startInterval;
-	NSTimeInterval durationInterval;
-	NSTimeInterval timeInterval;
-	QTGetTimeInterval([self range].time, &startInterval);
-	QTGetTimeInterval([self range].duration, &durationInterval);
-	QTGetTimeInterval(time,&timeInterval);
+	NSTimeInterval startInterval = CMTimeGetSeconds([self range].start);
+	NSTimeInterval durationInterval = CMTimeGetSeconds([self range].duration);
+	NSTimeInterval timeInterval = CMTimeGetSeconds(time);
 	
 	return NSMakePoint(((timeInterval - startInterval)/durationInterval) * [self bounds].size.width,0);
-	
-	//return NSMakePoint(((time.timeValue - [self range].time.timeValue)/(float)[self range].duration.timeValue) * [self bounds].size.width,0);	
 }
 
--(QTTime)timeFromPoint:(NSPoint)point
+-(CMTime)timeFromPoint:(NSPoint)point
 {
-	NSTimeInterval durationInterval;
-	NSTimeInterval rangeStartInterval;
-	QTGetTimeInterval([self range].duration, &durationInterval);
-	QTGetTimeInterval([self range].time,&rangeStartInterval);
+	NSTimeInterval durationInterval = CMTimeGetSeconds([self range].duration);
+	NSTimeInterval rangeStartInterval = CMTimeGetSeconds([self range].start);
 	durationInterval = rangeStartInterval + durationInterval * (point.x / [self bounds].size.width);
 	
-	return QTMakeTimeWithTimeInterval(durationInterval);
+    return CMTimeMakeWithSeconds(durationInterval, [self range].duration.timescale);
 }
 
 -(void)showTimes:(BOOL)showTimes
@@ -1000,8 +987,7 @@
 		timesLayer.autoresizingMask = (kCALayerHeightSizable | kCALayerWidthSizable);
 		[rootLayer insertSublayer:timesLayer below:visualizationLayer];
 		
-        NSTimeInterval interval;
-        QTGetTimeInterval([movie duration], &interval);
+        NSTimeInterval interval = CMTimeGetSeconds([movie duration]);
         if(interval > (60*60*6))
         {
             timesVisualizer = [[DateVisualizer alloc] initWithTimelineView:self];
@@ -1225,62 +1211,42 @@
 		
 		if(dataSource)
 		{
-			QTTime clickedTime = [annotation startTime];
-			QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
-			QTTime diff = QTTimeDecrement(playheadTime, clickedTime);
+			CMTime clickedTime = [annotation startTime];
+			CMTime playheadTime = [[AppController currentApp] currentTime];
+			CMTime diff = CMTimeSubtract(playheadTime, clickedTime);
 			
-			QTTimeRange dataRange = [dataSource range];
+			CMTimeRange dataRange = [dataSource range];
 			
-			dataRange.time = QTTimeIncrement(dataRange.time, diff);
+			dataRange.time = CMTimeAdd(dataRange.time, diff);
 			
 			[dataSource setRange:dataRange];
 		}
-		
-		
-		
-//		QTTime clickedTime = [trace startTime];
-//		QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
-//		
-//		QTTime diff = QTTimeDecrement(playheadTime, clickedTime);
-//		QTTimeRange dataRange = [data range];
-//		dataRange.time = diff;
-//		[[data source] setRange:dataRange];
-//		
-//		
-//		
-//		QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
-//		QTTime lineTime = QTTimeDecrement(QTMakeTimeWithTimeInterval(clickedTime),[[data source] range].time);
-//		
-//		QTTime diff = QTTimeDecrement(playheadTime, lineTime);
-//		QTTimeRange dataRange = [data range];
-//		dataRange.time = diff;
-//		[[data source] setRange:dataRange];
 		
 	}
 	else if([[sender representedObject] isKindOfClass:[NSEvent class]])
 	{		
 		NSEvent *event = [sender representedObject];
 		NSPoint curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-		long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-		long timeScale = range.duration.timeScale;
+		long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
+		long timeScale = range.duration.timescale;
 		
-		QTTime clickedTime = QTMakeTime(timeValue,timeScale);
-		QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
+		CMTime clickedTime = CMTimeMake(timeValue,timeScale);
+		CMTime playheadTime = [[AppController currentApp] currentTime];
 		
 		if([dataSets count] == 1)
 		{
 			TimeSeriesData *timeSeriesData = [dataSets objectAtIndex:0];
 			if([[timeSeriesData source] timeCoded])
 			{
-				QTTime diff = QTTimeDecrement(playheadTime, clickedTime);
-				QTTimeRange dataRange = [[timeSeriesData source] range];
-				dataRange.time = QTTimeIncrement(dataRange.time, diff);
+				CMTime diff = CMTimeSubtract(playheadTime, clickedTime);
+				CMTimeRange dataRange = [[timeSeriesData source] range];
+				dataRange.time = CMTimeAdd(dataRange.time, diff);
 				[[timeSeriesData source] setRange:dataRange];
 			}
 			else if(timeSeriesData)
 			{
-				QTTimeRange newRange = QTMakeTimeRange(QTMakeTime(timeValue,timeScale),
-													   QTMakeTime(range.duration.timeValue - timeValue,timeScale));
+				CMTimeRange newRange = CMTimeRangeMake(CMTimeMake(timeValue,timeScale),
+													   CMTimeMake(range.duration.value - timeValue,timeScale));
 				
 				[timeSeriesData scaleFromRange:newRange toRange:range];	
 			}
@@ -1291,8 +1257,8 @@
 			{
 				if([segmentVisualizer movie] == [properties movie])
 				{
-					QTTime oldOffset = [properties offset];
-					QTTime newOffset = QTTimeIncrement(oldOffset, QTTimeDecrement(clickedTime,playheadTime));
+					CMTime oldOffset = [properties offset];
+					CMTime newOffset = CMTimeAdd(oldOffset, CMTimeSubtract(clickedTime,playheadTime));
 					[properties setOffset:newOffset];
 					//NSLog(@"offset: %qi",[properties offset].timeValue);
 					[[AppController currentDoc] saveVideoProperties:properties];
@@ -1440,15 +1406,12 @@
         if(!filterAnnotations
            || [[annotationFilter predicate] evaluateWithObject:annotation])
         {
-            NSTimeInterval timeInterval;
-            
-            QTGetTimeInterval([annotation startTime], &timeInterval);
+            NSTimeInterval timeInterval = CMTimeGetSeconds([annotation startTime]);
             
             [timePoints addObject:[NSNumber numberWithFloat:timeInterval]];
             if([annotation isDuration])
             {
-                QTGetTimeInterval([annotation endTime], &timeInterval);
-                [timePoints addObject:[NSNumber numberWithFloat:timeInterval]];
+                [timePoints addObject:[NSNumber numberWithFloat:CMTimeGetSeconds([annotation endTime])]];
             }
             [timePoints sortUsingSelector:@selector(compare:)];
         }
@@ -1541,13 +1504,10 @@
 		TimelineMarker *marker = [segmentVisualizer addKeyframe:annotation];
 		if(marker)
 		{
-			NSTimeInterval timeInterval;
-			QTGetTimeInterval([annotation startTime], &timeInterval);
-			[timePoints addObject:[NSNumber numberWithFloat:timeInterval]];
+			[timePoints addObject:[NSNumber numberWithFloat:[annotation startTimeSeconds]]];
 			if([marker isDuration])
 			{
-				QTGetTimeInterval([annotation endTime], &timeInterval);
-				[timePoints addObject:[NSNumber numberWithFloat:timeInterval]];
+				[timePoints addObject:[NSNumber numberWithFloat:[annotation endTimeSeconds]]];
 			}
 			[timePoints sortUsingSelector:@selector(compare:)];
 			
@@ -1573,39 +1533,9 @@
 }
 
 -(void)setSelected:(TimelineMarker*)segment
-{	
-	//NSLog(@"Set selected");
-	
-//	if(selectedMarker != segment)
-//	{
-//		[selectedMarker.layer removeFromSuperlayer];
-//		selectedMarker.layer = nil;
-//		[[selectedMarker visualizer] updateMarker:selectedMarker];
-//	}
+{
 	
 	selectedMarker = segment;
-	
-//	if(selectedMarker)
-//	{
-//		selectionMask.frame = rootLayer.frame;
-//		
-//		[rootLayer insertSublayer:selectionMask below:playheadLayer];
-//		
-//		[selectionMask setNeedsDisplay];
-//		
-//		
-//		[[selectedMarker layer] removeFromSuperlayer];
-//		[rootLayer insertSublayer:[selectedMarker layer] below:playheadLayer];		
-//	}
-//	else
-//	{
-//		if([selectionMask superlayer])
-//		{
-//			[selectionMask removeFromSuperlayer];
-//		}
-//	}
-	
-
 	
 	[self redraw];
 }
@@ -1622,8 +1552,7 @@
 		}
     }
 	else if ([keyPath isEqual:@"range"]) {
-		NSTimeInterval rangeDuration;
-		QTGetTimeInterval(range.duration, &rangeDuration);
+		NSTimeInterval rangeDuration = CMTimeGetSeconds(range.duration);
 		float width = ([self frame].size.width);
 		snapThreshold = 5.0*(rangeDuration/width);
     }
@@ -1799,15 +1728,15 @@
 		linkedToMovie = NO;
 		NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		
-		long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-		long timeScale = [self range].duration.timeScale;
+		long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].start.value;
+		CMTimeScale timeScale = [self range].duration.timescale;
 		NSTimeInterval timeInterval = (double)timeValue/(double)timeScale;
 		
 		// Make sure the start time doesn't go past the end time
 		if([selectedMarker isDuration] && (timeInterval >= originalEndTime))
 		{
 			timeValue = originalEndTime - 1;
-			curPoint.x = ((double)timeValue/[movie duration].timeValue) * [self bounds].size.width;
+			curPoint.x = ((double)timeValue/[movie duration].value) * [self bounds].size.width;
 		}
 		// Snap to existing points on the timeline
 		else
@@ -1819,12 +1748,8 @@
 			{
 				timeValue = timePoint * timeScale;
 				
-				NSTimeInterval rangeStart;
-				NSTimeInterval rangeDuration;
-				
-				QTGetTimeInterval([self range].time, &rangeStart);
-				QTGetTimeInterval([self range].duration, &rangeDuration);
-				
+				NSTimeInterval rangeStart = CMTimeGetSeconds([self range].start);
+				NSTimeInterval rangeDuration = CMTimeGetSeconds([self range].duration);
 				float newPlayheadPos = (timePoint - rangeStart)/rangeDuration;
 				
 				//curPoint.x = ((double)timePoint/[movie duration].timeValue) * [self bounds].size.width;
@@ -1833,7 +1758,7 @@
 		}
 
 		
-		[[AppController currentApp] moveToTime:QTMakeTime(timeValue,timeScale) fromSender:self];
+		[[AppController currentApp] moveToTime:CMTimeMake(timeValue,timeScale) fromSender:self];
 		playheadPosition = (curPoint.x / [self bounds].size.width);
 		
 		//[CATransaction flush];
@@ -1842,7 +1767,7 @@
 						 forKey:kCATransactionDisableActions];
 		
 		[playheadLayer setPosition:CGPointMake(curPoint.x, [playheadLayer position].y)];
-		[[selectedMarker annotation] setStartTime:QTMakeTime(timeValue,timeScale)];
+		[[selectedMarker annotation] setStartTime:CMTimeMake(timeValue,timeScale)];
 		
 		[CATransaction commit];
 		
@@ -1852,15 +1777,15 @@
 		linkedToMovie = NO;
 		NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 		
-		long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-		long timeScale = [self range].duration.timeScale;
+		long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].start.value;
+		CMTimeScale timeScale = [self range].duration.timescale;
 		NSTimeInterval timeInterval = (double)timeValue/(double)timeScale;
 
 		// Make sure the end time doesn't go past the start time
 		if(timeInterval <= originalStartTime)
 		{
 			timeValue = originalStartTime + 1;
-			curPoint.x = ((double)timeValue/[movie duration].timeValue) * [self bounds].size.width;
+			curPoint.x = ((double)timeValue/[movie duration].value) * [self bounds].size.width;
 		}
 		// Snap to existing points on the timeline
 		else
@@ -1872,11 +1797,8 @@
 			{
 				timeValue = timePoint * timeScale;
 				
-				NSTimeInterval rangeStart;
-				NSTimeInterval rangeDuration;
-				
-				QTGetTimeInterval([self range].time, &rangeStart);
-				QTGetTimeInterval([self range].duration, &rangeDuration);
+				NSTimeInterval rangeStart = CMTimeGetSeconds([self range].start);
+				NSTimeInterval rangeDuration = CMTimeGetSeconds([self range].duration);
 				
 				float newPlayheadPos = (timePoint - rangeStart)/rangeDuration;
 				
@@ -1887,7 +1809,7 @@
 			
 		}
 		
-		[[AppController currentApp] moveToTime:QTMakeTime(timeValue,timeScale) fromSender:self];
+		[[AppController currentApp] moveToTime:CMTimeMake(timeValue,timeScale) fromSender:self];
 		playheadPosition = (curPoint.x / [self bounds].size.width);
 		
 		//[CATransaction flush];
@@ -1896,7 +1818,7 @@
 						 forKey:kCATransactionDisableActions];
 		
 		[playheadLayer setPosition:CGPointMake(curPoint.x, [playheadLayer position].y)];
-		[[selectedMarker annotation] setEndTime:QTMakeTime(timeValue,timeScale)];
+		[[selectedMarker annotation] setEndTime:CMTimeMake(timeValue,timeScale)];
 		
 		[CATransaction commit];
 		
@@ -1936,7 +1858,7 @@
 	
 			NSUndoManager* undoManager = [[AppController currentApp] undoManager];
 			[undoManager enableUndoRegistration];
-			[(Annotation*)[undoManager prepareWithInvocationTarget:[selectedMarker annotation]] setStartTime:originalStartQTTime];
+			[(Annotation*)[undoManager prepareWithInvocationTarget:[selectedMarker annotation]] setStartTime:originalStartCMTime];
 			[undoManager setActionName:@"Change Annotation Position"];
 		}
 		
@@ -1945,7 +1867,7 @@
 			
 			NSUndoManager* undoManager = [[AppController currentApp] undoManager];
 			[undoManager enableUndoRegistration];
-			[[undoManager prepareWithInvocationTarget:[selectedMarker annotation]] setEndTime:originalEndQTTime];
+			[[undoManager prepareWithInvocationTarget:[selectedMarker annotation]] setEndTime:originalEndCMTime];
 			[undoManager setActionName:@"Change Annotation Position"];
 		}
 		
@@ -2010,9 +1932,9 @@
 		}
 		else
 		{
-			long long timeValue = ([self range].duration.timeValue * (pt.x / [self bounds].size.width)) + [self range].time.timeValue;
-			long timeScale = [self range].duration.timeScale;
-			[[AppController currentApp] zoomInToTime:QTMakeTime(timeValue,timeScale)];	
+			long long timeValue = ([self range].duration.value * (pt.x / [self bounds].size.width)) + [self range].start.value;
+			CMTimeScale timeScale = [self range].duration.timescale;
+			[[AppController currentApp] zoomInToTime:CMTimeMake(timeValue,timeScale)];
 		}
 		return;
 	}
@@ -2032,10 +1954,10 @@
 			movingLeftMarker = YES;
 			NSUndoManager* undoManager = [[AppController currentApp] undoManager];
 			[undoManager disableUndoRegistration];
-			originalStartQTTime = [[selectedMarker annotation] startTime];
-			originalEndQTTime = [[selectedMarker annotation] endTime];
-			QTGetTimeInterval(originalStartQTTime, &originalStartTime);
-			QTGetTimeInterval(originalEndQTTime, &originalEndTime);
+			originalStartCMTime = [[selectedMarker annotation] startTime];
+			originalEndCMTime = [[selectedMarker annotation] endTime];
+            originalStartTime = CMTimeGetSeconds(originalStartCMTime);
+            originalEndTime = CMTimeGetSeconds(originalEndCMTime);
 			return;
 		}
 		else if([selectedMarker startResizeRight:markerPoint])
@@ -2044,10 +1966,10 @@
 			movingRightMarker = YES;
 			NSUndoManager* undoManager = [[AppController currentApp] undoManager];
 			[undoManager disableUndoRegistration];
-			originalStartQTTime = [[selectedMarker annotation] startTime];
-			originalEndQTTime = [[selectedMarker annotation] endTime];
-			QTGetTimeInterval(originalStartQTTime, &originalStartTime);
-			QTGetTimeInterval(originalEndQTTime, &originalEndTime);
+            originalStartCMTime = [[selectedMarker annotation] startTime];
+            originalEndCMTime = [[selectedMarker annotation] endTime];
+            originalStartTime = CMTimeGetSeconds(originalStartCMTime);
+            originalEndTime = CMTimeGetSeconds(originalEndCMTime);
 			return;
 		}
 	}
