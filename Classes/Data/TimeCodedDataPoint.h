@@ -7,14 +7,14 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface TimeCodedDataPoint : NSObject <NSCoding> {
-	QTTime time;
+	CMTime time;
 	double value;	
 }
 
-@property QTTime time;
+@property CMTime time;
 @property double value;
 
 -(NSString*)csvString;

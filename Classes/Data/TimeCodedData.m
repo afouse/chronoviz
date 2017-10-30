@@ -9,6 +9,7 @@
 #import "TimeCodedData.h"
 #import "DataSource.h"
 #import "NSStringUUID.h"
+#import "NSCoder+QTLegacy.h"
 
 @implementation TimeCodedData
 
@@ -22,7 +23,7 @@
 {
 	self = [super init];
 	if (self != nil) {
-		range = QTMakeTimeRange(QTMakeTime(0,600), QTMakeTime(0,600));
+		range = CMTimeRangeMake(CMTimeMake(0,600), CMTimeMake(0,600));
 		[self setColor:[NSColor blueColor]];
 		uuid = [[NSString stringWithUUID] retain];
 	}
@@ -38,26 +39,24 @@
 	[super dealloc];
 }
 
-- (QTTimeRange)range
+- (CMTimeRange)range
 {
 	return range;
 }
 
-- (QTTime)startTime
+- (CMTime)startTime
 {
-	return [self range].time;
+	return [self range].start;
 }
 
-- (QTTime)endTime
+- (CMTime)endTime
 {
-	return QTTimeRangeEnd([self range]);
+    return CMTimeRangeGetEnd([self range]);
 }
 
 - (NSTimeInterval)startSeconds
 {
-    NSTimeInterval seconds;
-    QTGetTimeInterval([self startTime], &seconds);
-    return seconds;
+    return CMTimeGetSeconds([self startTime]);
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -65,7 +64,8 @@
 	[coder encodeObject:uuid forKey:@"AnnotationDataSetUUID"];
 	[coder encodeObject:name forKey:@"AnnotationDataSetName"];
 	[coder encodeObject:variableName forKey:@"AnnotationDataSetVariableName"];
-	[coder encodeQTTimeRange:range forKey:@"AnnotationDataSetRange"];
+    [coder encodeCMTimeRange:range forKey:@"AnnotationDataSetCMRange"];
+	//[coder encodeQTTimeRange:range forKey:@"AnnotationDataSetRange"];
 	[coder encodeObject:color forKey:@"AnnotationDataSetColor"];
 }
 
@@ -80,7 +80,15 @@
 		
 		self.name = [coder decodeObjectForKey:@"AnnotationDataSetName"];
 		self.variableName = [coder decodeObjectForKey:@"AnnotationDataSetVariableName"];
-		range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSetRange"];
+        if([coder containsValueForKey:@"AnnotationDataSetRange"])
+        {
+            range = [coder decodeLegacyQTTimeRangeForKey:@"AnnotationDataSetRange"];
+        }
+        else if([coder containsValueForKey:@"AnnotationDataSetCMRange"])
+        {
+            range = [coder decodeCMTimeRangeForKey:@"AnnotationDataSetCMRange"];
+        }
+		//range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSetRange"];
 		[self setColor:[coder decodeObjectForKey:@"AnnotationDataSetColor"]];
 		if(!color)
 		{

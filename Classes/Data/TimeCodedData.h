@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class DataSource;
 
 @interface TimeCodedData : NSObject <NSCoding> {
@@ -18,7 +18,7 @@
 	DataSource *source;
 	NSColor *color;
 	
-	QTTimeRange range;
+	CMTimeRange range;
 }
 
 @property(readonly) NSString* uuid;
@@ -27,9 +27,9 @@
 @property(retain) NSColor* color;
 @property(assign) DataSource* source;
 
-- (QTTimeRange)range;
-- (QTTime)startTime;
-- (QTTime)endTime;
+- (CMTimeRange)range;
+- (CMTime)startTime;
+- (CMTime)endTime;
 
 - (NSTimeInterval)startSeconds;
 

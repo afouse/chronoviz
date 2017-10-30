@@ -7,6 +7,7 @@
 //
 
 #import "TimeCodedDataPoint.h"
+#import "NSCoder+QTLegacy.h"
 
 @implementation TimeCodedDataPoint
 
@@ -15,14 +16,23 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-	[coder encodeQTTime:time forKey:@"AnnotationDataTime"];
+	//[coder encodeQTTime:time forKey:@"AnnotationDataTime"];
+    [coder encodeCMTime:time forKey:@"AnnotationDataCMTime"];
 	[coder encodeDouble:value forKey:@"AnnotationDataValue"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
     if(self = [super init])
 	{
-		self.time = [coder decodeQTTimeForKey:@"AnnotationDataTime"];
+        if([coder containsValueForKey:@"AnnotationDataTime"])
+        {
+            self.time = [coder decodeLegacyQTTimeForKey:@"AnnotationDataTime"];
+        }
+        else if([coder containsValueForKey:@"AnnotationDataCMTime"])
+        {
+            self.time = [coder decodeCMTimeForKey:@"AnnotationDataCMTime"];
+        }
+		//self.time = [coder decodeQTTimeForKey:@"AnnotationDataTime"];
 		self.value = [coder decodeDoubleForKey:@"AnnotationDataValue"];
 	}
     return self;
@@ -40,9 +50,7 @@
 
 -(NSTimeInterval)seconds
 {
-	NSTimeInterval timeInterval;
-	QTGetTimeInterval(time, &timeInterval);
-	return timeInterval;
+    return CMTimeGetSeconds(time);
 }
 
 @end
