@@ -24,6 +24,7 @@
 #import "AnnotationCategory.h"
 #import "NSStringUUID.h"
 #import "NSStringTimeCodes.h"
+#import "NSCoder+QTLegacy.h"
 #import "DPConstants.h"
 
 NSString * const DataSourceUpdatedNotification = @"DataSourceUpdatedNotification";
@@ -100,7 +101,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
         linkedVariables = [[NSMutableDictionary alloc] init];
 		timeColumn = 0;
 		timeCoding = DataPrismTimeCodingFloat;
-		range = QTMakeTimeRange(QTZeroTime, QTZeroTime);
+		range = CMTimeRangeMake(kCMTimeZero, kCMTimeZero);
 		self.directoryDataFile = NO;
 		[self setName:[theFile lastPathComponent]];
 		uuid = [[NSString stringWithUUID] retain];
@@ -197,9 +198,9 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 
 -(NSArray*)importVariables:(NSArray*)variables asTypes:(NSArray*)types
 {
-	if((range.duration.timeValue == 0) && (![self timeCoded]))
+	if((range.duration.value == 0) && (![self timeCoded]))
 	{
-		range = QTMakeTimeRange(QTZeroTime,[[[AnnotationDocument currentDocument] movie] duration]);
+		range = CMTimeRangeMake(kCMTimeZero,[[[AnnotationDocument currentDocument] movie] duration]);
 	}
 	
 	NSMutableArray *newDataSets = [NSMutableArray array];
@@ -406,7 +407,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
         [sets release];
 	}
 	
-	range = QTMakeTimeRange(QTZeroTime, QTZeroTime); 
+	range = CMTimeRangeMake(kCMTimeZero, kCMTimeZero);
 }
 
 -(void)addDataSet:(TimeCodedData*)dataSet
@@ -513,7 +514,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	dataArray = array;
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
 	// Cases:
 	// - Relative Time:
@@ -525,42 +526,40 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	// ----- DD/MM/YY + HH:MM:SS
 	// --- DateTime Column
 	
-	long timeScale;
-	if(range.duration.timeValue == 0)
+	CMTimeScale timeScale = [[AnnotationDocument currentDocument] defaultTimebase];
+	if(range.duration.value == 0)
 	{
 		NSTimeInterval initialOffset = -[self timeForCodedString:[[dataArray objectAtIndex:1] objectAtIndex:timeColumn]];
-		timeEncodingOffset = QTMakeTimeWithTimeInterval(initialOffset);
+		timeEncodingOffset = CMTimeMakeWithSeconds(initialOffset,timeScale);
 		if(!absoluteTime)
 		{
-			timeEncodingOffset.timeValue = 0;
+			timeEncodingOffset.value = 0;
 		}
-		timeScale = timeEncodingOffset.timeScale;
-		
-		range.time = QTMakeTime(0, timeScale);
+		range.start = CMTimeMake(0, timeScale);
 		
 		NSTimeInterval last = [self timeForCodedString:[[dataArray lastObject] objectAtIndex:timeColumn]];
 		
-		int index = [dataArray count] - 1;
+		int index = (int)[dataArray count] - 1;
 		while(last == 0)
 		{
 			last = [self timeForCodedString:[[dataArray objectAtIndex:index] objectAtIndex:timeColumn]];
 			index--;
 		}
 		
-		QTTime duration = QTMakeTime(timeEncodingOffset.timeValue + (last * timeScale), timeScale);
+		CMTime duration = CMTimeMake(timeEncodingOffset.value + (last * timeScale), timeScale);
 		
 		range.duration = duration;
 	}
 	NSString *timeString = [row objectAtIndex:timeColumn];
 	if([timeString length] == 0)
 	{
-		return QTIndefiniteTime;
+		return kCMTimeIndefinite;
 	}
 	else {
 		double relativeTime = [self timeForCodedString:timeString];
-		QTTime relativeQTTime = QTMakeTimeWithTimeInterval(relativeTime);
-		QTTime totalOffset = QTTimeIncrement(timeEncodingOffset,range.time);
-		return QTTimeIncrement(totalOffset,relativeQTTime);
+		CMTime relativeCMTime = CMTimeMakeWithSeconds(relativeTime, timeScale);
+		CMTime totalOffset = CMTimeAdd(timeEncodingOffset,range.start);
+		return CMTimeAdd(totalOffset,relativeCMTime);
 	}
 }
 
@@ -603,10 +602,10 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	{
 		if(row != [dataArray objectAtIndex:0])
 		{
-			QTTime time = [self timeForRowArray:row];
-			if(!QTTimeIsIndefinite(time))
+			CMTime time = [self timeForRowArray:row];
+			if(!CMTIME_IS_INDEFINITE(time))
 			{
-				Annotation *annotation = [[Annotation alloc] initWithQTTime:[self timeForRowArray:row]];
+				Annotation *annotation = [[Annotation alloc] initWithCMTime:[self timeForRowArray:row]];
 				[annotation setSource:[self uuid]];
 				keep = NO;
 				
@@ -634,7 +633,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 				{
 					[annotation setIsDuration:YES];
 					relativeTime = [self timeForCodedString:[row objectAtIndex:endIndex]];
-					[annotation setEndTime:QTMakeTime(timeEncodingOffset.timeValue + (relativeTime * timeEncodingOffset.timeScale), timeEncodingOffset.timeScale)];
+					[annotation setEndTime:CMTimeMake(timeEncodingOffset.value + (relativeTime * timeEncodingOffset.timescale), timeEncodingOffset.timescale)];
 				}
 				
 				if((categoryIndex > -1) && ([row count] > categoryIndex))
@@ -908,13 +907,13 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	return nil;
 }
 
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
 	if(timeCoded)
 	{
 		
-		QTTime previousDiff = range.time;
-		QTTime diff = newRange.time;
+		CMTime previousDiff = range.start;
+		CMTime diff = newRange.start;
 		
 		//[super setRange:newRange];
 		
@@ -922,17 +921,17 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 		{
 			if([data isKindOfClass:[TimeSeriesData class]])
 			{
-				[(TimeSeriesData*)data shiftByTime:QTTimeDecrement(newRange.time, range.time)];
+				[(TimeSeriesData*)data shiftByTime:CMTimeSubtract(newRange.start, range.start)];
 			}
 			else if ([data isKindOfClass:[AnnotationSet class]])
 			{
 				NSArray *annotations = [(AnnotationSet*)data annotations];
 				for(Annotation *annotation in annotations)
 				{
-					[annotation setStartTime:QTTimeIncrement(QTTimeDecrement([annotation startTime],previousDiff), diff)];
+					[annotation setStartTime:CMTimeAdd(CMTimeSubtract([annotation startTime],previousDiff), diff)];
 					if([annotation isDuration])
 					{
-						[annotation setEndTime:QTTimeIncrement(QTTimeDecrement([annotation endTime],previousDiff), diff)];
+						[annotation setEndTime:CMTimeAdd(CMTimeSubtract([annotation endTime],previousDiff), diff)];
 					}
 					
 				}	
@@ -955,7 +954,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
 }
 
--(QTTimeRange)range
+-(CMTimeRange)range
 {
 	return range;
 }
@@ -988,7 +987,8 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	//NSString *altColon = @"⁚";
 	[coder encodeObject:uuid forKey:@"AnnotationDataSourceUUID"];
 	[coder encodeObject:dataFile forKey:@"AnnotationDataSourceFile"];
-	[coder encodeQTTimeRange:range forKey:@"AnnotationDataSourceRange"];
+	//[coder encodeQTTimeRange:range forKey:@"AnnotationDataSourceRange"];
+    [coder encodeCMTimeRange:range forKey:@"AnnotationDataSourceCMRange"];
 	[coder encodeBool:timeCoded forKey:@"AnnotationDataSourceTimeCoded"];
 	[coder encodeBool:absoluteTime forKey:@"AnnotationDataSourceAbsoluteTime"];
 	[coder encodeInteger:timeColumn forKey:@"AnnotationDataSourceTimeColumn"];
@@ -1007,7 +1007,15 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 		}
 		
 		dataFile = [[coder decodeObjectForKey:@"AnnotationDataSourceFile"] retain];
-		range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSourceRange"];
+        if([coder containsValueForKey:@"AnnotationDataSourceRange"])
+        {
+            range = [coder decodeLegacyQTTimeRangeForKey:@"AnnotationDataSourceRange"];
+        }
+        else if([coder containsValueForKey:@"AnnotationDataSourceCMRange"])
+        {
+            range = [coder decodeCMTimeRangeForKey:@"AnnotationDataSourceCMRange"];
+        }
+		//range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSourceRange"];
 		timeCoded = [coder decodeBoolForKey:@"AnnotationDataSourceTimeCoded"];
 		absoluteTime = [coder decodeBoolForKey:@"AnnotationDataSourceAbsoluteTime"];
 		timeColumn = [coder decodeIntegerForKey:@"AnnotationDataSourceTimeColumn"];
@@ -1018,10 +1026,6 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
         {
             linkedVariables = [[NSMutableDictionary alloc] init];
         }
-        
-		NSTimeInterval start;
-		QTGetTimeInterval(range.time, &start);
-		//NSLog(@"Init data set: %@ Range Start: %f",dataFile,start);
 		
 		dataArray = nil;
 		

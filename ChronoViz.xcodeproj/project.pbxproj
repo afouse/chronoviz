@@ -246,6 +246,7 @@
 		BB9DCE321044BB96001EC061 /* MapView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9DCE311044BB96001EC061 /* MapView.m */; };
 		BB9DE79012B1517000EF1656 /* DPLogFileUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9DE78F12B1517000EF1656 /* DPLogFileUploader.m */; };
 		BB9E28C414FEE1B300957754 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9E28C314FEE1B300957754 /* NSData+Base64.m */; };
+		BBA0C8D11FA6B11000A03796 /* NSCoder+QTLegacy.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA0C8D01FA6B11000A03796 /* NSCoder+QTLegacy.m */; };
 		BBA378EA12B7DC920038A551 /* Interaction.h in Headers */ = {isa = PBXBuildFile; fileRef = BBD44B430ED4DE3000A6F2C1 /* Interaction.h */; };
 		BBA378EC12B7DC920038A551 /* InteractionLog.h in Headers */ = {isa = PBXBuildFile; fileRef = BB43C5050ED3287A0058B3DF /* InteractionLog.h */; };
 		BBA378EE12B7DC920038A551 /* InteractionAddSegment.h in Headers */ = {isa = PBXBuildFile; fileRef = BB0EA5990ED60C7C00A71883 /* InteractionAddSegment.h */; };
@@ -724,6 +725,8 @@
 		BB9DE78F12B1517000EF1656 /* DPLogFileUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPLogFileUploader.m; sourceTree = "<group>"; };
 		BB9E28C214FEE1B300957754 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
 		BB9E28C314FEE1B300957754 /* NSData+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Base64.m"; sourceTree = "<group>"; };
+		BBA0C8CF1FA6B11000A03796 /* NSCoder+QTLegacy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSCoder+QTLegacy.h"; sourceTree = "<group>"; };
+		BBA0C8D01FA6B11000A03796 /* NSCoder+QTLegacy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSCoder+QTLegacy.m"; sourceTree = "<group>"; };
 		BBA378E712B7DC610038A551 /* libChronoVizLogging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libChronoVizLogging.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBA640711187ADD000580E89 /* PrioritySplitViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrioritySplitViewDelegate.h; sourceTree = "<group>"; };
 		BBA640721187ADD000580E89 /* PrioritySplitViewDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrioritySplitViewDelegate.m; sourceTree = "<group>"; };
@@ -1590,6 +1593,8 @@
 				BBD2408C11C291DC001CDE54 /* TiledPDFDelegate.m */,
 				BB5D6989100E438C005537B3 /* VideoFrameLoader.h */,
 				BB5D698A100E438C005537B3 /* VideoFrameLoader.m */,
+				BBA0C8CF1FA6B11000A03796 /* NSCoder+QTLegacy.h */,
+				BBA0C8D01FA6B11000A03796 /* NSCoder+QTLegacy.m */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1929,6 +1934,7 @@
 				BBF8735D1044855E002D311A /* DataImportController.m in Sources */,
 				BB9DCE321044BB96001EC061 /* MapView.m in Sources */,
 				BB7E794A10458A33002D4874 /* TimeCodedGeographicPoint.m in Sources */,
+				BBA0C8D11FA6B11000A03796 /* NSCoder+QTLegacy.m in Sources */,
 				BB7E794D10458ADA002D4874 /* GeographicTimeSeriesData.m in Sources */,
 				BB7E798010458CAE002D4874 /* MapController.m in Sources */,
 				BB5E4F3E1047444D0093E4E4 /* AnnotationTimeSeriesVisualizer.m in Sources */,

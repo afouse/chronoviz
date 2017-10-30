@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class TimeSeriesData;
 @class Annotation;
 @class TimeCodedData;
@@ -62,8 +62,8 @@ enum DataPrismTimeCoding {
 	enum DataPrismTimeCoding timeCoding;
 	
 	NSArray *dataArray;
-	QTTimeRange range;
-	QTTime timeEncodingOffset;
+	CMTimeRange range;
+	CMTime timeEncodingOffset;
 	
 	NSMutableArray *dataSets;
     NSMutableDictionary *linkedVariables;
@@ -103,13 +103,13 @@ enum DataPrismTimeCoding {
 -(void)reset;
 -(void)addDataSet:(TimeCodedData*)dataSet;
 -(void)removeDataSet:(TimeCodedData*)dataSet;
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 -(TimeSeriesData*)timeSeriesDataFromColumn:(NSUInteger)columnIndex;
 
 
 -(NSDate*)startDate;
--(void)setRange:(QTTimeRange)newRange;
--(QTTimeRange)range;
+-(void)setRange:(CMTimeRange)newRange;
+-(CMTimeRange)range;
 
 -(NSString*)dataFile;
 -(void)setDataFile:(NSString*)theDataFile;
