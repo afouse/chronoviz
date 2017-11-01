@@ -16,7 +16,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	TimeCodedDataPoint *point1 = (TimeCodedDataPoint*)obj1;
 	TimeCodedDataPoint *point2 = (TimeCodedDataPoint*)obj2;
 	
-	return QTTimeCompare([point1 time], [point2 time]);
+	return CMTimeCompare(point1.time, point2.time);
 }
 
 

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "TimeCodedData.h"
 @class DataSource;
 @class TimeCodedDataPoint;
@@ -29,18 +29,18 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context );
 -(id)initWithDataPointArray:(NSArray*)data;
 
 // Initialize with an array of values evenly distributed over a range
--(id)initWithDataPoints:(NSArray*)values overRange:(QTTimeRange)range;
+-(id)initWithDataPoints:(NSArray*)values overRange:(CMTimeRange)range;
 
 -(TimeCodedDataPoint*)addPoint:(TimeCodedDataPoint*)point;
--(TimeCodedDataPoint*)addValue:(double)value atTime:(QTTime)time;
+-(TimeCodedDataPoint*)addValue:(double)value atTime:(CMTime)time;
 -(TimeCodedDataPoint*)addValue:(double)value atSeconds:(NSTimeInterval)seconds;
 -(void)addPoints:(NSArray*)timeCodedDataPoints;
 -(void)removeAllPoints;
 
-- (void)shiftByTime:(QTTime)diff;
+- (void)shiftByTime:(CMTime)diff;
 
-- (void)scaleFromRange:(QTTimeRange)oldRange toRange:(QTTimeRange)newRange;
-- (void)scaleToRange:(QTTimeRange)newRange;
+- (void)scaleFromRange:(CMTimeRange)oldRange toRange:(CMTimeRange)newRange;
+- (void)scaleToRange:(CMTimeRange)newRange;
 
 - (double)maxValue;
 - (double)minValue;
@@ -49,7 +49,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context );
 
 - (NSArray*)values;
 - (NSArray*)dataPoints;
-- (NSArray*)subsetOfSize:(NSUInteger)size forRange:(QTTimeRange)subsetRange;
+- (NSArray*)subsetOfSize:(NSUInteger)size forRange:(CMTimeRange)subsetRange;
 
 - (NSString*)csvData;
 - (NSMutableArray*)dataPointsFromCSVArray:(NSArray*)dataArray;
