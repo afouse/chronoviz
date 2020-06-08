@@ -41,7 +41,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		{
 			source = nil;
 			dataPoints = [[NSMutableArray alloc] init];
-			range = QTTimeRangeFromString(@"0:0:0:0.0/600~0:0:0:0.0/600");
+            range = CMTimeRangeMake(CMTimeMake(0,600),CMTimeMake(0,600));
 			maxValue = -DBL_MAX;
 			minValue = DBL_MAX;
 			mean = 0;
@@ -264,46 +264,47 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 }
 
 
-- (void)shiftByTime:(QTTime)diff
+- (void)shiftByTime:(CMTime)diff
 {	
 	for(TimeCodedDataPoint* point in dataPoints)
 	{
-		[point setTime:QTTimeIncrement([point time],diff)];
+		[point setTime:CMTimeAdd([point time],diff)];
 	}
 	
-	range.time = QTTimeIncrement(range.time,diff);
+	range.start = CMTimeAdd(range.start,diff);
 }
 
-- (void)scaleFromRange:(QTTimeRange)oldRange toRange:(QTTimeRange)newRange
+- (void)scaleFromRange:(CMTimeRange)oldRange toRange:(CMTimeRange)newRange
 {
-	QTTime startDiff = QTTimeDecrement(oldRange.time, newRange.time);
-	double scaleFactor = (double)newRange.duration.timeValue/(double)oldRange.duration.timeValue;
+	CMTime startDiff = CMTimeSubtract(oldRange.start, newRange.start);
+	double scaleFactor = CMTimeGetSeconds(newRange.duration)/CMTimeGetSeconds(oldRange.duration);
 	
-	range.time = QTTimeDecrement(range.time, startDiff);
+	range.start = CMTimeSubtract(range.start, startDiff);
 	range.duration.timeValue = range.duration.timeValue * scaleFactor;
 	
 	for(TimeCodedDataPoint* point in dataPoints)
 	{
-		[point setTime:QTMakeTime(([point time].timeValue - startDiff.timeValue)*scaleFactor,startDiff.timeScale)];
+        CMTimeScale originalScale = [point time].timescale;
+        [point setTime:CMTimeConvertScale(CMTimeMultiplyByFloat64(CMTimeSubtract([point time],startDiff), scaleFactor),originalScale)];
 	}
 }
 
-- (void)scaleToRange:(QTTimeRange)newRange
+- (void)scaleToRange:(CMTimeRange)newRange
 {
 	[self scaleFromRange:range toRange:newRange];
 }
 
-- (QTTimeRange)range
+- (CMTimeRange)range
 {
 	return range;
 }
 
-- (QTTime)startTime
+- (CMTime)startTime
 {
 	return [[dataPoints objectAtIndex:0] time];
 }
 
-- (QTTime)endTime
+- (CMTime)endTime
 {
 	return [[dataPoints lastObject] time];
 }
