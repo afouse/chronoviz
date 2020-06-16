@@ -492,7 +492,6 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
             {
                 [self setTimeColumn:0];
                 [self setTimeCoded:YES];
-                //range = QTMakeTimeRange(QTZeroTime,[[[AnnotationDocument currentDocument] movie] duration]);
             }
         }
 		
@@ -987,7 +986,6 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 	//NSString *altColon = @"⁚";
 	[coder encodeObject:uuid forKey:@"AnnotationDataSourceUUID"];
 	[coder encodeObject:dataFile forKey:@"AnnotationDataSourceFile"];
-	//[coder encodeQTTimeRange:range forKey:@"AnnotationDataSourceRange"];
     [coder encodeCMTimeRange:range forKey:@"AnnotationDataSourceCMRange"];
 	[coder encodeBool:timeCoded forKey:@"AnnotationDataSourceTimeCoded"];
 	[coder encodeBool:absoluteTime forKey:@"AnnotationDataSourceAbsoluteTime"];
@@ -1015,7 +1013,6 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
         {
             range = [coder decodeCMTimeRangeForKey:@"AnnotationDataSourceCMRange"];
         }
-		//range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSourceRange"];
 		timeCoded = [coder decodeBoolForKey:@"AnnotationDataSourceTimeCoded"];
 		absoluteTime = [coder decodeBoolForKey:@"AnnotationDataSourceAbsoluteTime"];
 		timeColumn = [coder decodeIntegerForKey:@"AnnotationDataSourceTimeColumn"];

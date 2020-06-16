@@ -129,7 +129,7 @@
 	return markers;
 }
 
--(QTMovie *)movie
+-(AVAsset *)movie
 {
 	if(videoProperties)
 	{

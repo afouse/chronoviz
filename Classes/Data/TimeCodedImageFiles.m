@@ -45,7 +45,7 @@
 - (NSMutableArray*)dataPointsFromCSVArray:(NSArray*)dataArray
 {
 	NSMutableArray *dataPointArray = [NSMutableArray arrayWithCapacity:[dataArray count]];
-	long timeScale = range.time.timeScale;
+	int timeScale = range.start.timescale;
 	BOOL timeIntervals = ([(NSString*)[[dataArray objectAtIndex:0] objectAtIndex:0] rangeOfString:@"."].location != NSNotFound);
 	for(NSArray* row in dataArray)
 	{
@@ -53,13 +53,12 @@
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
 		}
 		else
 		{
-			[dataPoint setTime:QTMakeTime([[row objectAtIndex:0] longLongValue],timeScale)];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] longLongValue],timeScale)];
 		}
-		//[dataPoint setTime:QTMakeTime([[row objectAtIndex:0] longLongValue],timeScale)];
 		[dataPoint setString:[row objectAtIndex:2]];
 		[dataPointArray addObject:dataPoint];
 		[dataPoint release];

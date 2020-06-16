@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
 @class TranscriptData;
@@ -25,7 +25,7 @@
 	
 	NSString *scrollPosition;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	NSTimeInterval clickedTime;
 }
 

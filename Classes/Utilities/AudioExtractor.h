@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "DataSource.h"
 #import "DPConstants.h"
 
@@ -20,7 +20,7 @@
 	NSMutableArray *subsetArray;
 	NSInteger subsetSize;
     NSTimeInterval sampleSize;
-	QTTimeRange subsetTime;
+	CMTimeRange subsetTime;
 	
 	NSWindow *progressWindow;
 	NSProgressIndicator *progressIndicator;
@@ -39,7 +39,7 @@
 - (void)setDelegate:(id <DataSourceDelegate>)theDelegate;
 
 - (BOOL)exportAudioSubset:(int)subsetSize;
-- (BOOL)exportAudioSubset:(int)theSubsetSize forRange:(QTTimeRange)timeRange;
+- (BOOL)exportAudioSubset:(int)theSubsetSize forRange:(CMTimeRange)timeRange;
 - (NSArray*)subsetArray;
 
 - (NSArray*) getAudioSubset:(NSInteger)subsetSize;

@@ -2914,7 +2914,7 @@ static AppController *currentApp = nil;
 	if(CMTimeCompare(selection.duration, [mMovie duration]) == NSOrderedAscending)
 	{
 		selection.duration.value = selection.duration.value * 2;
-		selection.start.value = selection.start.value - selection.duration.timeValue/4;
+		selection.start.value = selection.start.value - selection.duration.value/4;
 		selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 		[overviewTimelineView setSelection:selection animate:YES];
 		
@@ -3120,12 +3120,12 @@ static AppController *currentApp = nil;
 //	return imageSequenceView;
 //}
 
-- (QTMovie *)movie
+- (AVPlayer *)movie
 {
 	return mMovie;
 }
 
-- (QTMovie *)mMovie
+- (AVPlayer *)mMovie
 {
 	return mMovie;
 }
@@ -3435,7 +3435,7 @@ static AppController *currentApp = nil;
 		}
 	}
 	
-	for(QTMovie* movie in activeMovies)
+	for(AVAsset* movie in activeMovies)
 	{
 		[movie setRate:rate];
 	}

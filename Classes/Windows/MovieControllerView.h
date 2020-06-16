@@ -7,12 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AppController.h"
 
 @interface MovieControllerView : NSView {
 	
-	IBOutlet QTMovieView *mMovieView;
+	IBOutlet AFMovieView *mMovieView; // TODO: Check whether this is the right view (was auto-suggested).
 	IBOutlet AppController *mAppController;
 	
 }

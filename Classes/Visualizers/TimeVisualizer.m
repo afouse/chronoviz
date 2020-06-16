@@ -129,7 +129,7 @@
 -(void)createLines
 {	
 	NSTimeInterval start;
-	QTGetTimeInterval([timeline range].time,&start);
+	QTGetTimeInterval([timeline range].start,&start);
 	NSTimeInterval duration;
 	QTGetTimeInterval([timeline range].duration,&duration); 
 	NSTimeInterval end = start + duration;
@@ -272,7 +272,7 @@
 	if (layer == timesLayer)
 	{
 		NSTimeInterval start;
-		QTGetTimeInterval([timeline range].time,&start);
+		QTGetTimeInterval([timeline range].start,&start);
 		NSTimeInterval duration;
 		QTGetTimeInterval([timeline range].duration,&duration);
 		CGFloat timeToPixel = [timeline bounds].size.width/duration;

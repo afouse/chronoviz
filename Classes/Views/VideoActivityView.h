@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "InteractionLog.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 
 @interface VideoActivityView : NSView {
@@ -22,7 +22,7 @@
 	NSBezierPath *segmentLines;
 	NSBezierPath *promptLines;
 	
-	QTMovie *movie;
+	AVPlayer *movie;
 	
 	CGFloat * dashPattern;
 	
@@ -38,7 +38,7 @@
 -(void)setMovie:(QTMovie *)movie;
 -(void)setInteractionLog:(InteractionLog *)log;
 -(void)updatePath;
--(void)addSpeedChange:(float)speed atTime:(QTTime)time;
+-(void)addSpeedChange:(float)speed atTime:(CMTime)time;
 -(NSPoint)addPointatMovieTime:(float)movieTime andSessionTime:(float)sessionTime;
 -(NSPoint)jumpToPointatMovieTime:(float)movieTime andSessionTime:(float)sessionTime;
 

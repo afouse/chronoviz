@@ -104,7 +104,7 @@
 	IBOutlet NSMenu *viewMenu;
     IBOutlet NSMenu *savedStatesMenu;
 	
-	AVAsset *mMovie;
+	AVPlayer *mMovie;
     VideoProperties *mainVideo;
 	NSString *movieFileName;
 	BOOL loadingMovie;
@@ -178,7 +178,7 @@
 }
 
 @property(readonly) AnnotationDocument *document; 
-@property(readonly) AVAsset* mMovie;
+@property(readonly) AVPlayer* mMovie;
 @property(readonly) AVPlayerItem* playerItem;
 @property(readonly) VideoFrameLoader *frameLoader;
 @property(readonly) NSUndoManager *undoManager;
@@ -208,8 +208,8 @@
 - (void)continueTermination;
 
 - (void)setMainVideo:(VideoProperties *)video;
-- (AVAsset *)movie;
-- (AVAsset *)mMovie;
+- (AVPlayer *)movie;
+- (AVPlayer *)mMovie;
 - (CMTime)currentTime;
 - (CMTimeRange)currentSelection;
 //- (ImageSequenceView *)imageSequenceView;

@@ -56,11 +56,11 @@
 			nil];
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
-	long timeScale = range.time.timeScale;
+    CMTimeScale timeScale = range.start.timescale;
 	double relativeTime = [[row objectAtIndex:timeColumn] doubleValue];
-	return QTMakeTime(range.time.timeValue + (relativeTime * timeScale), timeScale);
+	return CMTimeMake(range.start.value + (relativeTime * timeScale), timeScale);
 }
 
 -(NSArray*)dataArray
@@ -88,19 +88,16 @@
 		}
 		[self setDataArray:[dataString barRows]];
 		
-		//float initialOffset = -[[[dataArray objectAtIndex:1] objectAtIndex:0] doubleValue];
-		//range.time = QTMakeTimeWithTimeInterval(initialOffset);
+		CMTime last = [self timeForRowArray:[dataArray lastObject]];
 		
-		QTTime last = [self timeForRowArray:[dataArray lastObject]];
-		
-		int index = [dataArray count] - 1;
-		while(last.timeValue == 0)
+		unsigned long index = [dataArray count] - 1;
+		while(last.value == 0)
 		{
 			last = [self timeForRowArray:[dataArray objectAtIndex:index]];
 			index--;
 		}
 		
-		QTTime duration = QTTimeDecrement(last,[self timeForRowArray:[dataArray objectAtIndex:1]]);
+		CMTime duration = CMTimeSubtract(last,[self timeForRowArray:[dataArray objectAtIndex:1]]);
 		
 		range.duration = duration;
 		

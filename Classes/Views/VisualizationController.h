@@ -25,7 +25,7 @@
 
 -(void)updateVisualization;
 
--(void)addSpeedChange:(float)speed atTime:(QTTime)time;
+-(void)addSpeedChange:(float)speed atTime:(CMTime)time;
 
 -(void)exportImageToFile:(NSString *)path;
 

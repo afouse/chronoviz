@@ -351,7 +351,7 @@
 }
 
 
-- (void)setMovie:(AVAsset *)mov
+- (void)setMovie:(AVPlayer *)mov
 {
 	[self setSelected:nil];
 	[mov retain];
@@ -369,7 +369,7 @@
 	[self redrawAllSegments];
 }
 
-- (AVAsset*)movie
+- (AVPlayer*)movie
 {
 	return movie;
 }
@@ -1217,7 +1217,7 @@
 			
 			CMTimeRange dataRange = [dataSource range];
 			
-			dataRange.time = CMTimeAdd(dataRange.time, diff);
+			dataRange.start = CMTimeAdd(dataRange.start, diff);
 			
 			[dataSource setRange:dataRange];
 		}
@@ -1227,8 +1227,8 @@
 	{		
 		NSEvent *event = [sender representedObject];
 		NSPoint curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-		long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
-		long timeScale = range.duration.timescale;
+		long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].start.value;
+		int timeScale = range.duration.timescale;
 		
 		CMTime clickedTime = CMTimeMake(timeValue,timeScale);
 		CMTime playheadTime = [[AppController currentApp] currentTime];
@@ -1240,7 +1240,7 @@
 			{
 				CMTime diff = CMTimeSubtract(playheadTime, clickedTime);
 				CMTimeRange dataRange = [[timeSeriesData source] range];
-				dataRange.time = CMTimeAdd(dataRange.time, diff);
+				dataRange.start = CMTimeAdd(dataRange.start, diff);
 				[[timeSeriesData source] setRange:dataRange];
 			}
 			else if(timeSeriesData)

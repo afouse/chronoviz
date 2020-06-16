@@ -10,14 +10,14 @@
 #import "Interaction.h"
 
 @interface InteractionJump : Interaction {
-	QTTime fromTime;
-	QTTime toTime;
+	CMTime fromTime;
+	CMTime toTime;
 }
 
-- (id)initWithFromMovieTime:(QTTime)fromMovieTime toMovieTime:(QTTime)toMovieTime andSessionTime:(double)theSessionTime;
+- (id)initWithFromMovieTime:(CMTime)fromMovieTime toMovieTime:(CMTime)toMovieTime andSessionTime:(double)theSessionTime;
 - (NSString *)description;
 
-- (QTTime)fromMovieTime;
-- (QTTime)toMovieTime;
+- (CMTime)fromMovieTime;
+- (CMTime)toMovieTime;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "Interaction.h"
 
 @interface InteractionSpeedChange : Interaction {
@@ -16,7 +16,7 @@
 
 - (float)speed;
 
-- (id)initWithSpeed:(float)theSpeed andMovieTime:(QTTime)theMovieTime atTime:(double)theSessionTime;
+- (id)initWithSpeed:(float)theSpeed andMovieTime:(CMTime)theMovieTime atTime:(double)theSessionTime;
 - (NSString *)description;
 
 @end

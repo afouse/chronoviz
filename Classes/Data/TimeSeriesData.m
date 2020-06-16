@@ -53,7 +53,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 			[dataPoints sortUsingFunction:afTimeCodedPointSort context:NULL];
 			TimeCodedDataPoint* start = [data objectAtIndex:0];
 			TimeCodedDataPoint* end = [data lastObject];
-			range = QTMakeTimeRange([start time], QTMakeTime([end time].timeValue - [start time].timeValue,[start time].timeScale));
+			range = CMTimeRangeMake([start time], CMTimeMake([end time].value - [start time].value,[start time].timescale));
             
 			maxValue = -DBL_MAX;
 			minValue = DBL_MAX;
@@ -79,10 +79,10 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 }
 
 // Initialize with an array of values evenly distributed over a range
--(id)initWithDataPoints:(NSArray*)values overRange:(QTTimeRange)timeRange
+-(id)initWithDataPoints:(NSArray*)values overRange:(CMTimeRange)timeRange
 {
-	int numPoints = [values count];
-	float interval = (float)(timeRange.duration.timeValue)/(numPoints - 1);
+	NSUInteger numPoints = [values count];
+	float interval = (float)(timeRange.duration.value)/(numPoints - 1);
 	
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:numPoints];
 	int i;
@@ -90,7 +90,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	{
 		TimeCodedDataPoint *dataPoint = [[TimeCodedDataPoint alloc] init];
 		[dataPoint setValue:[[values objectAtIndex:i] doubleValue]];
-		[dataPoint setTime:QTMakeTime(i*interval,timeRange.duration.timeScale)];
+		[dataPoint setTime:CMTimeMake(i*interval,timeRange.duration.timescale)];
 		[array addObject:dataPoint];
 		[dataPoint release];
 	}
@@ -107,7 +107,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 -(TimeCodedDataPoint*)addPoint:(TimeCodedDataPoint*)point
 {	
 	double value = [point value];
-	QTTime time = [point time];
+	CMTime time = [point time];
 	
 	if([dataPoints count] == 0)
 	{
@@ -115,14 +115,14 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		maxValue = value;
 		minValue = value;
 		mean = value;
-		range = QTMakeTimeRange(time,QTMakeTime(0,600));
+		range = CMTimeRangeMake(time,CMTimeMake(0,600));
 	}
 	else
 	{
 		int index = 0;
 		for(TimeCodedDataPoint *testPoint in dataPoints)
 		{
-			if(QTTimeCompare(testPoint.time,time) == NSOrderedDescending)
+			if(CMTimeCompare(testPoint.time,time) == NSOrderedDescending)
 			{
 				break;
 			}
@@ -141,16 +141,16 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		
 		mean = ((mean * ([dataPoints count] - 1)) + [point value])/[dataPoints count];
 		
-		if(!QTTimeInTimeRange(time, range))
+		if(!CMTimeRangeContainsTime(range, time))
 		{
-			range = QTUnionTimeRange(range, QTMakeTimeRange(time, QTMakeTime(0,600)));
+			range = CMTimeRangeGetUnion(range, CMTimeRangeMake(time, CMTimeMake(0,600)));
 		}
 	}
 	
 	return point;
 }
 
--(TimeCodedDataPoint*)addValue:(double)value atTime:(QTTime)time
+-(TimeCodedDataPoint*)addValue:(double)value atTime:(CMTime)time
 {
 	TimeCodedDataPoint *point = [[TimeCodedDataPoint alloc] init];
 	point.value = value;
@@ -165,7 +165,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 
 -(TimeCodedDataPoint*)addValue:(double)value atSeconds:(NSTimeInterval)seconds
 {
-	return [self addValue:value atTime:QTMakeTimeWithTimeInterval(seconds)];
+	return [self addValue:value atTime:CMTimeMake(seconds, 1000000)]; // TODO: Check if the timescale is correct.
 }
 
 -(void)addPoints:(NSArray*)timeCodedDataPoints
@@ -182,7 +182,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
         [dataPoints sortUsingFunction:afTimeCodedPointSort context:NULL];
         TimeCodedDataPoint* start = [dataPoints objectAtIndex:0];
         TimeCodedDataPoint* end = [dataPoints lastObject];
-        range = QTMakeTimeRange([start time], QTMakeTime([end time].timeValue - [start time].timeValue,[start time].timeScale));
+        range = CMTimeRangeMake([start time], CMTimeMake([end time].value - [start time].value,[start time].timescale));
         
         maxValue = -DBL_MAX;
         minValue = DBL_MAX;
@@ -214,8 +214,6 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	[super encodeWithCoder:coder];
 
 	// Taken over by TimeCodedData
-//	[coder encodeObject:name forKey:@"AnnotationDataSetName"];
-//	[coder encodeQTTimeRange:range forKey:@"AnnotationDataSetRange"];
 	[coder encodeDouble:minValue forKey:@"AnnotationDataSetMinValue"];
 	[coder encodeDouble:maxValue forKey:@"AnnotationDataSetMaxValue"];
 	[coder encodeDouble:mean forKey:@"AnnotationDataSetMean"];
@@ -228,8 +226,6 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
     if(self = [super initWithCoder:coder])
 	{
 		// Taken over by TimeCodedData
-//		self.name = [[coder decodeObjectForKey:@"AnnotationDataSetName"] retain];
-//		range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSetRange"];
 		minValue = [coder decodeDoubleForKey:@"AnnotationDataSetMinValue"];
 		maxValue = [coder decodeDoubleForKey:@"AnnotationDataSetMaxValue"];
         if([coder containsValueForKey:@"AnnotationDataSetIntervalMode"])
@@ -280,12 +276,12 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	double scaleFactor = CMTimeGetSeconds(newRange.duration)/CMTimeGetSeconds(oldRange.duration);
 	
 	range.start = CMTimeSubtract(range.start, startDiff);
-	range.duration.timeValue = range.duration.timeValue * scaleFactor;
+	range.duration.value = range.duration.value * scaleFactor;
 	
 	for(TimeCodedDataPoint* point in dataPoints)
 	{
         CMTimeScale originalScale = [point time].timescale;
-        [point setTime:CMTimeConvertScale(CMTimeMultiplyByFloat64(CMTimeSubtract([point time],startDiff), scaleFactor),originalScale)];
+        [point setTime:CMTimeConvertScale(CMTimeMultiplyByFloat64(CMTimeSubtract([point time],startDiff), scaleFactor),originalScale, kCMTimeRoundingMethod_Default)]; // TODO: Check rounding method.
 	}
 }
 
@@ -332,12 +328,12 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
         
         NSNumber *interval = nil;
         NSTimeInterval pointTimeDiff;
-        QTTime lastTime = [[dataPoints objectAtIndex:0] time];
+        CMTime lastTime = [[dataPoints objectAtIndex:0] time];
         
         for(TimeCodedDataPoint* point in dataPoints)
         {
             // Calculate the frequencies of point intervals
-            QTGetTimeInterval(QTTimeDecrement([point time], lastTime), &pointTimeDiff);
+            pointTimeDiff = CMTimeGetSeconds(CMTimeSubtract([point time], lastTime));
             interval = [NSNumber numberWithLong:lround(pointTimeDiff * 100)];
             id num = [intervalFrequencyDict objectForKey:interval];
             if(num)
@@ -387,15 +383,15 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	return array;
 }
 
-- (NSArray*)subsetOfSize:(NSUInteger)size forRange:(QTTimeRange)subsetRange
+- (NSArray*)subsetOfSize:(NSUInteger)size forRange:(CMTimeRange)subsetRange
 {
 	NSMutableArray *subset = [NSMutableArray arrayWithCapacity:size];
     
     NSTimeInterval rangeDuration;
-    QTGetTimeInterval(subsetRange.duration, &rangeDuration);
+    rangeDuration = CMTimeGetSeconds(subsetRange.duration);
     
     NSTimeInterval startTime;
-    QTGetTimeInterval(subsetRange.time,&startTime);
+    startTime = CMTimeGetSeconds(subsetRange.start);
     
     CGFloat pixelToMovieTime = rangeDuration/(CGFloat)size;
     CGFloat pixel = 0;
@@ -403,7 +399,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	for(TimeCodedDataPoint *point in [self dataPoints])
 	{
         NSTimeInterval pointTime;
-        QTGetTimeInterval([point time], &pointTime);
+        pointTime = CMTimeGetSeconds([point time]);
 		if(pointTime >= movieTime)
 		{
 			[subset addObject:point];
@@ -455,7 +451,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 - (NSMutableArray*)dataPointsFromCSVArray:(NSArray*)dataArray
 {
 	NSMutableArray *dataPointArray = [NSMutableArray arrayWithCapacity:[dataArray count]];
-	long timeScale = range.time.timeScale;
+	long timeScale = range.start.timescale;
 	BOOL timeIntervals = ([(NSString*)[[dataArray objectAtIndex:0] objectAtIndex:0] rangeOfString:@"."].location != NSNotFound);
 	for(NSArray* row in dataArray)
 	{
@@ -463,11 +459,11 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
 		}
 		else
 		{
-			[dataPoint setTime:QTMakeTime([[row objectAtIndex:0] longLongValue],timeScale)];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] longLongValue],timeScale)];
 		}
 		
 		[dataPointArray addObject:dataPoint];

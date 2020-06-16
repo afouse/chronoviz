@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import <QuartzCore/CoreAnimation.h>
 #import "TimelineView.h"
 @class Annotation;

@@ -14,7 +14,7 @@
 #import "AppController.h"
 #import "ImageSequenceView.h"
 #import "VideoProperties.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 // =================================
 // = Interface for hidden methods
@@ -56,9 +56,9 @@
 		QTMovie *playbackMovie = [[marker visualizer] movie];
 		NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
 		
-		QTTime time = [[marker boundary] time];
+		CMTime time = [[marker boundary] time];
 		NSTimeInterval timeInterval;
-		QTGetTimeInterval(time, &timeInterval);
+		timeInterval = CMTimeGetSeconds(time);
 		
 		NSString *identifier;
 		if(exact)
@@ -94,7 +94,7 @@
 					if(!frameVideo)
 					{
 						NSError *error = nil;
-						frameVideo = [QTMovie movieWithURL:url error:&error];
+						frameVideo = [AVPlayer movieWithURL:url error:&error];
 						[frameMovies setObject:frameVideo forKey:url];
 						
 						NSTimeInterval duration;
@@ -118,9 +118,9 @@
 					}
 				}
 				
-				QTTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : QTMakeTimeWithTimeInterval(0);
+				CMTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : CMTimeMake(0, 1);
 				//NSLog(@"Offset: %i",(int)offset.timeValue);
-				theImage = (CGImageRef)[frameVideo frameImageAtTime:QTTimeIncrement([[marker boundary] time],offset)
+				theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeAdd([[marker boundary] time],offset)
 																			   withAttributes:frameDict error:NULL];
 			}
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];

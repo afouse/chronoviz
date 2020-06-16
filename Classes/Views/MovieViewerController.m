@@ -93,8 +93,8 @@
 			[[self window] setTitle:[properties title]];
 			[movieView setMovie:[properties movie]];
 			
-			QTTime offset = [properties offset];
-			[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+			CMTime offset = [properties offset];
+			[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 			
 			[volumeSlider setHidden:![properties hasAudio]];
 			[volumeIcon setHidden:![properties hasAudio]];

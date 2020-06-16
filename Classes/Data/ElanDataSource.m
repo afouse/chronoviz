@@ -11,7 +11,7 @@
 #import "AnnotationCategory.h"
 #import "Annotation.h"
 #import "AnnotationDocument.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @interface ElanDataSource (Parsing)
 
@@ -41,7 +41,7 @@
 	if (self != nil) {
 		self.predefinedTimeCode = YES;
 		self.timeCoded = YES;
-		range = QTMakeTimeRange(QTZeroTime, QTZeroTime);
+		range = CMTimeRangeMake(kCMTimeZero, kCMTimeZero);
 		separateCategories = YES;
 		
 		currentTier = nil;
@@ -238,13 +238,13 @@
 		NSTimeInterval endTime = [[timeSlots objectForKey:endTimeSlot] floatValue];
 		currentAnnotation = [[Annotation alloc] initWithTimeInterval:startTime];
 		[currentAnnotation setIsDuration:YES];
-		[currentAnnotation setEndTime:QTMakeTimeWithTimeInterval(endTime)];
+		[currentAnnotation setEndTime:CMTimeMake(endTime, 1000000)]; // TODO: Check if the timescale is correct.
 		[currentAnnotation setCategory:currentTierCategory];
 		
 		[currentTier addAnnotation:currentAnnotation];
 		[currentAnnotation release];
 		
-		if(QTTimeCompare(range.duration, [currentAnnotation endTime]) == NSOrderedAscending)
+		if(CMTimeCompare(range.duration, [currentAnnotation endTime]) == NSOrderedAscending)
 		{
 			range.duration = [currentAnnotation endTime];
 		}

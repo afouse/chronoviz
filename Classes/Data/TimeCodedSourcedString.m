@@ -29,8 +29,8 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder
 {
-	[coder encodeQTTime:time forKey:@"AnnotationDataTime"];
-	[coder encodeQTTime:duration forKey:@"AnnotationDataDuration"];
+	[coder encodeCMTime:time forKey:@"AnnotationDataTime"];
+	[coder encodeCMTime:duration forKey:@"AnnotationDataDuration"];
 	[coder encodeObject:string forKey:@"AnnotationDataString"];
 	[coder encodeObject:source forKey:@"AnnotationDataSource"];
 	[coder encodeBool:interpolated forKey:@"AnnotationDataSourceInterpolated"];
@@ -39,8 +39,8 @@
 - (id)initWithCoder:(NSCoder *)coder {
     if(self = [super init])
 	{
-		self.time = [coder decodeQTTimeForKey:@"AnnotationDataTime"];
-		self.duration = [coder decodeQTTimeForKey:@"AnnotationDataDuration"];
+		self.time = [coder decodeCMTimeForKey:@"AnnotationDataTime"];
+		self.duration = [coder decodeCMTimeForKey:@"AnnotationDataDuration"];
 		self.string = [[coder decodeObjectForKey:@"AnnotationDataString"] retain];
 		self.source = [[coder decodeObjectForKey:@"AnnotationDataSource"] retain];
 		self.interpolated = [coder decodeBoolForKey:@"AnnotationDataSourceInterpolated"];

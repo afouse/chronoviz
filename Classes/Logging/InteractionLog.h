@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class Annotation;
 @class Interaction;
 @class InteractionSpeedChange;
@@ -44,11 +44,11 @@ extern int const AFInteractionTypeAnnotationEdit;
 @property(readonly) double currentPlaybackTime;
 
 - (void)addInteraction:(Interaction*)interaction;
-- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(QTTime)time;
-- (InteractionAddSegment*)addSegmentationPoint:(QTTime)time;
-- (InteractionJump*)addJumpFrom:(QTTime)time to:(QTTime)time;
+- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(CMTime)time;
+- (InteractionAddSegment*)addSegmentationPoint:(CMTime)time;
+- (InteractionJump*)addJumpFrom:(CMTime)time to:(CMTime)time;
 
-- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(QTTime)value;
+- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(CMTime)value;
 - (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withValue:(NSObject*)value;
 
 - (NSArray *)getSegmentationPoints;

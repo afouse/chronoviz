@@ -93,11 +93,11 @@
 	return [[[self dataArray] objectAtIndex:1] objectAtIndex:0];
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
 	NSDate *startDate = [[[self dataArray] objectAtIndex:1] objectAtIndex:0];
 	NSDate *dataTime = [row objectAtIndex:timeColumn];
-	return QTMakeTimeWithTimeInterval([dataTime timeIntervalSinceDate:startDate]);
+	return CMTimeMake([dataTime timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
 }
 
 - (NSDate*)parseDate:(NSString*)filename
@@ -153,8 +153,8 @@
 			}
 		}
 		
-		QTTime duration = QTMakeTimeWithTimeInterval([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]]);
-		range = QTMakeTimeRange(QTMakeTime(0, duration.timeScale),duration);
+		CMTime duration = CMTimeMake([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]], 1000000); // TODO: Check if the timescale is correct.
+		range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 		[self setDataArray:fileArray];
 	}
 	return dataArray;
@@ -233,7 +233,7 @@
 			
 			TimeCodedString *picture = [[TimeCodedString alloc] init];
 			[picture setValue:0];
-			[picture setTime:QTMakeTimeWithTimeInterval([date timeIntervalSinceDate:startDate])];
+			[picture setTime:CMTimeMake([date timeIntervalSinceDate:startDate], 1000000)]; // TODO: Check if the timescale is correct.
 			[picture setString:pictureFile];
 			
 			[pictureFileArray addObject:picture];

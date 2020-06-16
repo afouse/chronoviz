@@ -167,7 +167,7 @@
     if(![data color])
         [data setColor:[NSColor greenColor]];
 	
-	QTGetTimeInterval([timeline range].time, &rangeTime);
+	QTGetTimeInterval([timeline range].start, &rangeTime);
 	QTGetTimeInterval([timeline range].duration, &rangeDuration);
 	CGFloat graphWidth = [timeline bounds].size.width;
 	float movieTimeToPixel = graphWidth/rangeDuration;

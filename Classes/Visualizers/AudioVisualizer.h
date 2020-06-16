@@ -15,12 +15,12 @@
 
 	NSArray *fullsubset;
 	NSMutableArray *subset;
-	QTTimeRange subsetRange;
+	CMTimeRange subsetRange;
 	
 	CALayer *graphLayer;
 	
 	CGMutablePathRef graph;
-	QTTimeRange graphRange;
+	CMTimeRange graphRange;
 	
 	AudioExtractor *audioExtractor;
 	NSTimer *loadTimer;

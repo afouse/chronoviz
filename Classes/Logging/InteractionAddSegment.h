@@ -7,13 +7,13 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "Interaction.h"
 
 @interface InteractionAddSegment : Interaction {
 }
 
-- (id)initWithMovieTime:(QTTime)theMovieTime andSessionTime:(double)theSessionTime;
+- (id)initWithMovieTime:(CMTime)theMovieTime andSessionTime:(double)theSessionTime;
 - (NSString *)description;
 
 @end

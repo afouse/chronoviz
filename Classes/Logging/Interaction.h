@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @interface Interaction : NSObject {
-	QTTime movieTime;
+	CMTime movieTime;
 	// seconds since start
 	double sessionTime;
 	NSString* source;
@@ -18,7 +18,7 @@
 
 @property(retain) NSString* source;
 
-- (QTTime)movieTime;
+- (CMTime)movieTime;
 - (double)sessionTime;
 - (NSString *)logOutput;
 - (NSXMLElement *)xmlElement;

@@ -49,7 +49,7 @@
 	[activityView setInteractionLog:interactionLog];
 }
 
-- (void)addSpeedChange:(float)speed atTime:(QTTime)time
+- (void)addSpeedChange:(float)speed atTime:(CMTime)time
 {
 	[activityView addSpeedChange:speed atTime:time];
 }

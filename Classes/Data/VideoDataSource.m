@@ -33,12 +33,14 @@ static NSArray *DPQuicktimeFileTypes = nil;
 {
 	if(!DPQuicktimeFileTypes)
 	{
-		DPQuicktimeFileTypes = [[QTMovie movieFileTypes:QTIncludeCommonTypes] retain];
+		// DPQuicktimeFileTypes = [[QTMovie movieFileTypes:QTIncludeCommonTypes] retain];
 	}
 	//return [DPQuicktimeFileTypes containsObject:[fileName pathExtension]];
 	//return [QTMovie canInitWithFile:fileName];
     
-    NSString *fileExt = [fileName pathExtension];
+    // NSString *fileExt = [fileName pathExtension];
+    // TODO: Reintroduce file type checking. A possibility is to utilize UTIs (uniform type identifiers, https://developer.apple.com/documentation/coreservices/1448939-uttypecreatepreferredidentifierf?language=objc).
+    /*
     for(NSString *ext in DPQuicktimeFileTypes)
     {
         if([fileExt caseInsensitiveCompare:ext] == NSOrderedSame)
@@ -46,6 +48,7 @@ static NSArray *DPQuicktimeFileTypes = nil;
             return YES;
         }
     }
+    */
     
     return NO;
 }
@@ -69,8 +72,8 @@ static NSArray *DPQuicktimeFileTypes = nil;
 			[self setPredefinedTimeCode:YES];
 			[self setTimeCoded:YES];
 			videoProperties = [props retain];
-			range.time = [videoProperties offset];
-			range.time.timeValue = -range.time.timeValue;
+			range.start = [videoProperties offset];
+			range.start.value = -range.start.value;
 			range.duration = [[videoProperties movie] duration];
 			[videoProperties addObserver:self
 							  forKeyPath:@"offset"
@@ -129,18 +132,18 @@ static NSArray *DPQuicktimeFileTypes = nil;
 {
     if ([keyPath isEqual:@"offset"])
 	{
-		range.time = [videoProperties offset];
-		range.time.timeValue = -range.time.timeValue;
+		range.start = [videoProperties offset];
+		range.start.value = -range.start.value;
     }
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
 }
 
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
 	range = newRange;
-	QTTime offset = range.time;
-	offset.timeValue = -offset.timeValue;
+	CMTime offset = range.start;
+	offset.value = -offset.value;
 	[videoProperties setOffset:offset];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
@@ -156,9 +159,9 @@ static NSArray *DPQuicktimeFileTypes = nil;
 	return [NSArray array];
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
-	return QTZeroTime;
+	return kCMTimeZero;
 }
 
 -(NSArray*)dataArray

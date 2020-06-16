@@ -125,17 +125,11 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
 	return newDataSets;
 }
 	
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
-	//NSDate *startTime = [[[AppController currentDoc] videoProperties] startDate];
 	NSDate *dataTime = [row objectAtIndex:timeColumn];
-	//return QTMakeTimeWithTimeInterval([dataTime timeIntervalSinceDate:startDate]);
-//	long timeScale = [[[AppController currentApp] movie] currentTime].timeScale;
-//	NSLog(@"timeScale: %qi",timeScale);
-//	long timeValue = [dataTime timeIntervalSinceDate:startDate] * timeScale;
-//	return QTMakeTime(timeValue, timeScale);
 	
-	return QTMakeTimeWithTimeInterval([dataTime timeIntervalSinceDate:startDate]);
+	return CMTimeMake([dataTime timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
 }
 
 -(NSDate*)startDate
@@ -308,8 +302,8 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
             
             [gregorian release];
             
-            QTTime duration = QTMakeTimeWithTimeInterval([date timeIntervalSinceDate:startDate]);
-            range = QTMakeTimeRange(QTMakeTime(0, duration.timeScale),duration);
+            CMTime duration = CMTimeMake([date timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+            range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
             
         }
         
@@ -432,8 +426,8 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
     
     [dateFormatter release];
     
-    QTTime duration = QTMakeTimeWithTimeInterval([date timeIntervalSinceDate:startDate]);
-    range = QTMakeTimeRange(QTMakeTime(0, duration.timeScale),duration);
+    CMTime duration = CMTimeMake([date timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+    range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 }
 
 - (NSArray*)imageFiles
@@ -480,7 +474,7 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
 			
 			TimeCodedString *picture = [[TimeCodedString alloc] init];
 			[picture setValue:0];
-			[picture setTime:QTMakeTimeWithTimeInterval([date timeIntervalSinceDate:startDate])];
+			[picture setTime:CMTimeMake([date timeIntervalSinceDate:startDate], 1000000)]; // TODO: Check if the timescale is correct.
 			[picture setString:pictureFile];
 			
 			[pictureFileArray addObject:picture];

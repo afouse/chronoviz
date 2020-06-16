@@ -230,8 +230,8 @@
                 
                 NSArray *importedDataSets = [source importVariables:variables asTypes:types];
                 
-                QTTimeRange range = [source range];
-                range.time = QTMakeTimeWithTimeInterval(starttime);
+                CMTimeRange range = [source range];
+                range.start = CMTimeMake(starttime, 1000000); // TODO: Check if the timescale is correct.
                 [source setRange:range];
                 
                 BOOL setMovie = NO;
@@ -239,8 +239,8 @@
                 NSTimeInterval oldTI;
                 NSTimeInterval newTI;
                 
-                QTGetTimeInterval([[document movie] duration], &oldTI);
-                QTGetTimeInterval([source range].duration, &newTI);
+                oldTI = CMTimeGetSeconds([[document movie] duration]);
+                newTI = CMTimeGetSecodns([source range].duration);
                 
                 if([[document videoProperties] localVideo] && ((newTI - oldTI) > 1))
                 {

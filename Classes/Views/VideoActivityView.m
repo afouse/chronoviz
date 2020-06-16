@@ -78,8 +78,8 @@
 	for(Interaction* change in [interactions interactions]) {
 		if([change type] == AFInteractionTypeSpeedChange)
 		{
-			QTTime movieQTTime = [change movieTime];
-			movieTime = movieQTTime.timeValue;
+			CMTime movieCMTime = [change movieTime];
+			movieTime = movieCMTime.value;
 			sessionTime = [change sessionTime];
 			[self addPointatMovieTime:movieTime andSessionTime:sessionTime];
 
@@ -87,10 +87,10 @@
 		else if([change type] == AFInteractionTypeJump) 
 		{
 			InteractionJump *jump = (InteractionJump *)change;
-			QTTime fromMovieQTTime = [jump fromMovieTime];
-			float fromMovieTime = fromMovieQTTime.timeValue;
-			QTTime toMovieQTTime = [jump toMovieTime];
-			float toMovieTime = toMovieQTTime.timeValue;
+			CMTime fromMovieQTTime = [jump fromMovieTime];
+			float fromMovieTime = fromMovieQTTime.value;
+			CMTime toMovieQTTime = [jump toMovieTime];
+			float toMovieTime = toMovieQTTime.value;
 			sessionTime = [change sessionTime];
 			
 			//[path setLineDash:dashPattern count:2 phase:0.0];
@@ -107,7 +107,7 @@
 		else if([change type] == AFInteractionTypeAddSegment)
 		{
 			InteractionAddSegment *segment = (InteractionAddSegment *)change;
-			float time = [segment movieTime].timeValue;
+			float time = [segment movieTime].value;
 			float x = margin + time * movieTimeToPixel;
 			NSPoint start = NSMakePoint(0,x);
 			NSPoint end = NSMakePoint([self bounds].size.width,x);
@@ -118,8 +118,8 @@
 	}
 	if(movie && ([interactions sessionTime] > sessionTime))
 	{
-		QTTime movieQTTime = [movie currentTime];
-		float movieTime = movieQTTime.timeValue;
+		CMTime movieCMTime = [movie currentTime];
+		float movieTime = movieCMTime.value;
 		float sessionTime = [interactions sessionTime];
 		NSPoint last = [self addPointatMovieTime:movieTime andSessionTime:sessionTime];
 //		NSPoint next;
@@ -150,8 +150,8 @@
 - (void)mouseDown:(NSEvent *)theEvent
 {
 	long long timeValue =([theEvent locationInWindow].y - margin)/movieTimeToPixel;
-	long timeScale = [movie duration].timeScale;
-	[movie setCurrentTime:QTMakeTime(timeValue,timeScale)];
+	int timeScale = [[movie currentItem] duration].timescale;
+	[movie seekToTime:CMTimeMake(timeValue,timeScale)];
 }
 
 - (NSPoint)addPointatMovieTime:(float)movieTime andSessionTime:(float)sessionTime
@@ -174,15 +174,16 @@
 	return next;
 }
 
-- (void)setMovie:(QTMovie *)theMovie
+- (void)setMovie:(AVAsset *)theMovie
 {
-	movie = theMovie;
-	float total = [movie duration].timeValue;
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:theMovie]; // TODO: Check whether asset keys are necessary. https://developer.apple.com/documentation/avfoundation/avplayeritem?language=objc
+	[movie initWithPlayerItem:playerItem];
+	float total = [[movie currentItem] duration].value;
 	float height = ([self frame].size.height) - 2*margin;
 	movieTimeToPixel = height/total;
 }
 
-- (void)addSpeedChange:(float)speed atTime:(QTTime)time
+- (void)addSpeedChange:(float)speed atTime:(CMTime)time
 {
 	
 }

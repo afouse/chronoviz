@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class Annotation;
 @class PluginParameter;
 @class PluginDataSet;
@@ -36,7 +36,7 @@
 
 // Results methods
 // These create new things to add to the system as a result of running the plugin
--(Annotation*)newAnnotationAtTime:(QTTime)time;
+-(Annotation*)newAnnotationAtTime:(CMTime)time;
 -(Annotation*)newAnnotationAtSeconds:(float)seconds;
 -(TimeSeriesData*)newTimeSeries;
 

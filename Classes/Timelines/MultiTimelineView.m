@@ -423,12 +423,12 @@
 
 - (void)layoutTimelines
 {
-	int numTimelines = [timelines count];
+	NSUInteger numTimelines = [timelines count];
 	
 	float height = [self frame].size.height;
 	
 	float newTimelineHeight = (height - ((numTimelines - 1.0) * interTimelineSpace))/numTimelines;
-	if([self inLiveResize] || [[AppController currentApp] animating] || (abs(newTimelineHeight- timelineHeight) > 5))
+	if([self inLiveResize] || [[AppController currentApp] animating] || (fabs(newTimelineHeight- timelineHeight) > 5))
 	{
 		timelineHeight = newTimelineHeight; 
 	}
@@ -459,8 +459,8 @@
 		
 		if(previous && [timeline basisAnnotation])
 		{
-			CGFloat left = [previous pointFromTime:[timeline range].time].x;
-			CGFloat right = [previous pointFromTime:QTTimeRangeEnd([timeline range])].x;
+			CGFloat left = [previous pointFromTime:[timeline range].start].x;
+			CGFloat right = [previous pointFromTime:CMTimeRangeGetEnd([timeline range])].x;
 			
 //			CGPathMoveToPoint(theLines, NULL, frame.size.width/2 - 20, bottom - (interTimelineSpace));
 //			CGPathAddCurveToPoint(theLines, NULL, frame.size.width/2 - 20, bottom - (interTimelineSpace/2), 0, bottom - (interTimelineSpace/2), 0, bottom);
@@ -566,7 +566,7 @@
 	[baseTimeline release];
 }
 
-- (void)setMovie:(QTMovie *)mov
+- (void)setMovie:(AVAsset *)mov
 {
 	[super setMovie:mov];
 	
@@ -577,7 +577,7 @@
 	
 }
 
-- (void)setRange:(QTTimeRange)theRange
+- (void)setRange:(CMTimeRange)theRange
 {
 	range = theRange;
     
@@ -594,14 +594,14 @@
     else
     {
         NSTimeInterval totalDuration = 0;
-        QTGetTimeInterval(range.duration, &totalDuration);
-        QTTime timelineDuration = QTMakeTimeWithTimeInterval(totalDuration/(CGFloat)[timelines count]);
+        totalDuration = CMTimeGetSeconds(range.duration);
+        CMTime timelineDuration = CMTimeMake(totalDuration/(CGFloat)[timelines count], 1000000); // TODO: Check if the timescale is correct.
         
-        QTTime start = range.time;
+        CMTime start = range.start;
         for(TimelineView *timeline in timelines)
         {
-            QTTimeRange timelineRange = QTMakeTimeRange(start, timelineDuration);
-            start = QTTimeIncrement(start, timelineDuration);
+            CMTimeRange timelineRange = CMTimeRangeMake(start, timelineDuration);
+            start = CMTimeAdd(start, timelineDuration);
             [timeline setRange:timelineRange];
         }
     }

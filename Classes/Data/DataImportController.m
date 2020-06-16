@@ -184,7 +184,7 @@ int importSort( id obj1, id obj2, void *context ) {
 		[self changeTimeCoding:self];
 	}
 
-	double offset = (double)[dataSource range].time.timeValue/(double)[dataSource range].time.timeScale;
+	double offset = (double)[dataSource range].start.value/(double)[dataSource range].start.timescale;
 	[timeOffsetField setDoubleValue:offset];
 	
 	[timeColumnButton removeAllItems];
@@ -637,11 +637,11 @@ int importSort( id obj1, id obj2, void *context ) {
 	[self importVariables:newVariables asTypes:importTypes withLabels:labels];
 	
 	NSTimeInterval currentOffset;
-	QTGetTimeInterval([dataSource range].time, &currentOffset);
+	currentOffset = CMTimeGetSeconds([dataSource range].start);
 	if(fabs([timeOffsetField floatValue] - currentOffset) > .0001)
 	{
-		QTTimeRange range = [dataSource range];
-		range.time = QTMakeTimeWithTimeInterval([timeOffsetField floatValue]);
+		CMTimeRange range = [dataSource range];
+		range.start = CMTimeMake([timeOffsetField floatValue], 1000000); // TODO: Check if the timescale is correct.
 		[dataSource setRange:range];
 	}
 }
@@ -657,8 +657,8 @@ int importSort( id obj1, id obj2, void *context ) {
 	NSTimeInterval oldTI;
 	NSTimeInterval newTI;
 	
-	QTGetTimeInterval([[[AppController currentDoc] movie] duration], &oldTI);
-	QTGetTimeInterval([dataSource range].duration, &newTI);
+	oldTI = CMTimeGetSeconds([[[AppController currentDoc] movie] duration]);
+	newTI = CMTimeGetSeconds([dataSource range].duration);
 	
 	if([[doc videoProperties] localVideo] && ((newTI - oldTI) > 1))
 	{
@@ -691,14 +691,14 @@ int importSort( id obj1, id obj2, void *context ) {
 			NSTimeInterval offset = [self absoluteOffset];
 			
 			// If none of the data will show up in the data set, don't use the absolute time for alignment
-			if(abs(offset) > oldTI)
+			if(fabs(offset) > oldTI)
 			{
 				offset = 0;
 			}
 			
-			QTTimeRange range = [dataSource range];
-			range.time.timeValue = offset * range.duration.timeScale;
-			range.time.timeScale = range.duration.timeScale;
+			CMTimeRange range = [dataSource range];
+			range.start.value = offset * range.duration.timescale;
+			range.start.value = range.duration.timescale;
 			[dataSource setRange:range];	
 		}
 	}

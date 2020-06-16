@@ -16,7 +16,7 @@
 	NSMutableArray *subset;
 	CGFloat subsetMax;
 	CGFloat subsetMin;
-	QTTimeRange subsetRange;
+	CMTimeRange subsetRange;
 	
 	CALayer *graphLayer;
 	CALayer *linesLayer;

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class EthnographerTrajectoryData;
 @class DPPath;
 @class DPPathSegment;

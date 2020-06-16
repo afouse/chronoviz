@@ -115,11 +115,11 @@
 		}
 		
 		
-		QTGetTimeInterval([timeline range].time, &rangeTime);
-		QTGetTimeInterval([timeline range].duration, &rangeDuration);
+		rangeTime = CMTimeGetSeconds([timeline range].start);
+		rangeDuration = CMTimeGetSeconds([timeline range].duration);
 		
 		NSMutableArray *dataSubset = [subsets objectAtIndex:index];
-		QTTimeRange dataSubsetRange = [[subsetRanges objectAtIndex:index] QTTimeRangeValue];
+		CMTimeRange dataSubsetRange = [[subsetRanges objectAtIndex:index] CMTimeRangeValue];
 		
 		
 		// Check to see if there are too few or too many points represented
@@ -127,7 +127,7 @@
            || ([dataSubset count] == 0)
 		   || ([dataSubset count] > graphWidth/1.9) 
 		   || (([dataSubset count] < graphWidth/2.5) && ([[data dataPoints] count] > graphWidth/3))
-		   || (!QTEqualTimeRanges([timeline range], dataSubsetRange) && ![timeline resizing]) )
+		   || (!CMTimeRangeEqual([timeline range], dataSubsetRange) && ![timeline resizing]) )
 		{
 			[dataSubset removeAllObjects];
 			CGFloat subsetDataMax = -CGFLOAT_MAX;
@@ -145,7 +145,7 @@
 				pointMax = ([point value] >= [pointMax value]) ? point : pointMax;
 				pointMin = ([point value] <= [pointMin value]) ? point : pointMin;
 				
-				QTGetTimeInterval([point time], &pointTime);
+				pointTime = CMTimeGetSeconds([point time]);
 				if(pointTime >= movieTime)
 				{
 					

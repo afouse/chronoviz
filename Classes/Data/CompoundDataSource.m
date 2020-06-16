@@ -12,7 +12,7 @@
 @interface CompoundDataSource (Updating)
 
 -(void)updateRange:(NSNotification*)notification;
--(void)setRange:(QTTimeRange)newRange fromSource:(DataSource*)dataSource;
+-(void)setRange:(CMTimeRange)newRange fromSource:(DataSource*)dataSource;
 
 @end
 
@@ -82,18 +82,18 @@
 	}
 	else
 	{
-		QTTimeRange sourceRange = [source range];
+		CMTimeRange sourceRange = [source range];
 		
-		QTTime sourceRangeEnd = QTTimeRangeEnd(sourceRange);
+		CMTime sourceRangeEnd = CMTimeRangeGetEnd(sourceRange);
 		
-		if(QTTimeCompare(sourceRange.time, range.time) == NSOrderedAscending)
+		if(CMTimeCompare(sourceRange.start, range.start) == NSOrderedAscending)
 		{
-			range.time = sourceRange.time;
+			range.start = sourceRange.start;
 		}
 		
-		if(QTTimeCompare(QTTimeRangeEnd(range),sourceRangeEnd) == NSOrderedAscending)
+		if(CMTimeCompare(CMTimeRangeGetEnd(range),sourceRangeEnd) == NSOrderedAscending)
 		{
-			range.duration = QTTimeDecrement(sourceRangeEnd, range.time);
+			range.duration = CMTimeSubtract(sourceRangeEnd, range.start);
 		}	
 	}
 }
@@ -109,24 +109,24 @@
 	[self setRange:[source range] fromSource:source];
 }
 			
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
 	[self setRange:newRange fromSource:nil];
 }
 
--(void)setRange:(QTTimeRange)newRange fromSource:(DataSource*)dataSource
+-(void)setRange:(CMTimeRange)newRange fromSource:(DataSource*)dataSource
 {
-	QTTime diff = QTTimeDecrement(newRange.time, range.time);
+	CMTime diff = CMTimeSubtract(newRange.start, range.start);
 	for(DataSource *source in dataSources)
 	{
 		if((source != dataSource) && [source isKindOfClass:[DataSource class]])
 		{
-			QTTimeRange oldRange = [source range];
-			oldRange.time = QTTimeIncrement(oldRange.time, diff);
+			CMTimeRange oldRange = [source range];
+			oldRange.start = CMTimeAdd(oldRange.start, diff);
 			[source setRange:oldRange];
 		}
 	}
-	range.time = newRange.time;
+	range.start = newRange.start;
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
 }
@@ -156,9 +156,9 @@
 	return [NSArray array];
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
-	return QTZeroTime;
+	return kCMTimeZero;
 }
 
 -(NSArray*)dataArray

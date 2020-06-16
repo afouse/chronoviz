@@ -29,8 +29,8 @@
 	
 	BOOL dragging;
 	
-	QTTime clickTime;
-	QTTime offset;
+	CMTime clickTime;
+	CMTime offset;
 	
 	CGFloat resizeMargin;
 	

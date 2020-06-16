@@ -65,7 +65,6 @@
 	[coder encodeObject:name forKey:@"AnnotationDataSetName"];
 	[coder encodeObject:variableName forKey:@"AnnotationDataSetVariableName"];
     [coder encodeCMTimeRange:range forKey:@"AnnotationDataSetCMRange"];
-	//[coder encodeQTTimeRange:range forKey:@"AnnotationDataSetRange"];
 	[coder encodeObject:color forKey:@"AnnotationDataSetColor"];
 }
 
@@ -88,7 +87,6 @@
         {
             range = [coder decodeCMTimeRangeForKey:@"AnnotationDataSetCMRange"];
         }
-		//range = [coder decodeQTTimeRangeForKey:@"AnnotationDataSetRange"];
 		[self setColor:[coder decodeObjectForKey:@"AnnotationDataSetColor"]];
 		if(!color)
 		{

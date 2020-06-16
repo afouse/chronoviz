@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AnnotationPlaybackControllerView.h"
 #import "DPStateRecording.h"
 @class TimeCodedString;
@@ -36,7 +36,7 @@
 
 -(NSUInteger)showPictureAtIndex:(NSUInteger)index;
 
--(NSImage*)imageAtTime:(QTTime)time;
--(CGImageRef)cgImageAtTime:(QTTime)time;
+-(NSImage*)imageAtTime:(CMTime)time;
+-(CGImageRef)cgImageAtTime:(CMTime)time;
 
 @end
