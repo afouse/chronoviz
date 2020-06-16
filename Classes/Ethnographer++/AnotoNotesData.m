@@ -31,7 +31,7 @@
 	traces = theTraces;
 }
 
-- (QTTimeRange)range
+- (CMTimeRange)range
 {
 	return [source range];
 }

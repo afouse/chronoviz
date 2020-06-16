@@ -55,8 +55,8 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
 
 @interface EthnographerTrajectory (Private)
 
--(void)processTimeMarker:(DPPathSegment*)marker atTime:(QTTime)time;
--(void)interpolateToSegment:(DPPathSegment *)segment atTime:(QTTime)time;
+-(void)processTimeMarker:(DPPathSegment*)marker atTime:(CMTime)time;
+-(void)interpolateToSegment:(DPPathSegment *)segment atTime:(CMTime)time;
 
 -(void)refreshOrientations;
 
@@ -139,10 +139,10 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
      postNotificationName:DPDataSetUpdatedNotification object:self];
 }
 
--(void)addTimeMarker:(DPPathSegment*)timeMarker atTime:(QTTime)time withId:(NSString *)uuid
+-(void)addTimeMarker:(DPPathSegment*)timeMarker atTime:(CMTime)time withId:(NSString *)uuid
 {
     //NSArray *timeMarkerTimes = [[inputTimeMarkers allKeys] sortedArrayUsingFunction:dpQTTimeValueSort context:NULL];
-    //BOOL addToEnd = (QTTimeCompare([[timeMarkerTimes lastObject] QTTimeValue], time) == NSOrderedAscending);
+    //BOOL addToEnd = (CMTimeCompare([[timeMarkerTimes lastObject] QTTimeValue], time) == NSOrderedAscending);
     
     [inputTimeMarkers setObject:timeMarker forKey:[NSValue valueWithQTTime:time]];
     
@@ -171,7 +171,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
      postNotificationName:DPDataSetUpdatedNotification object:self];
 }
 
--(void)processTimeMarker:(DPPathSegment*)timeMarker atTime:(QTTime)time
+-(void)processTimeMarker:(DPPathSegment*)timeMarker atTime:(CMTime)time
 {
     for(int segmentIndex = lastTimeIndex; segmentIndex < [[path segments] count]; segmentIndex++)
     {
@@ -233,7 +233,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
 
 #pragma mark Orientations
 
--(void)addOrientation:(CGFloat)degrees atTime:(QTTime)time withId:(NSString*)uuid
+-(void)addOrientation:(CGFloat)degrees atTime:(CMTime)time withId:(NSString*)uuid
 {
     if(!QTTimeInTimeRange(time, [trajectory range]))
     {
@@ -259,7 +259,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
     EthnographerOrientedTimeMarker *existingMarker = nil;
     for(EthnographerOrientedTimeMarker *marker in [inputOrientations allValues])
     {
-        if(QTTimeCompare(time, marker.time) == NSOrderedSame)
+        if(CMTimeCompare(time, marker.time) == NSOrderedSame)
         {
             existingMarker = marker;
             break;
@@ -288,20 +288,20 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
     
 }
 
--(void)addPivotFromSource:(NSString*)sourceId toTarget:(NSString*)targetId clockwise:(BOOL)cw startingAtTime:(QTTime)time withId:(NSString*)uuid
+-(void)addPivotFromSource:(NSString*)sourceId toTarget:(NSString*)targetId clockwise:(BOOL)cw startingAtTime:(CMTime)time withId:(NSString*)uuid
 {
     EthnographerOrientedTimeMarker *source = [inputOrientations objectForKey:sourceId];
     EthnographerOrientedTimeMarker *target = [inputOrientations objectForKey:targetId];
     if (source && target)
     {
-        if(QTTimeCompare(source.time, target.time) != NSOrderedAscending)
+        if(CMTimeCompare(source.time, target.time) != NSOrderedAscending)
         {
             EthnographerOrientedTimeMarker *temp = source;
             source = target;
             target = temp;
         }
         
-        if(QTTimeCompare(source.time, time) == NSOrderedAscending)
+        if(CMTimeCompare(source.time, time) == NSOrderedAscending)
         {
             // Create a new orientation mark at the start of the pivot
             EthnographerOrientedTimeMarker *orientation = [[EthnographerOrientedTimeMarker alloc] init];
@@ -344,7 +344,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
     NSArray *orientations = [[inputOrientations allValues] sortedArrayUsingComparator:^(id obj1, id obj2) {
         EthnographerOrientedTimeMarker *point1 = (EthnographerOrientedTimeMarker*)obj1;
         EthnographerOrientedTimeMarker *point2 = (EthnographerOrientedTimeMarker*)obj2;
-        return QTTimeCompare([point1 time], [point2 time]);   
+        return CMTimeCompare([point1 time], [point2 time]);   
     }];
     
     NSUInteger timeIndex = 0;
@@ -374,9 +374,9 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
             NSTimeInterval currentTime;
             NSTimeInterval startTime;
             NSTimeInterval endTime;
-            QTGetTimeInterval(point.time, &currentTime);
-            QTGetTimeInterval(currentPivot.source.time, &startTime);
-            QTGetTimeInterval(currentPivot.target.time, &endTime);
+            currentTime = CMTimeGetSeconds(point.time);
+            startTime = CMTimeGetSeconds(currentPivot.source.time);
+            endTime = CMTimeGetSeconds(currentPivot.target.time);
             
             if(currentTime > endTime)
             {
@@ -410,7 +410,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
             }
             
         }
-        else if(QTTimeCompare(point.time, [nextTime time]) != NSOrderedAscending)
+        else if(CMTimeCompare(point.time, [nextTime time]) != NSOrderedAscending)
         {
             if([nextTime hasOrientation])
             {
@@ -543,7 +543,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
     
     lastTimeIndex = 0;
     
-    NSArray *timeMarkerTimes = [[inputTimeMarkers allKeys] sortedArrayUsingFunction:dpQTTimeValueSort context:NULL];
+    NSArray *timeMarkerTimes = [[inputTimeMarkers allKeys] sortedArrayUsingFunction:dpCMTimeValueSort context:NULL];
     for(NSValue *timeValue in timeMarkerTimes)
     {
         DPPathSegment *timeMarker = [inputTimeMarkers objectForKey:timeValue];
@@ -556,7 +556,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
      postNotificationName:DPDataSetUpdatedNotification object:trajectory];
 }
 
--(void)interpolateToSegment:(DPPathSegment *)segment atTime:(QTTime)time
+-(void)interpolateToSegment:(DPPathSegment *)segment atTime:(CMTime)time
 {
     NSArray *pathSegments = [path segments];
     NSMutableArray *subpath = [NSMutableArray array];
@@ -575,10 +575,10 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
     }
     
     NSTimeInterval timediff;
-    QTGetTimeInterval(QTTimeDecrement(time, lastTime), &timediff);
+    timediff = CMTimeGetSeconds(CMTimeSubtract(time, lastTime));
     NSUInteger numPoints = timediff * rate;
     NSTimeInterval startTime;
-    QTGetTimeInterval(lastTime, &startTime);
+    startTime = CMTimeGetSeconds(lastTime);
     NSTimeInterval timeIncrement = 1.0/rate;
     
     CGFloat pointDistance = totalDistance/numPoints;
@@ -599,7 +599,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
             TimeCodedOrientationPoint *point = [[TimeCodedOrientationPoint alloc] init];
             point.x = lastPoint.x;
             point.y = lastPoint.y;
-            point.time = QTMakeTimeWithTimeInterval(startTime);
+            point.time = CMTimeMake(startTime, 1000000); // TODO: Check if the timescale is correct.
             point.reversed = lastPoint.reversed;
             
             [trajectory addPoint:point];
@@ -633,7 +633,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
             TimeCodedOrientationPoint *point = [[TimeCodedOrientationPoint alloc] init];
             point.x = px;
             point.y = py;
-            point.time = QTMakeTimeWithTimeInterval(startTime);
+            point.time = CMTimeMake(startTime, 1000000); // TODO: Check if the timescale is correct.
             point.reversed = currentSegment.reversed;
             
             [trajectory addPoint:point];
@@ -662,7 +662,7 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
 //            TimeCodedOrientationPoint *point = [[TimeCodedOrientationPoint alloc] init];
 //            point.x = px;
 //            point.y = py;
-//            point.time = QTMakeTimeWithTimeInterval(startTime);
+//            point.time = CMTimeMake(startTime, 1000000); // TODO: Check if the timescale is correct.
 //            
 //            [trajectory addPoint:point];
 //            [point release];
@@ -686,14 +686,14 @@ static const double AFEthnographerTrajectoryTimeMarker = 1.0;
      postNotificationName:DPDataSetUpdatedNotification object:self];
 }
 
--(void)removeTimeMarkerAtTime:(QTTime)time
+-(void)removeTimeMarkerAtTime:(CMTime)time
 {
     [inputTimeMarkers removeObjectForKey:[NSValue valueWithQTTime:time]];
     
     EthnographerOrientedTimeMarker *markerToRemove = nil;
     for(EthnographerOrientedTimeMarker *marker in [inputOrientations allValues])
     {
-        if(!marker.hasOrientation && (QTTimeCompare(time, marker.time) == NSOrderedSame))
+        if(!marker.hasOrientation && (CMTimeCompare(time, marker.time) == NSOrderedSame))
         {
             markerToRemove = marker;
             break;

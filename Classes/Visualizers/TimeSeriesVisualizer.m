@@ -167,8 +167,8 @@
     if(![data color])
         [data setColor:[NSColor greenColor]];
 	
-	QTGetTimeInterval([timeline range].start, &rangeTime);
-	QTGetTimeInterval([timeline range].duration, &rangeDuration);
+	rangeTime = CMTimeGetSeconds([timeline range].start);
+	rangeDuration = CMTimeGetSeconds([timeline range].duration);
 	CGFloat graphWidth = [timeline bounds].size.width;
 	float movieTimeToPixel = graphWidth/rangeDuration;
 	float dataRange;
@@ -185,13 +185,13 @@
 		subset = [[NSMutableArray alloc] initWithCapacity:graphWidth/2];
 		subsetMax = -CGFLOAT_MAX;
 		subsetMin = CGFLOAT_MAX;
-		//float pixelToMovieTime = (float)range.duration.timeValue/graphWidth;
+		//float pixelToMovieTime = (float)range.duration.value/graphWidth;
 		float pixelToMovieTime = rangeDuration/graphWidth;
 		float pixel = 0;
 		movieTime = rangeTime + pixel*pixelToMovieTime;
 		for(TimeCodedDataPoint *point in [data dataPoints])
 		{
-			QTGetTimeInterval([point time], &pointTime);
+			pointTime = CMTimeGetSeconds([point time]);
 			if(pointTime >= movieTime)
 			{
 				subsetMax = fmax(subsetMax, [point value]);
@@ -244,13 +244,13 @@
 		[graph setLineWidth:3.0];
 		[graph setLineJoinStyle:NSRoundLineJoinStyle];
 		TimeCodedDataPoint *first = [subset objectAtIndex:0];
-		QTGetTimeInterval([first time], &pointTime);
+		pointTime = CMTimeGetSeconds([first time]);
 		[graph moveToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 									   ([first value] - subsetMin) * valueToPixel)];
 
 		for(TimeCodedDataPoint *point in subset)
 		{
-			QTGetTimeInterval([point time], &pointTime);
+			pointTime = CMTimeGetSeconds([point time]);
 			[graph lineToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 										   ([point value] - subsetMin) * valueToPixel)];
 		}
@@ -262,19 +262,19 @@
 //        for(TimeCodedDataPoint *dataPoint in subset)
 //        {
 //            
-//            QTGetTimeInterval([dataPoint time], &pointTime);
+//            pointTime = CMTimeGetSeconds([dataPoint time]);
 //            
 //            x = floor((pointTime - rangeTime) * movieTimeToPixel);
 //            
 //            if(((x - previous) > 1.1) && ((pointTime - lastTime) > maxTimeGap))
 //            {
-//                QTGetTimeInterval([dataPoint time], &pointTime);
+//                pointTime = CMTimeGetSeconds([dataPoint time]);
 //                [graph moveToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 //                                               ([dataPoint value] - subsetMin) * valueToPixel)];
 //            }
 //            else
 //            {
-//                QTGetTimeInterval([dataPoint time], &pointTime);
+//                pointTime = CMTimeGetSeconds([dataPoint time]);
 //                [graph lineToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 //                                               ([dataPoint value] - subsetMin) * valueToPixel)];
 //            }
@@ -437,7 +437,7 @@
             
             TimeCodedDataPoint *firstPoint = [dataPoints objectAtIndex:0];
             //TimeCodedDataPoint *lastPoint = [dataPoints lastObject];
-            if(QTTimeCompare([firstPoint time], QTTimeRangeEnd([timeline range])) == NSOrderedDescending)
+            if(CMTimeCompare([firstPoint time], CMTimeRangeGetEnd([timeline range])) == NSOrderedDescending)
             {
                 CATextLayer *outsideRangeLayer = [CATextLayer layer];
                 [outsideRangeLayer setFrame:[graphLayer bounds]];

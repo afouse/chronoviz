@@ -89,7 +89,7 @@
 //    CGColorRelease(stroke);
 }
 
-- (void)updateForTime:(QTTime)time;
+- (void)updateForTime:(CMTime)time;
 {
 //    CGFloat minX = spatialView.minX;
 //    CGFloat minY = spatialView.minY;
@@ -119,7 +119,7 @@
     {
     
         TimeCodedDataPoint *startTimePoint = [[TimeCodedDataPoint alloc] init];
-        startTimePoint.time = QTTimeDecrement(time, QTMakeTime(time.timeScale * tailTime, time.timeScale));
+        startTimePoint.time = CMTimeSubtract(time, CMTimeMake(time.timescale * tailTime, time.timescale));
         
         closestIndex = [pathSubset binarySearch:startTimePoint
                                             usingFunction:afTimeCodedPointSort
@@ -201,7 +201,7 @@
         DPSpatialDataBase *spatialBase = spatialView.spatialBase;
         
         while(//(closestIndex < ([pathSubset count] - 2)) &&
-              (entirePath || (QTTimeCompare(currentTime,currentPoint.time) != NSOrderedAscending)))
+              (entirePath || (CMTimeCompare(currentTime,currentPoint.time) != NSOrderedAscending)))
         {
             if(connected)
             {    

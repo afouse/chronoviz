@@ -8,7 +8,7 @@
 
 #import "AnotoTrace.h"
 #import "TimeCodedPenPoint.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @implementation AnotoTrace
 
@@ -21,7 +21,7 @@
 }
 
 // Initialize with an array of values evenly distributed over a range
--(id)initWithDataPoints:(NSArray*)values overRange:(QTTimeRange)timeRange
+-(id)initWithDataPoints:(NSArray*)values overRange:(CMTimeRange)timeRange
 {
 	return nil;
 }
@@ -131,7 +131,7 @@
 - (NSMutableArray*)dataPointsFromCSVArray:(NSArray*)dataArray
 {
 	NSMutableArray *dataPointArray = [NSMutableArray arrayWithCapacity:[dataArray count]];
-	long timeScale = range.time.timeScale;
+	long timeScale = range.time.timescale;
 	BOOL timeIntervals = ([(NSString*)[[dataArray objectAtIndex:0] objectAtIndex:0] rangeOfString:@"."].location != NSNotFound);
 	for(NSArray* row in dataArray)
 	{
@@ -139,11 +139,11 @@
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
 		}
 		else
 		{
-			[dataPoint setTime:QTMakeTime([[row objectAtIndex:0] longLongValue],timeScale)];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] longLongValue],timeScale)];
 		}
 		[dataPoint setX:[[row objectAtIndex:2] integerValue]];
 		[dataPoint setY:[[row objectAtIndex:3] integerValue]];

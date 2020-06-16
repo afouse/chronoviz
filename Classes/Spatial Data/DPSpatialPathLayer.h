@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class DPSpatialDataView;
 @class SpatialTimeSeriesData;
 @class TimeCodedDataPoint;
@@ -32,7 +32,7 @@
     
     TimeCodedSpatialPoint *thecurrentPoint;
     NSInteger thecurrentIndex;
-    QTTime currentTime;
+    CMTime currentTime;
     
 }
 
@@ -48,6 +48,6 @@
 @property BOOL entirePath;
 @property BOOL entirePathNeedsRedraw;
 
-- (void)updateForTime:(QTTime)time;
+- (void)updateForTime:(CMTime)time;
 
 @end

@@ -57,7 +57,7 @@
 {
 	[annotations removeObject:annotation];
 	
-	range.time.timeValue = 0;
+	range.time.value = 0;
 	range.duration.value = 0;
 	for(Annotation* remaining in annotations)
 	{

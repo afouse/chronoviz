@@ -73,7 +73,7 @@
 - (NSArray*)createTimeSeriesForCategory:(AnnotationCategory*)category withRate:(CGFloat)entriesPerSecond
 {
     NSTimeInterval docDuration;
-    QTGetTimeInterval([theDoc duration], &docDuration);
+    docDuration = CMTimeGetSeconds([theDoc duration]);
     
     NSUInteger entries = docDuration * entriesPerSecond;
     
@@ -83,7 +83,7 @@
     NSMutableArray *annotations = [NSMutableArray arrayWithArray:[[[theDoc annotationsForCategory:category] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isDuration==1"]] sortedArrayUsingComparator:^(id obj1, id obj2) {
         Annotation *point1 = (Annotation*)obj1;
         Annotation *point2 = (Annotation*)obj2;
-        return QTTimeCompare([point1 time], [point2 time]);
+        return CMTimeCompare([point1 time], [point2 time]);
     }]];
     
     NSMutableArray *activeAnnotations = [[NSMutableArray alloc] init];
@@ -151,7 +151,7 @@
     [output appendString:@"\n"];
     
     NSTimeInterval docDuration;
-    QTGetTimeInterval([theDoc duration], &docDuration);
+    docDuration = CMTimeGetSeconds([theDoc duration]);
     
     int i,j;
     NSTimeInterval currentTime = 0;

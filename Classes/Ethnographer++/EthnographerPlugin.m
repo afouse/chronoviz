@@ -728,7 +728,7 @@ static NSString * const transferToolBundleIdentifier = @"edu.ucsd.hci.TransferTo
 					if(page && [[notesView pages] containsObject:page])
 					{
 						[[notesView window] orderFront:self];
-						QTTime time = [notesView timeForNotePoint:NSMakePoint([x doubleValue], [y doubleValue]) onPage:page];
+						CMTime time = [notesView timeForNotePoint:NSMakePoint([x doubleValue], [y doubleValue]) onPage:page];
 						if(!QTTimeIsIndefinite(time))
 						{
 							[[AppController currentApp] moveToTime:time fromSender:urlString];
@@ -838,7 +838,7 @@ static NSString * const transferToolBundleIdentifier = @"edu.ucsd.hci.TransferTo
 			//NSString *yoffset = [params objectForKey:@"offsetY"];
             
 			NSArray *traces = [self.annotationDataSource addFileToCurrentSession:file 
-                                                                     atTimeRange:QTMakeTimeRange(annotationStartTime, QTZeroTime)
+                                                                     atTimeRange:QTMakeTimeRange(annotationStartTime, kCMTimeZero)
                                                                           onPage:annotationPage];
             if([noteFiles count] > DP_NOTES_FILE_CACHE_MAX)
             {

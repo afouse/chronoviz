@@ -54,21 +54,21 @@
     
 	SegmentBoundary *segment = [marker boundary];
 	
-	QTTimeRange range = [timeline range];
+	CMTimeRange range = [timeline range];
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.time);
 	float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	
 	NSRect rect;
 	NSBezierPath *path = nil;
 	NSTimeInterval startTime;
-	QTGetTimeInterval([segment time], &startTime);
+	startTime = CMTimeGetSeconds([segment time]);
 	if([marker isDuration])
 	{
 		NSTimeInterval endTime;
-		QTGetTimeInterval([[marker annotation] endTime], &endTime);
+		endTime = CMTimeGetSeconds([[marker annotation] endTime]);
 		
 		CGFloat start = (startTime - rangeStart) * movieTimeToPixel;
 		CGFloat end = (endTime - rangeStart) * movieTimeToPixel;

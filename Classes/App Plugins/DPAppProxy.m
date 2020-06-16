@@ -101,12 +101,12 @@
 
 #pragma mark App Status
 
-- (QTTime)currentTime
+- (CMTime)currentTime
 {
     return [[AppController currentApp] currentTime];
 }
 
-- (void)setCurrentTime:(QTTime)time fromSender:(id)sender
+- (void)setCurrentTime:(CMTime)time fromSender:(id)sender
 {
     [[AppController currentApp] moveToTime:time fromSender:sender];
 }

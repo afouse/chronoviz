@@ -11,7 +11,7 @@
 
 @implementation InteractionSpeedChange
 
-- (id)initWithSpeed:(float)theSpeed andMovieTime:(QTTime)theMovieTime atTime:(double)theSessionTime
+- (id)initWithSpeed:(float)theSpeed andMovieTime:(CMTime)theMovieTime atTime:(double)theSessionTime
 {
 	[super init];
 	speed = theSpeed;
@@ -23,7 +23,7 @@
 - (NSString *)description
 {
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	return [NSString stringWithFormat:@"Time: %1.2f, Speed: %1.2f, MovieTime: %1.3f",sessionTime,speed,movieTimeInterval];
 }
 
@@ -35,7 +35,7 @@
 - (NSString *)logOutput
 {
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	return [NSString stringWithFormat:@"speedchange %1.2f %1.2f %1.3f\n",sessionTime,speed,movieTimeInterval];
 }
 
@@ -46,7 +46,7 @@
 	[element setName:@"speedChange"];
 	
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	NSNumber *movieTimeNumber = [NSNumber numberWithDouble:movieTimeInterval];
 	NSXMLNode *sessionTimeAttribute = [NSXMLNode attributeWithName:@"movieTime"
 													   stringValue:[movieTimeNumber stringValue]];

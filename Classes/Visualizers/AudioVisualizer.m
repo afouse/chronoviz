@@ -125,11 +125,11 @@
 	[subset release];
 	subset = nil;
 	
-	QTTimeRange movieRange = QTMakeTimeRange(QTZeroTime, [[self movie] duration]);
+	CMTimeRange movieRange = QTMakeTimeRange(kCMTimeZero, [[self movie] duration]);
 	if([[self videoProperties] audioSubset] && QTEqualTimeRanges([timeline range], movieRange))
 	{
 		subset = [[videoProperties audioSubset] mutableCopy];
-		subsetRange = QTMakeTimeRange(QTZeroTime, [[self movie] duration]);
+		subsetRange = QTMakeTimeRange(kCMTimeZero, [[self movie] duration]);
 		fullsubset = subset;
 	}
 	else
@@ -194,7 +194,7 @@
 		[self loadData];
 	} 
 	
-	QTTimeRange dataRange = subsetRange;
+	CMTimeRange dataRange = subsetRange;
 	NSArray *data = subset;
 	
 	if(audioExtractor)
@@ -211,7 +211,7 @@
 	   !QTEqualTimeRanges(QTUnionTimeRange([timeline range],subsetRange),subsetRange))
 	   || (([subset count] == 0) && fullsubset))
 	{
-		dataRange = QTMakeTimeRange(QTZeroTime, [[self movie] duration]);
+		dataRange = QTMakeTimeRange(kCMTimeZero, [[self movie] duration]);
 		data = fullsubset;
 	}
 	
@@ -226,10 +226,10 @@
         return;
     }
     
-	QTTimeRange timelineRange = [timeline range];
+	CMTimeRange timelineRange = [timeline range];
 	graphRange = timelineRange;
-	//QTTime audioDuration = [[self movie] duration];
-	QTTime audioDuration = dataRange.duration;
+	//CMTime audioDuration = [[self movie] duration];
+	CMTime audioDuration = dataRange.duration;
 	
 	CGFloat subsetSize = [data count];
 	if(!stopTimer && loadTimer && (data != fullsubset))
@@ -239,15 +239,15 @@
 	
 	//NSLog(@"subset size: %f",subsetSize);
 	
-	CGFloat pointTimeInterval = ((CGFloat)audioDuration.timeValue/(CGFloat)audioDuration.timeScale)/subsetSize;
-	CGFloat rangeStartTimeInterval = (CGFloat)timelineRange.time.timeValue/(CGFloat)timelineRange.time.timeScale;
-	CGFloat rangeDurationTimeInterval = (CGFloat)timelineRange.duration.timeValue/(CGFloat)timelineRange.duration.timeScale;
+	CGFloat pointTimeInterval = ((CGFloat)audioDuration.value/(CGFloat)audioDuration.timescale)/subsetSize;
+	CGFloat rangeStartTimeInterval = (CGFloat)timelineRange.time.value/(CGFloat)timelineRange.time.timescale;
+	CGFloat rangeDurationTimeInterval = (CGFloat)timelineRange.duration.value/(CGFloat)timelineRange.duration.timescale;
 	//CGFloat offsetTimeInterval = 0;
 	NSTimeInterval offsetTimeInterval;
-	QTGetTimeInterval(dataRange.time, &offsetTimeInterval);
-	if(videoProperties && ([videoProperties offset].timeValue != 0))
+	offsetTimeInterval = CMTimeGetSeconds(dataRange.time);
+	if(videoProperties && ([videoProperties offset].value != 0))
 	{
-		offsetTimeInterval -= (CGFloat)[videoProperties offset].timeValue/(CGFloat)[videoProperties offset].timeScale;
+		offsetTimeInterval -= (CGFloat)[videoProperties offset].value/(CGFloat)[videoProperties offset].timescale;
 	}
 	
 	CGFloat movieTimeToPixel = [timeline bounds].size.width/rangeDurationTimeInterval;
@@ -437,7 +437,7 @@
     if(NO)
     {
     
-        QTTimeRange dataRange = subsetRange;
+        CMTimeRange dataRange = subsetRange;
         NSArray *data = subset;
         
         if(audioExtractor)
@@ -454,7 +454,7 @@
             !QTEqualTimeRanges(QTUnionTimeRange([timeline range],subsetRange),subsetRange))
            || (([subset count] == 0) && fullsubset))
         {
-            dataRange = QTMakeTimeRange(QTZeroTime, [[self movie] duration]);
+            dataRange = QTMakeTimeRange(kCMTimeZero, [[self movie] duration]);
             data = fullsubset;
         }
         
@@ -464,10 +464,10 @@
             return;
         }
         
-        QTTimeRange timelineRange = [timeline range];
+        CMTimeRange timelineRange = [timeline range];
         graphRange = timelineRange;
-        //QTTime audioDuration = [[self movie] duration];
-        QTTime audioDuration = dataRange.duration;
+        //CMTime audioDuration = [[self movie] duration];
+        CMTime audioDuration = dataRange.duration;
         
         CGFloat subsetSize = [data count];
         if(!stopTimer && loadTimer && (data != fullsubset))
@@ -477,15 +477,15 @@
         
         //NSLog(@"subset size: %f",subsetSize);
         
-        CGFloat pointTimeInterval = ((CGFloat)audioDuration.timeValue/(CGFloat)audioDuration.timeScale)/subsetSize;
-        CGFloat rangeStartTimeInterval = (CGFloat)timelineRange.time.timeValue/(CGFloat)timelineRange.time.timeScale;
-        CGFloat rangeDurationTimeInterval = (CGFloat)timelineRange.duration.timeValue/(CGFloat)timelineRange.duration.timeScale;
+        CGFloat pointTimeInterval = ((CGFloat)audioDuration.value/(CGFloat)audioDuration.timescale)/subsetSize;
+        CGFloat rangeStartTimeInterval = (CGFloat)timelineRange.time.value/(CGFloat)timelineRange.time.timescale;
+        CGFloat rangeDurationTimeInterval = (CGFloat)timelineRange.duration.value/(CGFloat)timelineRange.duration.timescale;
         //CGFloat offsetTimeInterval = 0;
         NSTimeInterval offsetTimeInterval;
-        QTGetTimeInterval(dataRange.time, &offsetTimeInterval);
-        if(videoProperties && ([videoProperties offset].timeValue != 0))
+        offsetTimeInterval = CMTimeGetSeconds(dataRange.time);
+        if(videoProperties && ([videoProperties offset].value != 0))
         {
-            offsetTimeInterval -= (CGFloat)[videoProperties offset].timeValue/(CGFloat)[videoProperties offset].timeScale;
+            offsetTimeInterval -= (CGFloat)[videoProperties offset].value/(CGFloat)[videoProperties offset].timescale;
         }
         
         CGFloat movieTimeToPixel = [timeline bounds].size.width/rangeDurationTimeInterval;
@@ -606,7 +606,7 @@
 	[audioExtractor release];
 	audioExtractor = nil;
 	
-	if(![videoProperties audioSubset] && QTEqualTimeRanges(subsetRange, QTMakeTimeRange(QTZeroTime, [[self movie] duration])))
+	if(![videoProperties audioSubset] && QTEqualTimeRanges(subsetRange, QTMakeTimeRange(kCMTimeZero, [[self movie] duration])))
 	{
 		[videoProperties setAudioSubset:subset];
 		[[AppController currentDoc] saveVideoProperties:videoProperties];

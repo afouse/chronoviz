@@ -10,7 +10,7 @@
 #import "Annotation.h"
 #import "AnnotationCategory.h"
 #import "NSColorCGColor.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @interface AnnotationVisualizer (AnnotationVisualizerPrivateMethods)
 
@@ -272,22 +272,22 @@
 		trackIndex = [track indexOfObject:marker];
 	}
 	
-	QTTimeRange range = [timeline range];
+	CMTimeRange range = [timeline range];
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.start);
 	float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	
 	BOOL alternate = NO;
 	NSRect rect;
 	NSBezierPath *path = nil;
 	NSTimeInterval startTime;
-	QTGetTimeInterval([segment time], &startTime);
+	startTime = CMTimeGetSeconds([segment time]);
 	if([marker isDuration])
 	{
 		NSTimeInterval endTime;
-		QTGetTimeInterval([[marker annotation] endTime], &endTime);
+		endTime = CMTimeGetSeconds([[marker annotation] endTime]);
 		
 		
 		CGFloat start = (startTime - rangeStart) * movieTimeToPixel;
@@ -333,7 +333,7 @@
 		CGFloat start = (startTime - rangeStart) * movieTimeToPixel;
 		CGFloat radius = (height - 2.1)/2.0f;
         CGFloat x = start - (annotationRadius);
-        if((QTTimeCompare(QTTimeRangeEnd([timeline range]), [[timeline movie] duration]) != NSOrderedAscending)
+        if((CMTimeCompare(CMTimeRangeGetEnd([timeline range]), [[timeline movie] duration]) != NSOrderedAscending)
            && ((x + (annotationRadius * 2.0)) > [timeline bounds].size.width))
         {
             x = ([timeline bounds].size.width - (annotationRadius * 2.0));

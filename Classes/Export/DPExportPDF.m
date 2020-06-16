@@ -13,7 +13,7 @@
 #import "AnnotationDocument.h"
 #import "MultiTimelineView.h"
 #import "TimelineView.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @implementation DPExportPDF
 

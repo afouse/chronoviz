@@ -18,13 +18,13 @@ extern NSString * const AFEthnographerTrajectoryRate;
 @interface EthnographerOrientedTimeMarker : NSObject {
     BOOL hasOrientation;
     CGFloat orientation;
-    QTTime time;
+    CMTime time;
     NSString *uuid;
 }
 
 @property BOOL hasOrientation;
 @property CGFloat orientation;
-@property QTTime time;
+@property CMTime time;
 @property(copy) NSString* uuid;
 
 @end
@@ -60,7 +60,7 @@ extern NSString * const AFEthnographerTrajectoryRate;
     NSUInteger rate;
     
     NSUInteger lastTimeIndex;
-    QTTime lastTime;
+    CMTime lastTime;
     
 }
 
@@ -71,13 +71,13 @@ extern NSString * const AFEthnographerTrajectoryRate;
 -(void)addPathSegment:(DPPathSegment*)path;
 -(void)addPathStroke:(AnotoTrace*)path;
 -(void)addPathStroke:(AnotoTrace*)path reversed:(BOOL)isReversed;
--(void)addTimeMarker:(DPPathSegment*)timeMarker atTime:(QTTime)time withId:(NSString*)uuid;
+-(void)addTimeMarker:(DPPathSegment*)timeMarker atTime:(CMTime)time withId:(NSString*)uuid;
 
--(void)addOrientation:(CGFloat)degrees atTime:(QTTime)time withId:(NSString*)uuid;
--(void)addPivotFromSource:(NSString*)sourceId toTarget:(NSString*)targetId clockwise:(BOOL)cw startingAtTime:(QTTime)time withId:(NSString*)uuid;
+-(void)addOrientation:(CGFloat)degrees atTime:(CMTime)time withId:(NSString*)uuid;
+-(void)addPivotFromSource:(NSString*)sourceId toTarget:(NSString*)targetId clockwise:(BOOL)cw startingAtTime:(CMTime)time withId:(NSString*)uuid;
 
 -(void)removePathElement:(id)pathElement;
--(void)removeTimeMarkerAtTime:(QTTime)time;
+-(void)removeTimeMarkerAtTime:(CMTime)time;
 -(void)removeOrientationMark:(EthnographerOrientedTimeMarker*)mark;
 -(void)removePivot:(EthnographerTrajectoryPivot*)pivot;
 

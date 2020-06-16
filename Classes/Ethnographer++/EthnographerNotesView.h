@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
 @class AnotoNotesData;
@@ -41,7 +41,7 @@
 	BOOL tail;
 	NSTimeInterval tailTime;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	NSString* currentPage;
     
     NSString* title;
@@ -61,8 +61,8 @@
 -(void)redrawAllTraces;
 
 -(void)showPage:(NSString*)pageId;
--(QTTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId;
--(QTTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId;
+-(CMTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId;
+-(CMTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId;
 -(CALayer*)traceLayerForViewPoint:(NSPoint)point onPage:(NSString*)pageId;
 
 - (IBAction)nextPage:(id)sender;

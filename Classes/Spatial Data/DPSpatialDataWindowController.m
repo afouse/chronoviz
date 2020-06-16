@@ -272,11 +272,11 @@
 {
     NSTimeInterval interval = 10;
     NSTimeInterval duration = 0;
-    QTGetTimeInterval([[AnnotationDocument currentDocument] duration], &duration);
+    duration = CMTimeGetSeconds([[AnnotationDocument currentDocument] duration]);
     
     for(NSTimeInterval currentTime = 0; currentTime < duration; currentTime += interval)
     {
-        //CGImageRef image = [spatialDataView frameImageAtTime:QTMakeTimeWithTimeInterval(currentTime)];
+        //CGImageRef image = [spatialDataView frameImageAtTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
         
         NSWindow *thewindow = [self window];
         
@@ -288,7 +288,7 @@
         origin = [thewindow convertBaseToScreen:origin];
         CGRect captureRect = CGRectMake(origin.x, origin.y, viewFrame.size.width, viewFrame.size.height);
         
-        [spatialDataView setCurrentTime:QTMakeTimeWithTimeInterval(currentTime)];
+        [spatialDataView setCurrentTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.3]];
         
@@ -296,7 +296,7 @@
         
         NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:image];    
         
-        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:QTMakeTimeWithTimeInterval(currentTime)];
+        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
         
         //NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
         NSData *imageData = [bitmap representationUsingType:NSPNGFileType properties:nil];

@@ -219,23 +219,23 @@
 					
 					filename = [filename stringByAppendingPathExtension:@"mov"];
 					
-					QTTimeRange sourceMovieRange = QTMakeTimeRange(QTZeroTime, [sourceMovie duration]);
-					QTTime startTime = QTTimeIncrement([clip startTime], [props offset]);
-					QTTime endTime = QTTimeIncrement([clip endTime], [props offset]);
+					CMTimeRange sourceMovieRange = QTMakeTimeRange(kCMTimeZero, [sourceMovie duration]);
+					CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
+					CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 					
 					// Make sure the selected time actually exists in the movie
-					QTTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime)));
+					CMTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime)));
 					startTime = selectionRange.time;
-					endTime = QTTimeIncrement(selectionRange.time, selectionRange.duration);
+					endTime = CMTimeAdd(selectionRange.time, selectionRange.duration);
 					
 					QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filename error:&err];
-					[sourceMovie setSelection:QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime))];
+					[sourceMovie setSelection:QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime))];
 					[newMovie appendSelectionFromMovie:sourceMovie];
 					
 					NSTimeInterval startTimeInterval;
 					NSTimeInterval endTimeInterval;
-					QTGetTimeInterval(startTime,&startTimeInterval);
-					QTGetTimeInterval(endTime,&endTimeInterval);
+					startTimeInterval = CMTimeGetSeconds(startTime);
+					endTimeInterval = CMTimeGetSeconds(endTime);
 					NSString *infoString = [NSString stringWithFormat:@"Original Source: %@\nOriginal Time: %@ - %@",
 											[props videoFile],
 											[NSString stringWithTimeInterval:startTimeInterval],
@@ -261,24 +261,24 @@
 {
 	QTMovie *sourceMovie = [props movie];
 	
-	QTTimeRange sourceMovieRange = QTMakeTimeRange(QTZeroTime, [sourceMovie duration]);
-	QTTime startTime = QTTimeIncrement([clip startTime], [props offset]);
-	QTTime endTime = QTTimeIncrement([clip endTime], [props offset]);
+	CMTimeRange sourceMovieRange = QTMakeTimeRange(kCMTimeZero, [sourceMovie duration]);
+	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
+	CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 	
 	// Make sure the selected time actually exists in the movie
-	QTTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime)));
+	CMTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime)));
 	startTime = selectionRange.time;
-	endTime = QTTimeIncrement(selectionRange.time, selectionRange.duration);
+	endTime = CMTimeAdd(selectionRange.time, selectionRange.duration);
 	
 	NSError* err = nil;
 	QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filepath error:&err];
-	[sourceMovie setSelection:QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime))];
+	[sourceMovie setSelection:QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime))];
 	[newMovie appendSelectionFromMovie:sourceMovie];
 	
 	NSTimeInterval startTimeInterval;
 	NSTimeInterval endTimeInterval;
-	QTGetTimeInterval(startTime,&startTimeInterval);
-	QTGetTimeInterval(endTime,&endTimeInterval);
+	startTimeInterval = CMTimeGetSeconds(startTime);
+	endTimeInterval = CMTimeGetSeconds(endTime);
 	NSString *infoString = [NSString stringWithFormat:@"Original Source: %@\nOriginal Time: %@ - %@",
 							[props videoFile],
 							[NSString stringWithTimeInterval:startTimeInterval],

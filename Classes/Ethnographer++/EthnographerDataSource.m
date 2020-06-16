@@ -332,7 +332,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	
 	for(AnotoTrace *trace in [session traces])
 	{
-		QTGetTimeInterval(QTTimeRangeEnd([trace range]), &timeInterval);
+		timeInterval = CMTimeGetSeconds(CMTimeRangeGetEnd([trace range]));
 		if(((timeInterval - previousTime) > 5) || ([annotationTraces count] && ![[trace page] isEqualToString:[[annotationTraces lastObject] page]]))
 		{
 			if([annotationTraces count] > 0)
@@ -426,9 +426,9 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 {	
 	AnotoTrace *firstTrace = [annotationTraces objectAtIndex:0];
 	
-	Annotation *currentAnnotation = [[Annotation alloc] initWithQTTime:QTTimeIncrement(range.time,[firstTrace startTime])];
+	Annotation *currentAnnotation = [[Annotation alloc] initWithQTTime:CMTimeAdd(range.time,[firstTrace startTime])];
 	[currentAnnotation setIsDuration:YES];
-	[currentAnnotation setEndTime:QTTimeIncrement(range.time,[(AnotoTrace*)[annotationTraces lastObject] endTime])];
+	[currentAnnotation setEndTime:CMTimeAdd(range.time,[(AnotoTrace*)[annotationTraces lastObject] endTime])];
     
     NSUInteger rotation = [backgroundTemplate rotationForPdfPage:[backgroundTemplate pdfPageForLivescribePage:[firstTrace page]]];
     
@@ -442,7 +442,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
         NSData *imageData = [anImage TIFFRepresentation];
         NSBitmapImageRep *rep = [NSBitmapImageRep imageRepWithData:imageData];
 		NSString *dataSetID = [[[[self dataFile] lastPathComponent] stringByDeletingPathExtension] stringByReplacingOccurrencesOfString:@" " withString:@"_"];
-		NSString *imageName = [NSString stringWithFormat:@"anotoNote-%@-%qi.png",dataSetID,[firstTrace startTime].timeValue];
+		NSString *imageName = [NSString stringWithFormat:@"anotoNote-%@-%qi.png",dataSetID,[firstTrace startTime].value];
 		NSString *imageFile = [[[AnnotationDocument currentDocument] annotationsImageDirectory] stringByAppendingPathComponent:imageName];
 		NSDictionary *imageProps = [NSDictionary dictionaryWithObjectsAndKeys:
 									[NSNumber numberWithFloat:0.7],NSImageCompressionFactor,
@@ -760,7 +760,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 
 #pragma mark Notes Files
 
-- (NSArray*)addFileToCurrentSession:(NSString*)file atTimeRange:(QTTimeRange)timeRange onPage:(NSString*)setPage;
+- (NSArray*)addFileToCurrentSession:(NSString*)file atTimeRange:(CMTimeRange)timeRange onPage:(NSString*)setPage;
 {	
 	[self currentSession];
 	
@@ -768,11 +768,11 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	// If this should be combined with the existing annotation
 	Annotation *currentAnnotation = [[currentAnnotations annotations] lastObject];
 	NSTimeInterval timeRangeStart;
-	QTGetTimeInterval(timeRange.time,&timeRangeStart);
+	timeRangeStart = CMTimeGetSeconds(timeRange.time);
 	if(currentAnnotation)
 	{
         NSTimeInterval annotationTime;
-        QTGetTimeInterval([currentAnnotation startTime],&annotationTime);
+        annotationTime = CMTimeGetSeconds([currentAnnotation startTime]);
 		if(fabs(annotationTime - timeRangeStart) < .01)
 		{
 			[currentAnnotations removeAnnotation:currentAnnotation];
@@ -795,7 +795,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	[currentAnnotationCategory setColor:[currentSession color]];
 	[ann addCategory:currentAnnotationCategory];
 	//Annotation *ann = [self createAnnotationFromTraces:newTraces];
-	if(QTTimeCompare(QTZeroTime,timeRange.duration) == NSOrderedSame)
+	if(CMTimeCompare(kCMTimeZero,timeRange.duration) == NSOrderedSame)
 	{
 		[ann setIsDuration:NO];
 	}
@@ -820,7 +820,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	return [self tracesFromFile:file overTimeRange:QTMakeTimeRange(QTIndefiniteTime, QTIndefiniteTime) onPage:nil];
 }
 
-- (NSArray*)tracesFromFile:(NSString *)file overTimeRange:(QTTimeRange)timeRange onPage:(NSString*)setPage;
+- (NSArray*)tracesFromFile:(NSString *)file overTimeRange:(CMTimeRange)timeRange onPage:(NSString*)setPage;
 {
     
     NSError *err=nil;
@@ -891,7 +891,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	
 	NSTimeInterval tracesStartTime = 0;
 	NSTimeInterval tracesTimeDiff = 0;
-	QTGetTimeInterval(timeRange.time,&tracesStartTime);
+	tracesStartTime = CMTimeGetSeconds(timeRange.time);
 	
 	while ((aNode = [aNode nextNode])) {
 		if (([aNode kind] == NSXMLElementKind) && ([[aNode name] caseInsensitiveCompare:@"trace"] == NSOrderedSame)) {
@@ -923,9 +923,9 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 						startTime = timeInterval;
 					}
 					
-					[penPoint setTime:QTMakeTimeWithTimeInterval(timeInterval - startTime)];	
+					[penPoint setTime:CMTimeMake(timeInterval - startTime, 1000000)];     // TODO: Check if the timescale is correct.
 				}
-				else if(QTTimeCompare(QTZeroTime, timeRange.duration) == NSOrderedSame)
+				else if(CMTimeCompare(kCMTimeZero, timeRange.duration) == NSOrderedSame)
 				{
 					if(tracesTimeDiff == 0)
 					{
@@ -934,10 +934,10 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
                     
                     
                     
-					//[penPoint setTime:QTMakeTimeWithTimeInterval(timeInterval - tracesTimeDiff)];
+					//[penPoint setTime:CMTimeMake(timeInterval - tracesTimeDiff, 1000000)]; // TODO: Check if the timescale is correct.
                     
                     // Shift time so that it will be correct with adjusted with the range
-					[penPoint setTime:QTTimeDecrement(timeRange.time, self.range.time)];
+					[penPoint setTime:CMTimeSubtract(timeRange.time, self.range.time)];
 				}
 				else
 				{
@@ -965,7 +965,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 			
 			[allTraces addObject:trace];
             
-            if(QTTimeCompare(QTZeroTime, timeRange.duration) != NSOrderedSame)
+            if(CMTimeCompare(kCMTimeZero, timeRange.duration) != NSOrderedSame)
             {
                 range = QTUnionTimeRange(range, [trace range]);
 			}
@@ -988,7 +988,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	if(!dataArray)
 	{
 		
-		QTTimeRange rangeTemp = range;
+		CMTimeRange rangeTemp = range;
 		
 		[delegate dataSourceLoadStart];
 		[delegate dataSourceLoadStatus:0];
@@ -1026,7 +1026,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 		
 		[delegate dataSourceLoadFinished];
 		
-		if(rangeTemp.duration.timeValue != 0)
+		if(rangeTemp.duration.value != 0)
 		{
 			range = rangeTemp;
 		}
@@ -1404,7 +1404,7 @@ int ethnographerxmldatecompare( id obj1, id obj2, void *context ) {
 	long long start = (long long)(startTime * 1000.0);
 	
 	NSTimeInterval pointTimeInterval = 0;
-	QTGetTimeInterval([point time], &pointTimeInterval);
+	pointTimeInterval = CMTimeGetSeconds([point time]);
 	long long pointTime = (long long)(pointTimeInterval * 1000.0);
 	
 	NSNumber *timestampTime = [NSNumber numberWithLongLong:(start + pointTime)];

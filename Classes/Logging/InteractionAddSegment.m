@@ -11,7 +11,7 @@
 
 @implementation InteractionAddSegment
 
-- (id)initWithMovieTime:(QTTime)theMovieTime andSessionTime:(double)theSessionTime
+- (id)initWithMovieTime:(CMTime)theMovieTime andSessionTime:(double)theSessionTime
 {
 	[super init];
 	movieTime = theMovieTime;
@@ -22,14 +22,14 @@
 - (NSString *)description
 {
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	return [NSString stringWithFormat:@"Time: %1.2f, MovieTime: %1.2f", sessionTime, movieTimeInterval];
 }
 
 - (NSString *)logOutput
 {
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	return [NSString stringWithFormat:@"segment %1.2f %1.3f\n", sessionTime, movieTimeInterval];
 }
 
@@ -40,7 +40,7 @@
 	[element setName:@"addSegment"];
 	
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	NSNumber *movieTimeNumber = [NSNumber numberWithDouble:movieTimeInterval];
 	NSXMLNode *sessionTimeAttribute = [NSXMLNode attributeWithName:@"movieTime"
 													   stringValue:[movieTimeNumber stringValue]];

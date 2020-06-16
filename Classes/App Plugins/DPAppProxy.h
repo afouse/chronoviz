@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AnnotationView.h"
 @class TimeCodedData;
 
@@ -40,8 +40,8 @@
 
 #pragma mark App Status
 
-- (QTTime)currentTime;
-- (void)setCurrentTime:(QTTime)time fromSender:(id)sender;
+- (CMTime)currentTime;
+- (void)setCurrentTime:(CMTime)time fromSender:(id)sender;
 - (void)setCurrentRate:(CGFloat)rate fromSender:(id)sender;
 - (void)updateViewMenu;
 

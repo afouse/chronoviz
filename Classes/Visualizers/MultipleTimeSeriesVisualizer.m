@@ -224,13 +224,13 @@
 			[theGraph setLineWidth:3.0];
 			[theGraph setLineJoinStyle:NSRoundLineJoinStyle];
 			TimeCodedDataPoint *first = [dataSubset objectAtIndex:0];
-			QTGetTimeInterval([first time], &pointTime);
+			pointTime = CMTimeGetSeconds([first time]);
 			[theGraph moveToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 										   ([first value] - subsetMin) * valueToPixel)];
 			
 			for(TimeCodedDataPoint *point in dataSubset)
 			{
-				QTGetTimeInterval([point time], &pointTime);
+				pointTime = CMTimeGetSeconds([point time]);
 				[theGraph lineToPoint:NSMakePoint((pointTime - rangeTime) * movieTimeToPixel, 
 											   ([point value] - subsetMin) * valueToPixel)];
 			}

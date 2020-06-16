@@ -193,7 +193,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 }
 
-- (QTMovie*)movie
+- (AVPlayer*)movie
 {
 	if([movies count] > 0)
 	{

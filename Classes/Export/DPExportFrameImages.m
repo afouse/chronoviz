@@ -75,10 +75,10 @@
 {
 	QTMovie *sourceMovie = [props movie];
 	
-	QTTime startTime = QTTimeIncrement([clip startTime], [props offset]);
+	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
 	
 	// Make sure the selected time actually exists in the movie
-    if(QTTimeCompare(startTime, [sourceMovie duration]) == NSOrderedDescending)
+    if(CMTimeCompare(startTime, [sourceMovie duration]) == NSOrderedDescending)
     {
         startTime = [sourceMovie duration];
     }

@@ -61,7 +61,7 @@ static NSString *logsDirectory = nil;
 	[interactions addObject:interaction];
 }
 
-- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(QTTime)time
+- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(CMTime)time
 {
 	if(isPlaying)
 		return nil;
@@ -72,7 +72,7 @@ static NSString *logsDirectory = nil;
 	return interaction;
 }
 
-- (InteractionAddSegment*)addSegmentationPoint:(QTTime)time
+- (InteractionAddSegment*)addSegmentationPoint:(CMTime)time
 {
 	if(isPlaying)
 		return nil;
@@ -83,7 +83,7 @@ static NSString *logsDirectory = nil;
 	return interaction;
 }
 
-- (InteractionJump*)addJumpFrom:(QTTime)fromTime to:(QTTime)toTime
+- (InteractionJump*)addJumpFrom:(CMTime)fromTime to:(CMTime)toTime
 {
 	if(isPlaying)
 		return nil;
@@ -94,7 +94,7 @@ static NSString *logsDirectory = nil;
 	return jump;
 }
 
-- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(QTTime)value
+- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(CMTime)value
 {
 	return [self addEditOfAnnotation:annotation forAttribute:attribute withValue:[NSValue valueWithQTTime:value]];
 }
@@ -206,7 +206,7 @@ static NSString *logsDirectory = nil;
 	
 	while(interaction = [allInteractions nextObject]) {
 		[output appendString:[interaction logOutput]];
-		//[output appendFormat:@"%1.2f %1.2f %qi\n",[speedChange sessionTime],[speedChange speed],[speedChange movieTime].timeValue];
+		//[output appendFormat:@"%1.2f %1.2f %qi\n",[speedChange sessionTime],[speedChange speed],[speedChange movieTime].value];
 	}
 	
 	return [output writeToFile:filename atomically:YES encoding:NSUTF8StringEncoding error:NULL];		 
@@ -248,7 +248,7 @@ static NSString *logsDirectory = nil;
 			double sessionTime = [(NSString *)[elements objectAtIndex:1] doubleValue];
 			float speed = [(NSString *)[elements objectAtIndex:2] floatValue];
 			long long time = [(NSString *)[elements objectAtIndex:3] longLongValue];
-			QTTime qttime = QTMakeTime(time, timeScale);
+			CMTime qttime = CMTimeMake(time, timeScale);
 			
 			InteractionSpeedChange *speedChange = [[InteractionSpeedChange alloc] initWithSpeed:speed andMovieTime:qttime atTime:sessionTime];
 			//NSLog(@"output: %@",speedChange);
@@ -261,8 +261,8 @@ static NSString *logsDirectory = nil;
 			long long toTime = [(NSString *)[elements objectAtIndex:3] longLongValue];
 			
 			InteractionJump *jump = [[InteractionJump alloc]
-									 initWithFromMovieTime:QTMakeTime(fromTime, timeScale) 
-									 toMovieTime:QTMakeTime(toTime, timeScale)
+									 initWithFromMovieTime:CMTimeMake(fromTime, timeScale) 
+									 toMovieTime:CMTimeMake(toTime, timeScale)
 									 andSessionTime:sessionTime];
 			[interactions addObject:jump];
 			[jump release];
@@ -271,7 +271,7 @@ static NSString *logsDirectory = nil;
 			//NSLog(@"input: %@",elements);
 			//double sessionTime = [(NSString *)[elements objectAtIndex:1] doubleValue];
 			long long time = [(NSString *)[elements objectAtIndex:2] longLongValue];
-			QTTime qttime = QTMakeTime(time, timeScale);
+			CMTime qttime = CMTimeMake(time, timeScale);
 			
 			// Init with sessionTime set to 0, because otherwise it interferes with playback.
 			// There doesn't seem to be any reason why the segments need a sessionTime, but this may need to be fixed in the future.
@@ -310,7 +310,7 @@ static NSString *logsDirectory = nil;
 	// Update: Not needed if we don't automatically close when we get to the end
 	
 	 //Interaction *last = [interactions lastObject];
-	 //InteractionAddSegment *final = [[InteractionAddSegment alloc] initWithMovieTime:QTMakeTime(0, 0) andSessionTime:([last sessionTime] + 5)];
+	 //InteractionAddSegment *final = [[InteractionAddSegment alloc] initWithMovieTime:CMTimeMake(0, 0) andSessionTime:([last sessionTime] + 5)];
 	 //[interactions addObject:final];
 	 //[final release];
 	 
@@ -370,7 +370,7 @@ static NSString *logsDirectory = nil;
 				else if([action type] == AFInteractionTypeJump) 
 				{
 					InteractionJump *jump = (InteractionJump *)action;
-					QTTime toMovieTime = [jump toMovieTime];
+					CMTime toMovieTime = [jump toMovieTime];
 					[app moveToTime:toMovieTime];
 				}
 				else if([action type] == AFInteractionTypeNextPrompt) 

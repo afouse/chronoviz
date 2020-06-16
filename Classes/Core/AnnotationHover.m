@@ -186,7 +186,7 @@
 	if([annotation isDuration])
 	{
 		NSTimeInterval duration;
-		QTGetTimeInterval(QTTimeDecrement([annotation endTime], [annotation startTime]),&duration);
+		duration = CMTimeGetSeconds(CMTimeSubtract([annotation endTime], [annotation startTime]));
 		timeString = [NSString stringWithFormat:@"%@, %.1f seconds",[annotation startTimeString],duration];
 	}
 	else

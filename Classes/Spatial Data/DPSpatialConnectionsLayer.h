@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class DPSpatialDataView;
 @class SpatialTimeSeriesData;
 @class TimeCodedDataPoint;

@@ -94,7 +94,7 @@
 - (void) updateTime:(NSNotification*)notification
 {
 	NSNumber *time = [[notification userInfo] objectForKey:@"time"];
-    [app setCurrentTime:QTMakeTimeWithTimeInterval([time floatValue]) fromSender:self];
+    [app setCurrentTime:CMTimeMake([time floatValue], 1000000) fromSender:self]; // TODO: Check if the timescale is correct.
 }
 
 - (NSString*)requestIP

@@ -83,7 +83,7 @@
 			}
 			else
 			{
-				QTMovie *frameVideo = video;
+				AVPlayer *frameVideo = video;
 				NSDictionary *frameDict = CIImageDict;
 				if(!frameVideo)
 				{
@@ -98,7 +98,7 @@
 						[frameMovies setObject:frameVideo forKey:url];
 						
 						NSTimeInterval duration;
-						QTGetTimeInterval([frameVideo duration], &duration);
+						duration = CMTimeGetSeconds([[frameVideo currentItem] duration]);
 						float interval = duration/targetFrameCount;
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
@@ -119,7 +119,7 @@
 				}
 				
 				CMTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : CMTimeMake(0, 1);
-				//NSLog(@"Offset: %i",(int)offset.timeValue);
+				//NSLog(@"Offset: %i",(int)offset.value);
 				theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeAdd([[marker boundary] time],offset)
 																			   withAttributes:frameDict error:NULL];
 			}
@@ -210,23 +210,23 @@
 	}
 }
 
-- (void)setVideo:(QTMovie*)theVideo
+- (void)setVideo:(AVPlayer*)theVideo
 {
 	[theVideo retain];
 	[video release];
 	video = theVideo;
 }
 
-- (void)loadAllFramesForMovie:(QTMovie*)movie
+- (void)loadAllFramesForMovie:(AVPlayer*)movie
 {
-	QTMovie *playbackMovie = movie;
+	AVPlayer *playbackMovie = movie;
 	NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
 	
-	QTMovie *frameVideo = [frameMovies objectForKey:url];
+	AVPlayer *frameVideo = [frameMovies objectForKey:url];
 	NSDictionary *frameDict = [frameSettings objectForKey:url];
 
 	NSTimeInterval duration;
-	QTGetTimeInterval([movie duration], &duration);
+	duration = CMTimeGetSeconds([[movie currentItem] duration]);
 	
 	if(!frameVideo)
 	{
@@ -278,7 +278,7 @@
 		CGImageWrapper *imageWrap = [imagecache objectForKey:identifier];
 		if(!imageWrap)
 		{
-			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:QTMakeTimeWithTimeInterval(time)
+			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeMake(time, 1000000) // TODO: Check if the timescale is correct.
 													 withAttributes:betterFrameDict error:NULL];
 
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
@@ -290,7 +290,7 @@
 	if(tensix)
 	{
 		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];
-		[frameVideo frameImageAtTime:QTMakeTimeWithTimeInterval(time) withAttributes:betterFrameDict error:NULL];
+		[frameVideo frameImageAtTime:CMTimeMake(time, 1000000) withAttributes:betterFrameDict error:NULL]; // TODO: Check if the timescale is correct.
 		//CGImageRelease(theImage);
 	}
 	

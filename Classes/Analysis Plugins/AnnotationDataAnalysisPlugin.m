@@ -121,7 +121,7 @@
 
 #pragma mark Results
 
--(Annotation*)newAnnotationAtTime:(QTTime)time
+-(Annotation*)newAnnotationAtTime:(CMTime)time
 {
 	if(!resultAnnotations)
 	{
@@ -136,7 +136,7 @@
 
 -(Annotation*)newAnnotationAtSeconds:(float)seconds
 {
-	return [self newAnnotationAtTime:QTMakeTimeWithTimeInterval(seconds)];
+	return [self newAnnotationAtTime:CMTimeMake(seconds, 1000000)]; // TODO: Check if the timescale is correct.
 }
 
 -(TimeSeriesData*)newTimeSeries

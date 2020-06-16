@@ -63,8 +63,8 @@
 
 - (AnotoNotesData*)currentSession;
 - (AnotoNotesData*)newSession;
-- (NSArray*)addFileToCurrentSession:(NSString*)file atTimeRange:(QTTimeRange)timeRange onPage:(NSString*)setPage;
-- (NSArray*)tracesFromFile:(NSString *)file overTimeRange:(QTTimeRange)timeRange onPage:(NSString*)setPage;
+- (NSArray*)addFileToCurrentSession:(NSString*)file atTimeRange:(CMTimeRange)timeRange onPage:(NSString*)setPage;
+- (NSArray*)tracesFromFile:(NSString *)file overTimeRange:(CMTimeRange)timeRange onPage:(NSString*)setPage;
 - (NSArray*)tracesFromFile:(NSString *)file;
 - (BOOL)saveTraces:(NSArray*)tracesArray toFile:(NSString *)file;
 - (void)reloadSessionXML;

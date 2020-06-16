@@ -415,16 +415,16 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
     
     
     
-//	float pixelToMovieTime = (float)subsetRange.duration.timeValue/size;
+//	float pixelToMovieTime = (float)subsetRange.duration.value/size;
 //	float pixel = 0;
-//	long movieTime = subsetRange.time.timeValue + pixel*pixelToMovieTime;
+//	long movieTime = subsetRange.time.value + pixel*pixelToMovieTime;
 //	for(TimeCodedDataPoint *point in [self dataPoints])
 //	{
-//		if([point time].timeValue >= movieTime)
+//		if([point time].value >= movieTime)
 //		{
 //			[subset addObject:point];
 //			pixel += 1;
-//			movieTime = subsetRange.time.timeValue + pixel*pixelToMovieTime;
+//			movieTime = subsetRange.time.value + pixel*pixelToMovieTime;
 //			if(pixel > size)
 //			{
 //				break;
@@ -442,7 +442,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	for(TimeCodedDataPoint* point in dataPoints)
 	{
 		[string appendFormat:@"%@\n",[point csvString]];
-		//[string appendFormat:@"%qi,%.6f\n",point.time.timeValue,point.value];
+		//[string appendFormat:@"%qi,%.6f\n",point.time.value,point.value];
 	}
 	
 	return [NSString stringWithString:string];

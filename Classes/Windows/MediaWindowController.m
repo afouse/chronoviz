@@ -88,7 +88,7 @@
 	else if([identifier isEqualToString:@"offset"])
 	{
 		NSTimeInterval interval;
-		QTGetTimeInterval([video offset], &interval);
+		interval = CMTimeGetSeconds([video offset]);
 		return [NSNumber numberWithDouble:interval];
 	}
 	else if([identifier isEqualToString:@"title"])

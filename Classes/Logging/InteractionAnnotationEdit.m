@@ -26,7 +26,7 @@
 }
 
 - (id)initWithAnnotationTitle:(NSString*)theAnnotationTitle
-                    startTime:(QTTime)startTime
+                    startTime:(CMTime)startTime
                  forAttribute:(NSString*)theAttribute 
                     withValue:(NSObject*)theValue
                andSessionTime:(double)theSessionTime
@@ -55,8 +55,8 @@
 	NSString *valueString;
 	if([value isKindOfClass:[NSValue class]] && [value respondsToSelector:@selector(QTTimeValue)])
 	{
-		QTTime qttimeValue = [(NSValue*)value QTTimeValue];
-		valueString = [NSString stringWithFormat:@"%1.3f",(double)qttimeValue.timeValue/(double)qttimeValue.timeScale];
+		CMTime qttimeValue = [(NSValue*)value QTTimeValue];
+		valueString = [NSString stringWithFormat:@"%1.3f",(double)qttimeValue.value/(double)qttimeValue.timescale];
 	}
 	else if([value isKindOfClass:[NSString class]])
 	{
@@ -67,7 +67,7 @@
 		valueString = [NSString stringWithFormat:@"category:%@",[(AnnotationCategory*)value name]];
 	}
 	
-	return [NSString stringWithFormat:@"Time: %1.2f, Annotation Title: %@, Annotation Start: %1.3f, Attribute: %@, Value: %@", sessionTime,annotationTitle,(double)annotationTime.timeValue/(double)annotationTime.timeScale,attribute,valueString];
+	return [NSString stringWithFormat:@"Time: %1.2f, Annotation Title: %@, Annotation Start: %1.3f, Attribute: %@, Value: %@", sessionTime,annotationTitle,(double)annotationTime.value/(double)annotationTime.timescale,attribute,valueString];
 }
 
 - (NSString *)logOutput
@@ -75,8 +75,8 @@
 	NSString *valueString;
 	if([value isKindOfClass:[NSValue class]] && [value respondsToSelector:@selector(QTTimeValue)])
 	{
-		QTTime qttimeValue = [(NSValue*)value QTTimeValue];
-		valueString = [NSString stringWithFormat:@"%1.3f",(double)qttimeValue.timeValue/(double)qttimeValue.timeScale];
+		CMTime qttimeValue = [(NSValue*)value QTTimeValue];
+		valueString = [NSString stringWithFormat:@"%1.3f",(double)qttimeValue.value/(double)qttimeValue.timescale];
 	}
 	else if([value isKindOfClass:[NSString class]])
 	{
@@ -87,7 +87,7 @@
 		valueString = [NSString stringWithFormat:@"category:%@",[(AnnotationCategory*)value name]];
 	}
 	
-	return [NSString stringWithFormat:@"annotationEdit, %1.2f, %@, %1.3f, %@, %@", sessionTime,annotationTitle,(double)annotationTime.timeValue/(double)annotationTime.timeScale,attribute,valueString];
+	return [NSString stringWithFormat:@"annotationEdit, %1.2f, %@, %1.3f, %@, %@", sessionTime,annotationTitle,(double)annotationTime.value/(double)annotationTime.timescale,attribute,valueString];
 }
 
 - (NSXMLElement *)xmlElement
@@ -100,7 +100,7 @@
 	if([value isKindOfClass:[NSValue class]] && [value respondsToSelector:@selector(QTTimeValue)])
 	{
 		NSTimeInterval time;
-		QTGetTimeInterval([(NSValue*)value QTTimeValue], &time);
+		time = CMTimeGetSeconds([(NSValue*)value QTTimeValue]);
 		valueString = [NSString stringWithFormat:@"%1.3f",time];
 	}
 	else if([value isKindOfClass:[NSString class]])
@@ -117,7 +117,7 @@
 	[element addAttribute:annotationTitleAttribute];
 	
 	NSTimeInterval annotationStartTime;
-	QTGetTimeInterval(annotationTime, &annotationStartTime);
+	annotationStartTime = CMTimeGetSeconds(annotationTime);
 	NSXMLNode *annotationTimeAttribute = [NSXMLNode attributeWithName:@"annotationTime"
 														   stringValue:[NSString stringWithFormat:@"%1.3f",annotationStartTime]];
 	[element addAttribute:annotationTimeAttribute];
@@ -143,7 +143,7 @@
 	return AFInteractionTypeAnnotationEdit;
 }
 
--(QTTime)annotationTime
+-(CMTime)annotationTime
 {
     return annotationTime;
 }

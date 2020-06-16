@@ -1102,7 +1102,7 @@
 -(void)update
 {
     if([[self window] isVisible]
-       && (needsUpdate || (QTTimeCompare(currentTime, [[AppController currentApp] currentTime]) != NSOrderedSame)))
+       && (needsUpdate || (CMTimeCompare(currentTime, [[AppController currentApp] currentTime]) != NSOrderedSame)))
 	{
         [self setCurrentTime:[[AppController currentApp] currentTime]];
     }
@@ -1113,7 +1113,7 @@
     [self setCurrentTime:[[AppController currentApp] currentTime]];
 }
 
--(void)setCurrentTime:(QTTime)time
+-(void)setCurrentTime:(CMTime)time
 {
 //    NSLog(@"Current layers");
 //    
@@ -1126,7 +1126,7 @@
     
     NSTimeInterval currentTimeInterval;
     currentTime = time;
-    QTGetTimeInterval(currentTime, &currentTimeInterval);
+    currentTimeInterval = CMTimeGetSeconds(currentTime);
     
     if([backgroundLayer bounds].size.width < 1.0)
     {
@@ -1169,7 +1169,7 @@
             
             currentPoint = [subset objectAtIndex:closestIndex];
             
-            QTGetTimeInterval(currentPoint.time, &currentPointInterval);
+            currentPointInterval = CMTimeGetSeconds(currentPoint.time);
             
             if(fabs(currentPointInterval - currentTimeInterval) > 0.5)
             {
@@ -1500,7 +1500,7 @@
 #pragma mark Images
 
 
-- (NSBitmapImageRep*)bitmapAtTime:(QTTime)time
+- (NSBitmapImageRep*)bitmapAtTime:(CMTime)time
 {
     [self setCurrentTime:time];
     
@@ -1511,7 +1511,7 @@
     return [rep autorelease];
 }
 
-- (CGImageRef)frameImageAtTime:(QTTime)time
+- (CGImageRef)frameImageAtTime:(CMTime)time
 {
     [self setCurrentTime:time];
     

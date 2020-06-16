@@ -168,11 +168,11 @@ static void releasePatternImage( void *info )
 	
 	//CGFloat timelineWidth = [timeline bounds].size.width;
 	
-	QTTimeRange range = [timeline range];
+	CMTimeRange range = [timeline range];
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.time);
 	//CGFloat pixelToMovieTime = rangeDuration/timelineWidth;
 	CGFloat movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	

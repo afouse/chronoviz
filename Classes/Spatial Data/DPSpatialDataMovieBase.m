@@ -9,7 +9,7 @@
 #import "DPSpatialDataMovieBase.h"
 #import "VideoProperties.h"
 #import "AnnotationDocument.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @interface DPSpatialDataMovieBase (Internal)
 

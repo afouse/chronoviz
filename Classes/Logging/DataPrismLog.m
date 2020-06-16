@@ -67,7 +67,7 @@
 	[super dealloc];
 }
 
-- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(QTTime)time
+- (InteractionSpeedChange*)addSpeedChange:(float)speed atTime:(CMTime)time
 {
 	if(recordTimePosition)
 	{
@@ -76,7 +76,7 @@
 	return nil;
 }
 
-- (InteractionJump*)addJumpFrom:(QTTime)fromTime to:(QTTime)toTime
+- (InteractionJump*)addJumpFrom:(CMTime)fromTime to:(CMTime)toTime
 {
 	if(recordTimePosition)
 	{
@@ -85,7 +85,7 @@
 	return nil;
 }
 
-- (InteractionAddSegment*)addSegmentationPoint:(QTTime)time
+- (InteractionAddSegment*)addSegmentationPoint:(CMTime)time
 {
 	if(recordTimePosition)
 	{
@@ -94,7 +94,7 @@
 	return nil;
 }
 
-- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(QTTime)value
+- (InteractionAnnotationEdit*)addEditOfAnnotation:(Annotation*)annotation forAttribute:(NSString*)attribute withTime:(CMTime)value
 {
 	if(recordAnnotationEdits)
 	{
@@ -348,7 +348,7 @@
 			{
 				float speed = [[[interaction attributeForName:@"speed"] stringValue] floatValue];
 				double time = [[[interaction attributeForName:@"movieTime"] stringValue] doubleValue];
-				QTTime qttime = QTMakeTimeWithTimeInterval(time);
+				CMTime qttime = CMTimeMake(time, 1000000); // TODO: Check if the timescale is correct.
 				
 				InteractionSpeedChange *speedChange = [[InteractionSpeedChange alloc] initWithSpeed:speed andMovieTime:qttime atTime:sessionTime];
 				[log addInteraction:speedChange];
@@ -360,8 +360,8 @@
 				double toTime = [[[interaction attributeForName:@"toTime"] stringValue] doubleValue];
 				
 				InteractionJump *jump = [[InteractionJump alloc]
-										 initWithFromMovieTime:QTMakeTimeWithTimeInterval(fromTime)
-										 toMovieTime:QTMakeTimeWithTimeInterval(toTime)
+										 initWithFromMovieTime:CMTimeMake(fromTime, 1000000) // TODO: Check if the timescale is correct.
+										 toMovieTime:CMTimeMake(toTime, 1000000) // TODO: Check if the timescale is correct.
 										 andSessionTime:sessionTime];
 				[log addInteraction:jump];
 				[jump release];
@@ -369,7 +369,7 @@
 			else if ([type caseInsensitiveCompare:@"addSegment"] == NSOrderedSame)
 			{
                 double time = [[[interaction attributeForName:@"movieTime"] stringValue] doubleValue];
-				QTTime qttime = QTMakeTimeWithTimeInterval(time);
+				CMTime qttime = CMTimeMake(time, 1000000); // TODO: Check if the timescale is correct.
 				
 				InteractionAddSegment *segment = [[InteractionAddSegment alloc] initWithMovieTime:qttime andSessionTime:sessionTime];
 				[log addInteraction:segment];
@@ -378,7 +378,7 @@
             else if ([type caseInsensitiveCompare:[InteractionAnnotationEdit typeString]] == NSOrderedSame)
 			{
                 double time = [[[interaction attributeForName:@"annotationTime"] stringValue] doubleValue];
-				QTTime qttime = QTMakeTimeWithTimeInterval(time);
+				CMTime qttime = CMTimeMake(time, 1000000); // TODO: Check if the timescale is correct.
                 
                 NSString *title = [[interaction attributeForName:@"annotationTitle"] stringValue];
                 NSString *changedAttribute = [[interaction attributeForName:@"changedAttribute"] stringValue];

@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class Annotation;
 @class AnnotationCategory;
 @class MAAttachedWindow;
@@ -20,7 +20,7 @@
 	IBOutlet NSOutlineView *categoriesView;
 	IBOutlet NSTextView* annotationTextField;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	
 	id actionTarget;
 	SEL actionSelector;
@@ -31,8 +31,8 @@
 	
 }
 
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline;
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category;
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline;
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category;
 - (void)cancelQuickEntry;
 
 - (void)setEntryTarget:(id)target;

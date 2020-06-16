@@ -56,7 +56,7 @@
 		self.predefinedTimeCode = YES;
 		self.timeCoded = YES;
 		createAnnotations = YES;	
-		range = QTMakeTimeRange(QTMakeTimeWithTimeInterval(0), QTMakeTimeWithTimeInterval(0));
+		range = QTMakeTimeRange(CMTimeMake(0, 1000000), QTMakeTimeWithTimeInterval(0)); // TODO: Check if the timescale is correct.
 		traces = [[NSMutableArray alloc] init];
 		annotations = [[NSMutableArray alloc] init];
 		backgrounds = [[NSMutableDictionary alloc] init];
@@ -158,7 +158,7 @@
 	
 	if(!dataArray)
 	{
-		QTTimeRange rangeTemp = range;
+		CMTimeRange rangeTemp = range;
 		
 		[delegate dataSourceLoadStart];
 		[delegate dataSourceLoadStatus:0];
@@ -218,7 +218,7 @@
 		[self setDataArray:fileArray];
 		[delegate dataSourceLoadFinished];
 		
-		if(rangeTemp.duration.timeValue != 0)
+		if(rangeTemp.duration.value != 0)
 		{
 			range = rangeTemp;
 		}
@@ -285,20 +285,20 @@
 	return newDataSets;
 }
 
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
-	QTTime previousDiff = range.time;
-	QTTime diff = newRange.time;
+	CMTime previousDiff = range.time;
+	CMTime diff = newRange.time;
 	
 	//[super setRange:newRange];
 	range = newRange;
 	
 	for(Annotation *annotation in annotations)
 	{
-		[annotation setStartTime:QTTimeIncrement(QTTimeDecrement([annotation startTime],previousDiff), diff)];
+		[annotation setStartTime:CMTimeAdd(CMTimeSubtract([annotation startTime],previousDiff), diff)];
 		if([annotation isDuration])
 		{
-			[annotation setEndTime:QTTimeIncrement(QTTimeDecrement([annotation endTime],previousDiff), diff)];
+			[annotation setEndTime:CMTimeAdd(CMTimeSubtract([annotation endTime],previousDiff), diff)];
 		}
 		
 	}
@@ -364,7 +364,7 @@
 		
 		for(AnotoTrace *trace in traces)
 		{
-			QTGetTimeInterval(QTTimeRangeEnd([trace range]), &timeInterval);
+			timeInterval = CMTimeGetSeconds(CMTimeRangeGetEnd([trace range]));
 			if(((timeInterval - previousTime) > 5))
 			{
 				if([currentTraces count] > 0)
@@ -479,7 +479,7 @@
 					startTime = timeInterval;
 				}
 				
-				[penPoint setTime:QTMakeTimeWithTimeInterval(timeInterval - startTime)];
+				[penPoint setTime:CMTimeMake(timeInterval - startTime, 1000000)]; // TODO: Check if the timescale is correct.
 				
 				[trace addPoint:penPoint];
 				
@@ -542,9 +542,9 @@
 	
 	AnotoTrace *firstTrace = [currentTraces objectAtIndex:0];
 	
-	Annotation *currentAnnotation = [[Annotation alloc] initWithQTTime:QTTimeIncrement(range.time,[firstTrace startTime])];
+	Annotation *currentAnnotation = [[Annotation alloc] initWithQTTime:CMTimeAdd(range.time,[firstTrace startTime])];
 	[currentAnnotation setIsDuration:YES];
-	[currentAnnotation setEndTime:QTTimeIncrement(range.time,[(AnotoTrace*)[currentTraces lastObject] endTime])];
+	[currentAnnotation setEndTime:CMTimeAdd(range.time,[(AnotoTrace*)[currentTraces lastObject] endTime])];
 	
 	CGFloat minX = [firstTrace minX];
 	CGFloat minY = [firstTrace minY];
@@ -614,7 +614,7 @@
 	if(saveImage)
 	{
 		NSString *dataSetID = [[[[self dataFile] lastPathComponent] stringByDeletingPathExtension] stringByReplacingOccurrencesOfString:@" " withString:@"_"];
-		NSString *imageName = [NSString stringWithFormat:@"anotoNote-%@-%qi.png",dataSetID,[firstTrace startTime].timeValue];
+		NSString *imageName = [NSString stringWithFormat:@"anotoNote-%@-%qi.png",dataSetID,[firstTrace startTime].value];
 		NSString *imageFile = [[[AppController currentDoc] annotationsImageDirectory] stringByAppendingPathComponent:imageName];
 		NSDictionary *imageProps = [NSDictionary dictionaryWithObjectsAndKeys:
 									[NSNumber numberWithFloat:0.7],NSImageCompressionFactor,

@@ -27,7 +27,7 @@
 	NSTimer *timer;
 	NSMutableArray *array;
 	
-	QTMovie* video;
+	AVPlayer* video;
 }
 
 - (void)loadCIImage:(TimelineMarker*)marker immediately:(BOOL)now;

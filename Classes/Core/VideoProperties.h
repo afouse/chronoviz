@@ -17,7 +17,7 @@ extern NSString * const DPVideoPropertiesPasteboardType;
     NSString *uuid;
     
 	NSString *videoFile;
-	AVAsset* movie;
+	AVPlayer* movie;
     AVPlayerItem *playerItem;
     AVPlayer *player;
 	BOOL loaded;

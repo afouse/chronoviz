@@ -239,7 +239,7 @@ static DPRemoteServer* defaultServer = nil;
 	AnnotationDocument *doc = [AnnotationDocument currentDocument];
 	
     NSTimeInterval duration;
-    QTGetTimeInterval([doc duration], &duration);
+    duration = CMTimeGetSeconds([doc duration]);
     
 	return [NSString stringWithFormat:@"Document:%@:%f\r\n",[[doc annotationsDirectory] lastPathComponent],duration];
 }
@@ -306,18 +306,18 @@ static DPRemoteServer* defaultServer = nil;
 - (void)executeTimeUpdate:(NSNumber*)timeNumber
 {
 	NSTimeInterval time;
-	QTGetTimeInterval([[AppController currentApp] currentTime], &time);
+	time = CMTimeGetSeconds([[AppController currentApp] currentTime]);
 	
     //NSLog(@"Time: %f timeUpdate: %f",time,lastTimeUpdate);
     
 	if(fabs(time - lastTimeUpdate) > .01)
 	{
-        //QTTime moveTime = QTMakeTimeWithTimeInterval(lastTimeUpdate);
-        //NSLog(@"Current Time: %qi / %ld",moveTime.timeValue,moveTime.timeScale);
+        //CMTime moveTime = CMTimeMake(lastTimeUpdate, 1000000); // TODO: Check if the timescale is correct.
+        //NSLog(@"Current Time: %qi / %ld",moveTime.value,moveTime.timescale);
         
-		[[AppController currentApp] moveToTime:QTMakeTimeWithTimeInterval(lastTimeUpdate) fromSender:self];
+		[[AppController currentApp] moveToTime:CMTimeMake(lastTimeUpdate, 1000000) fromSender:self]; // TODO: Check if the timescale is correct.
 	}
-	//[[AppController currentApp] moveToTime:QTMakeTimeWithTimeInterval([time floatValue]) fromSender:self];
+	//[[AppController currentApp] moveToTime:CMTimeMake([time floatValue], 1000000) fromSender:self]; // TODO: Check if the timescale is correct.
 }
 
 #pragma mark AsyncSocket Delegate
@@ -501,7 +501,7 @@ static DPRemoteServer* defaultServer = nil;
 -(void)update
 {
 	NSTimeInterval time;
-	QTGetTimeInterval([[AppController currentApp] currentTime], &time);
+	time = CMTimeGetSeconds([[AppController currentApp] currentTime]);
 
 	if(abs(time - lastTimeUpdate) > .01)
 	{

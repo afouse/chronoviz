@@ -46,12 +46,12 @@
 }
 
 
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline
 {
 	[self displayQuickEntryWindowAtTime:time inTimeline:timeline forCategory:nil];
 }
 
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category
 {	
 	NSWindow  *mMovieWindow = [timeline window];
 	

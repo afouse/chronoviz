@@ -1260,7 +1260,7 @@
 					CMTime oldOffset = [properties offset];
 					CMTime newOffset = CMTimeAdd(oldOffset, CMTimeSubtract(clickedTime,playheadTime));
 					[properties setOffset:newOffset];
-					//NSLog(@"offset: %qi",[properties offset].timeValue);
+					//NSLog(@"offset: %qi",[properties offset].value);
 					[[AppController currentDoc] saveVideoProperties:properties];
 				}
 			}
@@ -1274,11 +1274,11 @@
 //{
 //	NSEvent *event = [sender representedObject];
 //	NSPoint curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-//	long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-//	long timeScale = range.duration.timeScale;
+//	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
+//	long timeScale = range.duration.timescale;
 //	
-//	QTTimeRange newRange = QTMakeTimeRange(QTMakeTime(timeValue,timeScale),
-//										   QTMakeTime(range.duration.timeValue - timeValue,timeScale));
+//	CMTimeRange newRange = QTMakeTimeRange(CMTimeMake(timeValue,timeScale),
+//										   CMTimeMake(range.duration.value - timeValue,timeScale));
 //	
 //	[timeSeriesData scaleFromRange:newRange toRange:range];
 //	
@@ -1290,11 +1290,11 @@
 //{
 //	NSEvent *event = [sender representedObject];
 //	NSPoint curPoint = [self convertPoint:[event locationInWindow] fromView:nil];
-//	long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-//	long timeScale = range.duration.timeScale;
+//	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
+//	long timeScale = range.duration.timescale;
 //	
-//	QTTimeRange newRange = QTMakeTimeRange(QTMakeTime(0,timeScale),
-//										   QTMakeTime(timeValue,timeScale));
+//	CMTimeRange newRange = QTMakeTimeRange(CMTimeMake(0,timeScale),
+//										   CMTimeMake(timeValue,timeScale));
 //	
 //	[timeSeriesData scaleFromRange:newRange toRange:range];
 //	
@@ -1752,7 +1752,7 @@
 				NSTimeInterval rangeDuration = CMTimeGetSeconds([self range].duration);
 				float newPlayheadPos = (timePoint - rangeStart)/rangeDuration;
 				
-				//curPoint.x = ((double)timePoint/[movie duration].timeValue) * [self bounds].size.width;
+				//curPoint.x = ((double)timePoint/[movie duration].value) * [self bounds].size.width;
 				curPoint.x = newPlayheadPos * [self bounds].size.width;
 			}
 		}
@@ -1802,7 +1802,7 @@
 				
 				float newPlayheadPos = (timePoint - rangeStart)/rangeDuration;
 				
-				//curPoint.x = ((double)timePoint/[movie duration].timeValue) * [self bounds].size.width;
+				//curPoint.x = ((double)timePoint/[movie duration].value) * [self bounds].size.width;
 				curPoint.x = newPlayheadPos * [self bounds].size.width;
 			}
 			

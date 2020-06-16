@@ -134,7 +134,7 @@ static NSUInteger defaultTimeFormat = (DPTimeCodeAutomaticMask | DPTimeCodeDecis
 
 }
 
-#pragma mark QTTime to String
+#pragma mark CMTime to String
 
 + (NSString*)stringWithCMTime:(CMTime)time
 {

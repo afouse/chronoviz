@@ -36,7 +36,7 @@
 	return element;
 }
 
-- (QTTime)movieTime
+- (CMTime)movieTime
 {
 	return movieTime;
 }
@@ -54,7 +54,7 @@
 - (NSString *)description
 {
 	NSTimeInterval movieTimeInterval;
-	QTGetTimeInterval(movieTime, &movieTimeInterval);
+	movieTimeInterval = CMTimeGetSeconds(movieTime);
 	return [NSString stringWithFormat:@"Time: %1.2f, MovieTime: %1.2f", sessionTime, movieTimeInterval];
 }
 

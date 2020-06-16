@@ -13,7 +13,7 @@
 @interface InteractionAnnotationEdit : Interaction {
 
 	NSString *annotationTitle;
-	QTTime annotationTime;
+	CMTime annotationTime;
 	
 	NSString *attribute;
 	NSObject *value;
@@ -26,11 +26,11 @@
 		  andSessionTime:(double)theSessionTime;
 
 - (id)initWithAnnotationTitle:(NSString*)theAnnotationTitle
-                    startTime:(QTTime)startTime
+                    startTime:(CMTime)startTime
                  forAttribute:(NSString*)theAttribute 
                     withValue:(NSObject*)theValue
                andSessionTime:(double)theSessionTime;
 
--(QTTime)annotationTime;
+-(CMTime)annotationTime;
 
 @end

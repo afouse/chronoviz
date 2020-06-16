@@ -140,9 +140,9 @@
 {	
 	NSDate *annotationsStart = [[[AppController currentDoc] videoProperties] startDate];
 	NSTimeInterval start;
-	QTGetTimeInterval([timeline range].time,&start);
+	start = CMTimeGetSeconds([timeline range].time);
 	NSTimeInterval duration;
-	QTGetTimeInterval([timeline range].duration,&duration); 
+	duration = CMTimeGetSeconds([timeline range].duration); 
 	[startDate release];
 	[endDate release];
 	startDate = [[NSDate alloc] initWithTimeInterval:start sinceDate:annotationsStart];
@@ -339,7 +339,7 @@
 	else if (layer == groundLayer)
 	{
 		NSTimeInterval duration;
-		QTGetTimeInterval([timeline range].duration,&duration);
+		duration = CMTimeGetSeconds([timeline range].duration);
 		CGFloat timeToPixel = [timeline bounds].size.width/duration;
 		
 		//[[NSColor colorWithDeviceRed:(89.0/255.0) green:(66.0/255.0) blue:(10.0/255.0) alpha:1.0] setFill];

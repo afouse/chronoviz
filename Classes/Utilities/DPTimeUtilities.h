@@ -10,7 +10,7 @@
 #define ChronoViz_DPTimeUtilities_h
 
 
-int dpQTTimeValueSort( id val1, id val2, void *context );
+int dpCMTimeValueSort( id val1, id val2, void *context );
 
 
 #endif

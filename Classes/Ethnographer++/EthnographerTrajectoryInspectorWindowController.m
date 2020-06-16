@@ -13,7 +13,7 @@
 #import "DPTimeUtilities.h"
 #import "NSStringTimeCodes.h"
 #import "AppController.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 NSString * const TrajectoryTypeColummn = @"type";
 NSString * const TrajectoryTimeColummn = @"time";
@@ -27,14 +27,14 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
 
 @interface EthnographerTrajectoryEntry : NSObject {
     NSString *type;
-    QTTime time;
+    CMTime time;
     NSString *dataString;
     NSObject *dataObject;
     
 }
 
 @property(assign) NSString* type;
-@property QTTime time;
+@property CMTime time;
 @property(copy) NSString* dataString;
 @property(retain) NSObject* dataObject;
 
@@ -112,7 +112,7 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
             DPPathSegment *segment = (DPPathSegment*)pathElement;
             EthnographerTrajectoryEntry *entry = [[EthnographerTrajectoryEntry alloc] init];
             entry.type = TrajectoryStraightPathType;
-            entry.time = QTZeroTime;
+            entry.time = kCMTimeZero;
             entry.dataString = [NSString stringWithFormat:@"(%.2f,%.2f) to (%.2f,%.2f)",segment.start.x,segment.start.y,segment.end.x,segment.end.y];
             entry.dataObject = segment;
             
@@ -125,7 +125,7 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
             DPPath *path = (DPPath*)pathElement;
             EthnographerTrajectoryEntry *entry = [[EthnographerTrajectoryEntry alloc] init];
             entry.type = TrajectoryCurvedPathType;
-            entry.time = QTZeroTime;
+            entry.time = kCMTimeZero;
             DPPathSegment *start = [[path segments] objectAtIndex:0];
             DPPathSegment *end = [[path segments] lastObject];
             entry.dataString = [NSString stringWithFormat:@"(%.2f,%.2f) to (%.2f,%.2f)",start.start.x,start.start.y,end.end.x,end.end.y];
@@ -138,13 +138,13 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
     }
     
     NSDictionary *timeMarkers = [trajectory timeMarks];
-    NSArray *timeMarkerTimes = [[timeMarkers allKeys] sortedArrayUsingFunction:dpQTTimeValueSort context:NULL];
+    NSArray *timeMarkerTimes = [[timeMarkers allKeys] sortedArrayUsingFunction:dpCMTimeValueSort context:NULL];
     for(NSValue *timeValue in timeMarkerTimes)
     {
         DPPathSegment *segment = [timeMarkers objectForKey:timeValue];
         EthnographerTrajectoryEntry *entry = [[EthnographerTrajectoryEntry alloc] init];
         entry.type = TrajectoryTimeMarkerType;
-        entry.time = [timeValue QTTimeValue];
+        entry.time = [timeValue CMTimeValue];
         entry.dataString = [NSString stringWithFormat:@"(%.2f,%.2f) to (%.2f,%.2f)",segment.start.x,segment.start.y,segment.end.x,segment.end.y];
         entry.dataObject = segment;
         
@@ -158,7 +158,7 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
     NSArray *orientations = [[inputOrientations allValues] sortedArrayUsingComparator:^(id obj1, id obj2) {
         EthnographerOrientedTimeMarker *point1 = (EthnographerOrientedTimeMarker*)obj1;
         EthnographerOrientedTimeMarker *point2 = (EthnographerOrientedTimeMarker*)obj2;
-        return QTTimeCompare([point1 time], [point2 time]);
+        return CMTimeCompare([point1 time], [point2 time]);
     }];
     for(EthnographerOrientedTimeMarker *marker in orientations)
     {

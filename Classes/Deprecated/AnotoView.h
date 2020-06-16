@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
 @class AnotoNotesData;
@@ -29,14 +29,14 @@ __attribute__((deprecated))
 	
 	CALayer *clickLayer;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	NSString* currentPage;
 }
 
 -(void)setData:(AnotoNotesData*)source;
 -(void)showPage:(NSString*)pageId;
--(QTTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId;
--(QTTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId;
+-(CMTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId;
+-(CMTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId;
 
 - (IBAction)nextPage:(id)sender;
 - (IBAction)previousPage:(id)sender;

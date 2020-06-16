@@ -80,13 +80,13 @@
         
         NSMutableArray *alignment = [NSMutableArray array];
         
-        QTTime lastRowTime;
+        CMTime lastRowTime;
         
         
         for(TimeCodedSourcedString *string in [(TranscriptData*)selectedData timeCodedStrings])
         {
             //NSLog(@"Transcript view string: %@",[string string]);
-            if(![string interpolated] && (QTTimeCompare([string time], lastRowTime) != NSOrderedSame))
+            if(![string interpolated] && (CMTimeCompare([string time], lastRowTime) != NSOrderedSame))
             {
                 if([alignment count] > 0)
                 {
@@ -178,7 +178,7 @@
             [result appendString:[text quotedString]];
             
             NSTimeInterval timeInterval;
-            QTGetTimeInterval(QTTimeIncrement([[row objectAtIndex:0] time],[[(TranscriptData*)selectedData source] range].time), &timeInterval);
+            timeInterval = CMTimeGetSeconds(CMTimeAdd([[row objectAtIndex:0] time],[[(TranscriptData*)selectedData source] range].start));
             [result appendString:@","];
             [result appendString:[NSString stringWithTimeInterval:timeInterval]];
             [result appendString:@"\n"];

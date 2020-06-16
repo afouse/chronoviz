@@ -11,7 +11,7 @@
 
 @implementation InteractionJump
 
-- (id)initWithFromMovieTime:(QTTime)fromMovieTime toMovieTime:(QTTime)toMovieTime andSessionTime:(double)theSessionTime
+- (id)initWithFromMovieTime:(CMTime)fromMovieTime toMovieTime:(CMTime)toMovieTime andSessionTime:(double)theSessionTime
 {
 	[super init];
 	fromTime = fromMovieTime;
@@ -24,18 +24,18 @@
 - (NSString *)description
 {
 	NSTimeInterval fromTimeInterval;
-	QTGetTimeInterval(fromTime, &fromTimeInterval);
+	fromTimeInterval = CMTimeGetSeconds(fromTime);
 	NSTimeInterval toTimeInterval;
-	QTGetTimeInterval(toTime, &toTimeInterval);
+	toTimeInterval = CMTimeGetSeconds(toTime);
 	return [NSString stringWithFormat:@"Time: %1.2f, From Time: %1.2f, To Time: %1.2f", sessionTime, fromTimeInterval, toTimeInterval];
 }
 
 - (NSString *)logOutput
 {
 	NSTimeInterval fromTimeInterval;
-	QTGetTimeInterval(fromTime, &fromTimeInterval);
+    fromTimeInterval = CMTimeGetSeconds(fromTime);
 	NSTimeInterval toTimeInterval;
-	QTGetTimeInterval(toTime, &toTimeInterval);
+    toTimeInterval = CMTimeGetSeconds(toTime);
 	return [NSString stringWithFormat:@"jump %1.2f %1.3f %1.3f\n", sessionTime, fromTimeInterval, toTimeInterval];
 }
 
@@ -46,9 +46,9 @@
 	[element setName:@"jump"];
 	
 	NSTimeInterval fromTimeInterval;
-	QTGetTimeInterval(fromTime, &fromTimeInterval);
+    fromTimeInterval = CMTimeGetSeconds(fromTime);
 	NSTimeInterval toTimeInterval;
-	QTGetTimeInterval(toTime, &toTimeInterval);
+    toTimeInterval = CMTimeGetSeconds(toTime);
 	
 	NSNumber *fromTimeNumber = [NSNumber numberWithDouble:fromTimeInterval];
 	NSXMLNode *fromTimeAttribute = [NSXMLNode attributeWithName:@"fromTime"
@@ -68,12 +68,12 @@
 	return @"jump";
 }
 
-- (QTTime)fromMovieTime
+- (CMTime)fromMovieTime
 {
 	return fromTime;
 }
 
-- (QTTime)toMovieTime
+- (CMTime)toMovieTime
 {
 	return toTime;
 }

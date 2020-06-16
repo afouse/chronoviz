@@ -213,12 +213,12 @@ static const NSString *ItemStatusContext;
     }
 }
 
-- (AVAsset*)movie
+- (AVPlayer*)movie
 {
 	return movie;
 }
 
-- (void)setMovie:(AVAsset *)theMovie
+- (void)setMovie:(AVPlayer *)theMovie
 {
 	[theMovie retain];
 	[movie release];
@@ -484,10 +484,6 @@ static const NSString *ItemStatusContext;
 			self.audioSubset = [audio componentsSeparatedByString:@","];
 		
 		[self setMovie:nil];
-		
-//		QTTime savedOffset = [coder decodeQTTimeForKey:@"PrismVideoPropertiesOffset"];
-//		if(savedOffset.timeValue != 0)
-//			[self setOffset:savedOffset];
 	}
     return self;
 }

@@ -55,10 +55,10 @@
 
 - (BOOL)exportAudioSubset:(int)theSubsetSize
 {
-	return [self exportAudioSubset:theSubsetSize forRange:QTMakeTimeRange(QTZeroTime, [movie duration])];
+	return [self exportAudioSubset:theSubsetSize forRange:QTMakeTimeRange(kCMTimeZero, [movie duration])];
 }
 
-- (BOOL)exportAudioSubset:(int)theSubsetSize forRange:(QTTimeRange)timeRange
+- (BOOL)exportAudioSubset:(int)theSubsetSize forRange:(CMTimeRange)timeRange
 {
     BOOL extractionOnWorkerThread = NO;
     BOOL continueExport = YES;

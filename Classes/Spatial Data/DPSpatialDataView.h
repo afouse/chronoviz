@@ -18,7 +18,7 @@
 
 @interface DPSpatialDataView : AnnotationPlaybackControllerView <AnnotationView,DPStateRecording> {
     
-    QTTime currentTime;
+    CMTime currentTime;
 	
 	NSMutableArray* annotations;
 	NSMutableArray* annotationLayers;
@@ -112,13 +112,13 @@
 - (DPSpatialDataBase*)spatialBase;
 - (IBAction)togglePathVisiblity:(id)sender;
 
-- (void)setCurrentTime:(QTTime)time;
+- (void)setCurrentTime:(CMTime)time;
 - (void)forceUpdate;
 
 - (IBAction)toggleSelectionMode:(id)sender;
 - (NSDictionary*)selectedTimeSeries;
 
-- (CGImageRef)frameImageAtTime:(QTTime)time;
-- (NSBitmapImageRep*)bitmapAtTime:(QTTime)time;
+- (CGImageRef)frameImageAtTime:(CMTime)time;
+- (NSBitmapImageRep*)bitmapAtTime:(CMTime)time;
 
 @end

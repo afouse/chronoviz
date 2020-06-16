@@ -41,15 +41,15 @@
 
 - (void)setLocalControl:(MovieViewerController*)controller;
 
-- (void)setMovie:(AVAsset*)movie;
-- (void)addMovie:(AVAsset*)movie;
-- (void)removeMovie:(AVAsset*)movie;
-- (AVAsset*)movie;
+- (void)setMovie:(AVPlayer*)movie;
+- (void)addMovie:(AVPlayer*)movie;
+- (void)removeMovie:(AVPlayer*)movie;
+- (AVPlayer*)movie;
 - (NSArray*)movies;
 
-- (void)zoomInMovie:(AVAsset*)movie;
-- (void)zoomOutMovie:(AVAsset*)movie;
-- (void)zoomInMovie:(AVAsset*)movie toPoint:(CGPoint)pt;
+- (void)zoomInMovie:(AVPlayer*)movie;
+- (void)zoomOutMovie:(AVPlayer*)movie;
+- (void)zoomInMovie:(AVPlayer*)movie toPoint:(CGPoint)pt;
 - (IBAction)zoomIn:(id)sender;
 - (IBAction)zoomOut:(id)sender;
 

@@ -763,7 +763,7 @@ static AppController *currentApp = nil;
 	annotationDoc = doc;
 	tempAnnotationDoc = NO;
 	
-    NSTimeInterval interval = CMTimeGetSeconds([[self movie] duration]);
+    NSTimeInterval interval = CMTimeGetSeconds([[[self movie] currentItem] duration]);
     
     AnnotationVisualizer *viz = [[AnnotationVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
     [[timelineView baseTimeline] setSegmentVisualizer:viz];
@@ -857,7 +857,7 @@ static AppController *currentApp = nil;
     [mainVideo release];
     mainVideo = video;
     
-    AVAsset *movie = [mainVideo movie];
+    AVPlayer *movie = [mainVideo movie];
     
 	[movie retain];
 	[mMovie release];
@@ -866,7 +866,7 @@ static AppController *currentApp = nil;
 	[mMovieView setMovie:mMovie];
 	
 	// Set up the timeline
-    NSTimeInterval interval = CMTimeGetSeconds([mMovie duration]);
+    NSTimeInterval interval = CMTimeGetSeconds([[mMovie currentItem] duration]);
 	if(absoluteTime && (interval > (60*60*6)))
 	{
 		DateVisualizer *dateViz = [[DateVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
@@ -1092,7 +1092,7 @@ static AppController *currentApp = nil;
 			[mMovieWindow setFrame:NSRectFromString([rects objectAtIndex:i]) display:YES];
 			NSDictionary *mainStateDict = [NSKeyedUnarchiver unarchiveObjectWithData:state];
 			NSTimeInterval time = [[mainStateDict objectForKey:@"CurrentTime"] floatValue];
-			[self moveToTime:CMTimeMakeWithSeconds(time, [mMovie duration].timescale) fromSender:self];
+			[self moveToTime:CMTimeMakeWithSeconds(time, [[mMovie currentItem] duration].timescale) fromSender:self];
 			
             NSString* mainViewSavedClass = [mainStateDict objectForKey:@"MainViewClass"];
             NSData* mainViewStateData = [mainStateDict objectForKey:@"MainViewStateData"];
@@ -2911,7 +2911,7 @@ static AppController *currentApp = nil;
 {	
 	CMTimeRange selection = [overviewTimelineView selection];
 	
-	if(CMTimeCompare(selection.duration, [mMovie duration]) == NSOrderedAscending)
+	if(CMTimeCompare(selection.duration, [[mMovie currentItem] duration]) == NSOrderedAscending)
 	{
 		selection.duration.value = selection.duration.value * 2;
 		selection.start.value = selection.start.value - selection.duration.value/4;
@@ -3315,10 +3315,10 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepForward:(id)sender
 {
-	CMTime newTime = CMTimeAdd([playerItem currentTime], CMTimeMakeWithSeconds(stepSize,[playerItem currentTime].timescale));
-	if(CMTimeCompare([mMovie duration],newTime) == NSOrderedAscending)
+	CMTime newTime = CMTimeAdd([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
+	if(CMTimeCompare([[mMovie currentItem] duration],newTime) == NSOrderedAscending)
 	{
-		newTime = [mMovie duration];
+		newTime = [[mMovie currentItem] duration];
 	}
 	
 	[self moveToTime:newTime fromSender:sender];
@@ -3326,7 +3326,7 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepBack:(id)sender
 {
-	CMTime newTime = CMTimeSubtract([playerItem currentTime], CMTimeMakeWithSeconds(stepSize,[playerItem currentTime].timescale));
+	CMTime newTime = CMTimeSubtract([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
 	if(CMTimeCompare(kCMTimeZero,newTime) == NSOrderedDescending)
 	{
 		newTime = kCMTimeZero;
@@ -3363,13 +3363,13 @@ static AppController *currentApp = nil;
 	if(ignoreRateInput) 
 		return;
 	
-	QTTime currentTime = [mMovie currentTime];
+	CMTime currentTime = [mMovie currentTime];
 	
 	// This accounts for the dial moving back through the values, which would cause the movie to
 	// jump to the beginning or end
-	if((currentTime.timeValue == 0) && (rate < 0)) 
+	if((currentTime.value == 0) && (rate < 0)) 
 		return;
-	if((currentTime.timeValue == [mMovie duration].timeValue) && (rate > 0))
+	if((currentTime.value == [[mMovie currentItem] duration].value) && (rate > 0))
 		return;
 
 	if(rate == 0) {
@@ -3420,9 +3420,9 @@ static AppController *currentApp = nil;
 	{
 		if([mediaProperties enabled])
 		{
-			QTTime newTime = QTTimeIncrement(currentTime, [mediaProperties offset]);
-			if((newTime.timeValue > 0)
-			   && (QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+			CMTime newTime = CMTimeAdd(currentTime, [mediaProperties offset]);
+			if((newTime.value > 0)
+			   && (CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
 			{
 				[[mediaProperties movie] setCurrentTime:newTime];
 				//[[mediaProperties movie] setRate:rate];
@@ -3472,9 +3472,9 @@ static AppController *currentApp = nil;
         
 		if(annotationPlayback && selectedAnnotation && [selectedAnnotation isDuration])
 		{
-            QTTime currentTime = [mMovie currentTime];
-            QTTime normalizedStart = QTMakeTimeScaled([selectedAnnotation startTime], currentTime.timeScale);
-			if(QTTimeCompare(currentTime,[selectedAnnotation endTime]) == NSOrderedDescending)
+            CMTime currentTime = [mMovie currentTime];
+            CMTime normalizedStart = CMTimeConvertScale([selectedAnnotation startTime], currentTime.timescale, kCMTimeRoundingMethod_Default); // TODO: Check if QTMakeTimeScaled is correctly replacesd by CMTimeConvertScale
+			if(CMTimeCompare(currentTime,[selectedAnnotation endTime]) == NSOrderedDescending)
 			{
 				if(loopPlayback)
 				{
@@ -3489,16 +3489,8 @@ static AppController *currentApp = nil;
 					[self moveToTime:[selectedAnnotation endTime] fromSender:self];
 				}
 			}
-			else if(QTTimeCompare(currentTime,normalizedStart) == NSOrderedAscending)
+			else if(CMTimeCompare(currentTime,normalizedStart) == NSOrderedAscending)
 			{
-//                NSTimeInterval ti;
-//                QTGetTimeInterval(currentTime, &ti);
-//                NSLog(@"Current Time: %qi / %ld : %f",currentTime.timeValue,currentTime.timeScale,ti);
-//                QTGetTimeInterval([selectedAnnotation startTime], &ti);
-//                NSLog(@"Start Time: %qi / %ld : %f",[selectedAnnotation startTime].timeValue,[selectedAnnotation startTime].timeScale,ti);
-//
-//                QTGetTimeInterval(normalizedStart, &ti);
-//                NSLog(@"Normalized Start Time: %qi / %ld : %f",normalizedStart.timeValue,normalizedStart.timeScale,ti);
                 
 				if(playing)
 				{
@@ -3521,9 +3513,9 @@ static AppController *currentApp = nil;
 		{
 			if([mediaProperties enabled] && ([mMovie rate] != [[mediaProperties movie] rate]))
 			{
-				QTTime newTime = QTTimeIncrement([mMovie currentTime], [mediaProperties offset]);
-				if((newTime.timeValue > 0)
-				   && (QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+				CMTime newTime = CMTimeAdd([mMovie currentTime], [mediaProperties offset]);
+				if((newTime.value > 0)
+				   && (CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
 				{
 					[[mediaProperties movie] setCurrentTime:newTime];
 					[[mediaProperties movie] setRate:[mMovie rate]];
@@ -3572,12 +3564,12 @@ static AppController *currentApp = nil;
 	{
 		if([mediaProperties enabled])
 		{
-			QTTime newTime = QTTimeIncrement(time, [mediaProperties offset]);
-			if(newTime.timeValue < 0)
+			CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
+			if(newTime.value < 0)
 			{
-				newTime.timeValue = 0;
+				newTime.value = 0;
 			}
-			if(QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedDescending)
+			if(CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedDescending)
 			{
 				newTime = [[mediaProperties movie] duration];
 			}

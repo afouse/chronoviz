@@ -37,7 +37,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 		scaleValue = 1.0;
 		scaleFactor = scaleConversionFactor * scaleValue;
 		
-		currentTime = QTIndefiniteTime;
+		currentTime = kCMTimeIndefinite;
 		
 		currentPage = nil;
 		pageOrder = nil;
@@ -244,8 +244,8 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 		AnotoTrace *endTrace = [[layers lastObject] valueForKey:AFAnotoTraceKey];
 		NSTimeInterval startTime;
 		NSTimeInterval endTime;
-		QTGetTimeInterval([startTrace range].time, &startTime);
-		QTGetTimeInterval(QTTimeRangeEnd([endTrace range]), &endTime);
+		startTime = CMTimeGetSeconds([startTrace range].start);
+		endTime = CMTimeGetSeconds(CMTimeRangeGetEnd([endTrace range]));
 		
 		[page setValue:[NSNumber numberWithFloat:startTime] forKey:@"startTimeInterval"];
 		[page setValue:[NSNumber numberWithFloat:endTime] forKey:@"endTimeInterval"];
@@ -275,8 +275,8 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 		AnotoTrace *endTrace = [[layers lastObject] valueForKey:AFAnotoTraceKey];
 		NSTimeInterval startTime;
 		NSTimeInterval endTime;
-		QTGetTimeInterval([startTrace range].time, &startTime);
-		QTGetTimeInterval(QTTimeRangeEnd([endTrace range]), &endTime);
+		startTime = CMTimeGetSeconds([startTrace range].start);
+		endTime = CMTimeGetSeconds(CMTimeRangeGetEnd([endTrace range]));
 		
 		NSLog(@"%@,Start: %f, End: %f, Traces: %i",[startTrace name],startTime,endTime,[layers count]);
 		
@@ -291,7 +291,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 	
 }
 
--(QTTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId
+-(CMTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId
 {	
 	NSLog(@"Time for note point: %f %f",point.x,point.y);
 	if(![currentPage isEqualToString:pageId])
@@ -301,7 +301,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 	return [self timeForViewPoint:NSMakePoint(point.x * scaleFactor, point.y * scaleFactor) onPage:pageId];
 }
 
--(QTTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId
+-(CMTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId
 {
 	NSLog(@"Time for point: %f %f",point.x,point.y);
 	CALayer *page = [pages objectForKey:pageId];
@@ -355,11 +355,11 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 
 		if(trace)
 		{
-			return QTTimeIncrement(QTTimeRangeEnd([trace range]),[data range].time);
+			return CMTimeAdd(CMTimeRangeGetEnd([trace range]),[data range].start);
 		}
 	}
 
-	return QTIndefiniteTime;
+	return kCMTimeIndefinite;
 }
 
 - (IBAction)nextPage:(id)sender
@@ -436,9 +436,9 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 {
 	NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
-	QTTime time = [self timeForViewPoint:pt onPage:currentPage];
+	CMTime time = [self timeForViewPoint:pt onPage:currentPage];
 	
-	if(!QTTimeIsIndefinite(time))
+	if(!CMTIME_IS_INDEFINITE(time))
 		[[AppController currentApp] moveToTime:time fromSender:self];
 }
 
@@ -543,8 +543,8 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			}
 			
 			AnotoTrace *trace = [layer valueForKey:AFAnotoTraceKey];
-			QTTime end = QTTimeIncrement(QTTimeRangeEnd([trace range]),[data range].time);
-			if(QTTimeCompare(currentTime, end) == NSOrderedDescending)
+			CMTime end = CMTimeAdd(CMTimeRangeGetEnd([trace range]),[data range].start);
+			if(CMTimeCompare(currentTime, end) == NSOrderedDescending)
 			{
 				if([layer isHidden] || (layer.opacity < 1.0))
 				{
@@ -558,7 +558,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			}
 			else
 			{
-				if(QTTimeCompare(currentTime,QTTimeIncrement([trace range].time,[data range].time)) == NSOrderedDescending)
+				if(CMTimeCompare(currentTime,CMTimeAdd([trace range].start,[data range].start)) == NSOrderedDescending)
 				{
 					[layer setHidden:NO];
 					[layer setOpacity:1.0];
@@ -584,14 +584,14 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 - (void)drawLayer:(CALayer *)theLayer inContext:(CGContextRef)theContext
 {
 	AnotoTrace* trace = [theLayer valueForKey:AFAnotoTraceKey];
-	QTTime startTime = [data range].time;
+	CMTime startTime = [data range].start;
 	
 	if(trace)
 	{
 		
-		QTTime end = QTTimeIncrement(QTTimeRangeEnd([trace range]),startTime);
-		if((QTTimeCompare(currentTime,QTTimeIncrement([trace range].time,startTime)) == NSOrderedDescending)
-		   && (QTTimeCompare(currentTime,end) == NSOrderedAscending))
+		CMTime end = CMTimeAdd(CMTimeRangeGetEnd([trace range]),startTime);
+		if((CMTimeCompare(currentTime,CMTimeAdd([trace range].start,startTime)) == NSOrderedDescending)
+		   && (CMTimeCompare(currentTime,end) == NSOrderedAscending))
 		{
 			CGContextBeginPath(theContext);
 			CGContextAddPath(theContext, (CGMutablePathRef)[theLayer valueForKey:AFAnotoTracePathKey] );
@@ -611,7 +611,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			
 			for(TimeCodedPenPoint* point in [trace dataPoints])
 			{
-				if(QTTimeCompare(currentTime,QTTimeIncrement([point time],startTime)) == NSOrderedAscending)
+				if(CMTimeCompare(currentTime,CMTimeAdd([point time],startTime)) == NSOrderedAscending)
 				{
 					CALayer *pageLayer = [pages objectForKey:[trace page]];
 					[clickLayer setHidden:NO];
@@ -659,12 +659,12 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			AnotoTrace* trace = [result valueForKey:AFAnotoTraceKey];
 			if(trace)
 			{			
-				QTTime clickedTime = [trace startTime];
-				QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
+				CMTime clickedTime = [trace startTime];
+				CMTime playheadTime = [[[AppController currentApp] movie] currentTime];
 				
-				QTTime diff = QTTimeDecrement(playheadTime, clickedTime);
-				QTTimeRange dataRange = [data range];
-				dataRange.time = diff;
+				CMTime diff = CMTimeSubtract(playheadTime, clickedTime);
+				CMTimeRange dataRange = [data range];
+				dataRange.start = diff;
 				[[data source] setRange:dataRange];
 				
 			}
@@ -744,14 +744,14 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 
 -(void)update
 {
-	if(QTTimeCompare(currentTime, [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame)
+	if(CMTimeCompare(CMTimeMake(currentTime, 1000000), [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame) // TODO: Check if the timescale is correct.
 	{
 		currentTime = [[[AppController currentDoc] movie] currentTime];
 		NSTimeInterval currentTimeInterval;
-		QTGetTimeInterval(currentTime, &currentTimeInterval);
+		currentTimeInterval = CMTimeGetSeconds(currentTime);
 		
 		NSTimeInterval startTimeInterval;
-		QTGetTimeInterval([data range].time,&startTimeInterval);
+		startTimeInterval = CMTimeGetSeconds([data range].start);
 		
 		[CATransaction begin];
 		
@@ -763,10 +763,10 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			if([page.sublayers count] > 0)
 			{
 //				AnotoTrace *startTrace = [[page.sublayers objectAtIndex:0] valueForKey:AFAnotoTraceKey];
-//				QTTime start = [startTrace range].time;
+//				CMTime start = [startTrace range].time;
 //				AnotoTrace *endTrace = [[page.sublayers lastObject] valueForKey:AFAnotoTraceKey];
-//				QTTime end = QTTimeRangeEnd([endTrace range]);
-//				if((QTTimeCompare(currentTime, start) == NSOrderedDescending) && (QTTimeCompare(currentTime, end) == NSOrderedAscending))
+//				CMTime end = CMTimeRangeGetEnd([endTrace range]);
+//				if((CMTimeCompare(currentTime, start) == NSOrderedDescending) && (CMTimeCompare(currentTime, end) == NSOrderedAscending))
 				NSTimeInterval startTime = [[page valueForKey:@"startTimeInterval"] floatValue] + startTimeInterval;
 				NSTimeInterval endTime = [[page valueForKey:@"endTimeInterval"] floatValue] + startTimeInterval;
 				if((startTime <= currentTimeInterval) && (currentTimeInterval < endTime))
@@ -860,8 +860,8 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 		for(CALayer *layer in thePage.sublayers)
 		{
 			AnotoTrace *trace = [layer valueForKey:AFAnotoTraceKey];
-			QTTime end = QTTimeIncrement(QTTimeRangeEnd([trace range]),[data range].time);
-			if(QTTimeCompare(currentTime, end) == NSOrderedDescending)
+			CMTime end = CMTimeAdd(CMTimeRangeGetEnd([trace range]),[data range].start);
+			if(CMTimeCompare(currentTime, end) == NSOrderedDescending)
 			{
 				if([layer isHidden] || (layer.opacity < 1.0))
 				{
@@ -875,7 +875,7 @@ NSString * const AFAnotoOffsetKey = @"pageOffset";
 			}
 			else
 			{
-				if(QTTimeCompare(currentTime,QTTimeIncrement([trace range].time,[data range].time)) == NSOrderedDescending)
+				if(CMTimeCompare(currentTime,CMTimeAdd([trace range].start,[data range].start)) == NSOrderedDescending)
 				{
 					[layer setHidden:NO];
 					[layer setOpacity:1.0];

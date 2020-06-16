@@ -595,7 +595,7 @@ NSString * const DPMaskedSelectionAreaRemovedNotification = @"MaskedSelectionAre
     
     NSUInteger totalTransitions = 0;
     
-    QTTimeRange currentRange;
+    CMTimeRange currentRange;
     Annotation *current = [[AppController currentApp] selectedAnnotation];
     if(current && [current isDuration])
     {
@@ -608,7 +608,7 @@ NSString * const DPMaskedSelectionAreaRemovedNotification = @"MaskedSelectionAre
     {
         current = nil;
         self.transitionsTimeRange = [NSString stringWithFormat:@"%@ to %@",
-                                [NSString stringWithQTTime:QTZeroTime],
+                                [NSString stringWithQTTime:kCMTimeZero],
                                 [NSString stringWithQTTime:[[[AppController currentApp] movie] duration]]];
     }
     

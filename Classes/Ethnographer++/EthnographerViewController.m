@@ -203,7 +203,7 @@
 	
 	for(AnotoTrace *trace in selectedTraces)
 	{		
-		QTGetTimeInterval([trace startTime], &start);
+		start = CMTimeGetSeconds([trace startTime]);
 		if((((start - end) > 2) || ((start - end) < -1))
 		   && ([currentAnnotationTraces count] > 0))
 		{
@@ -215,7 +215,7 @@
 		}
 		
 		[currentAnnotationTraces addObject:trace];
-		QTGetTimeInterval([trace endTime],&end);
+		end = CMTimeGetSeconds([trace endTime]);
 	}
 	
 	if([currentAnnotationTraces count] > 0)

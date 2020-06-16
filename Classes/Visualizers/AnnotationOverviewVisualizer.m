@@ -127,22 +127,22 @@
 	[track addObject:marker];
 	NSUInteger trackIndex = [trackOrder indexOfObject:track];
 	
-	QTTimeRange range = [timeline range];
+	CMTimeRange range = [timeline range];
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.time);
 	float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	
 	
 	NSTimeInterval startTime;
-	QTGetTimeInterval([segment time], &startTime);
+	startTime = CMTimeGetSeconds([segment time]);
 	CGFloat start = floor((startTime - rangeStart) * movieTimeToPixel) + 0.5;
 	CGFloat markerwidth;
 	if([marker isDuration])
 	{
 		NSTimeInterval endTime;
-		QTGetTimeInterval([[marker annotation] endTime], &endTime);
+		endTime = CMTimeGetSeconds([[marker annotation] endTime]);
 		
 		CGFloat end = floor((endTime - rangeStart) * movieTimeToPixel) + 0.5;
 		if(end < start)

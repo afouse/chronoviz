@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import "DPAppPlugin.h"
 @class AnotoViewController;
 @class EthnographerDataSource;
@@ -56,7 +56,7 @@ extern NSString* const DPBluetoothPenRequiredVersion;
     
 	EthnographerProject *currentProject;
 	
-	QTTime annotationStartTime;
+	CMTime annotationStartTime;
 	NSString *annotationPage;
 	EthnographerNotesView *annotationViewController;
 	EthnographerDataSource *annotationDataSource;

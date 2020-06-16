@@ -39,10 +39,10 @@
 		NSTimeInterval endRangeBegin;
 		NSTimeInterval endRangeEnd;
 		
-		QTGetTimeInterval(startRange.start, &startRangeBegin);
-		QTGetTimeInterval(QTTimeRangeEnd(startRange), &startRangeEnd);
-		QTGetTimeInterval(endRange.start, &endRangeBegin);
-		QTGetTimeInterval(QTTimeRangeEnd(endRange), &endRangeEnd);
+		startRangeBegin = CMTimeGetSeconds(startRange.start);
+		startRangeEnd = CMTimeGetSeconds(CMTimeRangeGetEnd(startRange));
+		endRangeBegin = CMTimeGetSeconds(endRange.start);
+		endRangeEnd = CMTimeGetSeconds(CMTimeRangeGetEnd(endRange));
 		
 		NSTimeInterval currentBegin = startRangeBegin + (endRangeBegin - startRangeBegin)*progress;
 		NSTimeInterval currentEnd = startRangeEnd + (endRangeEnd - startRangeEnd)*progress;

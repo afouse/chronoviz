@@ -43,7 +43,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 	AnotoTrace *trace1 = [(CALayer*)obj1 valueForKey:DPEthnographerTraceKey];
 	AnotoTrace *trace2 = [(CALayer*)obj2 valueForKey:DPEthnographerTraceKey];
 	
-	return QTTimeCompare([trace1 range].time, [trace2 range].time);
+	return CMTimeCompare([trace1 range].time, [trace2 range].time);
 }
 
 @interface EthnographerNotesView (Internal)
@@ -313,7 +313,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 		{
 			AnotoNotesData *data = [session valueForKey:DPAnotoSessionDataKey];
 			NSTimeInterval dataStartTime;
-			QTGetTimeInterval([data range].time,&dataStartTime);
+			dataStartTime = CMTimeGetSeconds([data range].time);
 			
 			NSArray *layers = [session.sublayers mutableCopy];
 			[layers sortedArrayUsingFunction:ethnographerLayersSort context:NULL];
@@ -321,8 +321,8 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 			AnotoTrace *endTrace = [[layers lastObject] valueForKey:DPEthnographerTraceKey];
 			NSTimeInterval startTime;
 			NSTimeInterval endTime;
-			QTGetTimeInterval([startTrace range].time, &startTime);
-			QTGetTimeInterval(QTTimeRangeEnd([endTrace range]), &endTime);
+			startTime = CMTimeGetSeconds([startTrace range].time);
+			endTime = CMTimeGetSeconds(CMTimeRangeGetEnd([endTrace range]));
 			startTime += dataStartTime;
 			endTime += dataStartTime;
 			minStartTime = fmin(minStartTime, startTime);
@@ -660,7 +660,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 	}
 }
 
--(QTTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId
+-(CMTime)timeForNotePoint:(NSPoint)point onPage:(NSString*)pageId
 {	
 	//NSLog(@"Time for note point: %f %f",point.x,point.y);
 	if(![currentPage isEqualToString:pageId])
@@ -679,7 +679,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 	//return [self timeForViewPoint:NSMakePoint(point.x * scaleFactor, point.y * scaleFactor) onPage:pageId];
 }
 
--(QTTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId
+-(CMTime)timeForViewPoint:(NSPoint)point onPage:(NSString*)pageId
 {
 	//NSLog(@"Time for point: %f %f",point.x,point.y);
 	CALayer *page = [pages objectForKey:pageId];
@@ -711,9 +711,9 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
             AnotoTrace *trace = [result valueForKey:DPEthnographerTraceKey];
 			CALayer *sessionLayer = [result superlayer];
 			AnotoNotesData *data = [sessionLayer valueForKey:DPAnotoSessionDataKey];
-			QTTime traceRangeEnd = QTTimeRangeEnd([trace range]);
-			traceRangeEnd.timeValue = traceRangeEnd.timeValue + fmax(1,traceRangeEnd.timeScale/300);
-			return QTTimeIncrement(traceRangeEnd,[data range].time);
+			CMTime traceRangeEnd = CMTimeRangeGetEnd([trace range]);
+			traceRangeEnd.value = traceRangeEnd.value + fmax(1,traceRangeEnd.timescale/300);
+			return CMTimeAdd(traceRangeEnd,[data range].time);
 		}
 	}
 	
@@ -1067,7 +1067,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 {
 	NSPoint pt = [self convertPoint:[theEvent locationInWindow] fromView:nil];
 	
-	QTTime time = [self timeForViewPoint:pt onPage:currentPage];
+	CMTime time = [self timeForViewPoint:pt onPage:currentPage];
 	
 	if(!QTTimeIsIndefinite(time))
 		[[AppController currentApp] moveToTime:time fromSender:self];	
@@ -1239,23 +1239,23 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 				}
 				
 				AnotoTrace *trace = [layer valueForKey:DPEthnographerTraceKey];
-				QTTime end = QTTimeIncrement(QTTimeRangeEnd([trace range]),[data range].time);
+				CMTime end = CMTimeAdd(CMTimeRangeGetEnd([trace range]),[data range].time);
 				
 				
-//				if([trace range].time.timeValue > 0)
+//				if([trace range].time.value > 0)
 //				{
-//					NSLog(@"trace start %qi",[trace range].time.timeValue);
-//					NSLog(@"trace end %qi",end.timeValue);
+//					NSLog(@"trace start %qi",[trace range].time.value);
+//					NSLog(@"trace end %qi",end.value);
 //				}
 			
 				
-				if(QTTimeCompare(currentTime, end) != NSOrderedAscending)
+				if(CMTimeCompare(currentTime, end) != NSOrderedAscending)
 				{
 					
 					
 					if(tail)
 					{
-						QTGetTimeInterval(QTTimeDecrement(currentTime, end),&timeDiff);
+						timeDiff = CMTimeGetSeconds(CMTimeSubtract(currentTime, end));
 						if(timeDiff > tailTime)
 						{
 							[layer setHidden:YES];
@@ -1279,7 +1279,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 				}
 				else
 				{
-					if(QTTimeCompare(currentTime,QTTimeIncrement([trace range].time,[data range].time)) == NSOrderedDescending)
+					if(CMTimeCompare(currentTime,CMTimeAdd([trace range].time,[data range].time)) == NSOrderedDescending)
 					{
 						[layer setHidden:NO];
 						[layer setOpacity:1.0];
@@ -1328,11 +1328,11 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 	if(trace)
 	{
 		AnotoNotesData *data = [theLayer.superlayer valueForKey:DPAnotoSessionDataKey];
-		QTTime startTime = [data range].time;
+		CMTime startTime = [data range].time;
 		
-		QTTime end = QTTimeIncrement(QTTimeRangeEnd([trace range]),startTime);
-		if((QTTimeCompare(currentTime,QTTimeIncrement([trace range].time,startTime)) == NSOrderedDescending)
-		   && (QTTimeCompare(currentTime,end) == NSOrderedAscending))
+		CMTime end = CMTimeAdd(CMTimeRangeGetEnd([trace range]),startTime);
+		if((CMTimeCompare(currentTime,CMTimeAdd([trace range].time,startTime)) == NSOrderedDescending)
+		   && (CMTimeCompare(currentTime,end) == NSOrderedAscending))
 		{
 			CGContextBeginPath(theContext);
 			CGContextAddPath(theContext, (CGMutablePathRef)[theLayer valueForKey:DPEthnographerTracePathKey] );
@@ -1352,7 +1352,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 			
 			for(TimeCodedPenPoint* point in [trace dataPoints])
 			{
-				if(QTTimeCompare(currentTime,QTTimeIncrement([point time],startTime)) == NSOrderedAscending)
+				if(CMTimeCompare(currentTime,CMTimeAdd([point time],startTime)) == NSOrderedAscending)
 				{
 					if(showPen)
 					{
@@ -1400,17 +1400,17 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
     if(traceLayer)
     {
         AnotoTrace* trace = [traceLayer valueForKey:DPEthnographerTraceKey];
-        QTTime clickedTime = [trace startTime];
-        QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
-        QTTime diff = QTTimeDecrement(playheadTime, clickedTime);
+        CMTime clickedTime = [trace startTime];
+        CMTime playheadTime = [[[AppController currentApp] movie] currentTime];
+        CMTime diff = CMTimeSubtract(playheadTime, clickedTime);
         
         BOOL allSessions = NO;
         if(allSessions)
         {
             for(AnotoNotesData *data in notesData)
             {
-                QTTimeRange dataRange = [data range];
-                if(QTTimeCompare(dataRange.time,diff) != NSOrderedSame)
+                CMTimeRange dataRange = [data range];
+                if(CMTimeCompare(dataRange.time,diff) != NSOrderedSame)
                 {
                     dataRange.time = diff;
                     [[data source] setRange:dataRange];		
@@ -1421,7 +1421,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
         {
             AnotoNotesData *data = [traceLayer.superlayer valueForKey:DPAnotoSessionDataKey];
             
-            QTTimeRange dataRange = [data range];
+            CMTimeRange dataRange = [data range];
             dataRange.time = diff;
             [[data source] setRange:dataRange];	
         }
@@ -1537,7 +1537,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
 
 -(void)update
 {
-	if(QTTimeCompare(currentTime, [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame)
+	if(CMTimeCompare(currentTime, [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame)
 	{
         currentTime = [[[AppController currentDoc] movie] currentTime];
         
@@ -1548,7 +1548,7 @@ int ethnographerLayersSort( id obj1, id obj2, void *context ) {
         else
         {
             NSTimeInterval currentTimeInterval;
-            QTGetTimeInterval(currentTime, &currentTimeInterval);
+            currentTimeInterval = CMTimeGetSeconds(currentTime);
             
             //[CATransaction begin];
             
