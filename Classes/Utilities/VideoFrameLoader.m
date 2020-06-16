@@ -53,8 +53,8 @@
 	{
 		BOOL exact = NO;
 		
-		QTMovie *playbackMovie = [[marker visualizer] movie];
-		NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
+		AVPlayer *playbackMovie = [[marker visualizer] movie];
+        NSURL *url = [[[playbackMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
 		
 		CMTime time = [[marker boundary] time];
 		NSTimeInterval timeInterval;
@@ -94,7 +94,7 @@
 					if(!frameVideo)
 					{
 						NSError *error = nil;
-						frameVideo = [AVPlayer movieWithURL:url error:&error];
+						frameVideo = [AVPlayer playerWithURL:url];
 						[frameMovies setObject:frameVideo forKey:url];
 						
 						NSTimeInterval duration;
@@ -103,16 +103,21 @@
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
 						
-						NSSize contentSize = [[frameVideo attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+						NSArray<AVAssetTrack *> *tracks = [[[frameVideo currentItem] asset] tracksWithMediaType:AVMediaTypeVideo];
+                        NSSize contentSize = [tracks[0] naturalSize];
 						float ratio = contentSize.width/contentSize.height;
 						contentSize.width = (targetHeight *  ratio);
 						contentSize.height = targetHeight;
 						
-						frameDict = [NSDictionary
-									 dictionaryWithObjectsAndKeys:
-									 QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-									 [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
-									 nil];
+						/*
+                        frameDict = [NSDictionary
+                                     dictionaryWithObjectsAndKeys:
+                                     QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
+                                     [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
+                                     nil];
+                        */
+                        frameDict = [NSDictionary dictionary]; // TODO: Reimplement storing of information in frameDict.
+                        
 						[frameSettings setObject:frameDict forKey:url];
 						
 					}
@@ -161,10 +166,14 @@
 		targetFrameCount = 200;
 		targetHeight = 200;
 		
-		CIImageDict = [[NSDictionary
+		/*
+        CIImageDict = [[NSDictionary
 								   dictionaryWithObjectsAndKeys:
 								   QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
 								   nil] retain];
+        */
+        // TODO: Reintroduce proper dictionary.
+        CIImageDict = [[NSDictionary dictionary] retain];
 		
 
 	}
@@ -220,7 +229,7 @@
 - (void)loadAllFramesForMovie:(AVPlayer*)movie
 {
 	AVPlayer *playbackMovie = movie;
-	NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
+    NSURL *url = [[[playbackMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
 	
 	AVPlayer *frameVideo = [frameMovies objectForKey:url];
 	NSDictionary *frameDict = [frameSettings objectForKey:url];
@@ -231,23 +240,28 @@
 	if(!frameVideo)
 	{
 		NSError *error = nil;
-		frameVideo = [QTMovie movieWithURL:url error:&error];
+		frameVideo = [AVPlayer playerWithURL:url];
 		[frameMovies setObject:frameVideo forKey:url];
 
 		float interval = duration/targetFrameCount;
 		
 		[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
 		
-		NSSize contentSize = [[frameVideo attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+        NSArray<AVAssetTrack *> *tracks = [[[frameVideo currentItem] asset] tracksWithMediaType:AVMediaTypeVideo];
+        NSSize contentSize = [tracks[0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		contentSize.width = (targetHeight *  ratio);
 		contentSize.height = targetHeight;
 		
-		frameDict = [NSDictionary
+		/*
+        frameDict = [NSDictionary
 					 dictionaryWithObjectsAndKeys:
 					 QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
 					 [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
 					 nil];
+        */
+        frameDict = [NSDictionary dictionary]; // TODO: Reimplement storing of information in frameDict.
+        
 		[frameSettings setObject:frameDict forKey:url];
 		
 	}

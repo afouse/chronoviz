@@ -15,7 +15,6 @@
 
 	id <DataSourceDelegate> delegate;
 	QTMovie *movie;
-	//Movie mCloneMovie;
 	
 	NSMutableArray *subsetArray;
 	NSInteger subsetSize;

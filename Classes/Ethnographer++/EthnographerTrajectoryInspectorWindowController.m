@@ -155,7 +155,7 @@ NSString * const TrajectoryPivotMarkerType = @"Pivot";
     }
     
     NSDictionary *inputOrientations = [trajectory orientationMarks];
-    NSArray *orientations = [[inputOrientations allValues] sortedArrayUsingComparator:^(id obj1, id obj2) {
+    NSArray *orientations = [[inputOrientations allValues] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         EthnographerOrientedTimeMarker *point1 = (EthnographerOrientedTimeMarker*)obj1;
         EthnographerOrientedTimeMarker *point2 = (EthnographerOrientedTimeMarker*)obj2;
         return CMTimeCompare([point1 time], [point2 time]);

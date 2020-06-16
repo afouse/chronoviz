@@ -73,7 +73,7 @@
 
 -(void) exportFrame:(Annotation*)clip fromVideo:(VideoProperties*)props toFile:(NSString*)filepath
 {
-	QTMovie *sourceMovie = [props movie];
+	AVPlayer *sourceMovie = [props movie];
 	
 	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
 	

@@ -166,7 +166,6 @@
 		NSString *directory = [openPanel filename];	
 		AnnotationCategory *selectedCategory = [[button selectedItem] representedObject];
 		
-		//QTMovie *newMovie = [QTMovie movie];
 		NSError *err;
 
 		NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 

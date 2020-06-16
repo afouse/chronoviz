@@ -129,7 +129,7 @@
 	return markers;
 }
 
--(AVAsset *)movie
+-(AVPlayer *)movie
 {
 	if(videoProperties)
 	{

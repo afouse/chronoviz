@@ -36,7 +36,7 @@
 -(void)setup;
 
 -(NSArray *)markers;
--(QTMovie *)movie;
+-(AVPlayer *)movie;
 
 // Core Animation Layer drawing
 -(CALayer*)visualizationLayer;

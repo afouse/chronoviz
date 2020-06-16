@@ -87,7 +87,7 @@ static NSArray *DPQuicktimeFileTypes = nil;
 -(id)initWithPath:(NSString*)theFile
 {
 	VideoProperties *props = nil;
-	if([QTMovie canInitWithFile:theFile])
+	if([AVPlayer canInitWithFile:theFile])
 	{
 		props = [[[VideoProperties alloc] initWithVideoFile:theFile] autorelease];
 		[props setTitle:[[theFile lastPathComponent] stringByDeletingPathExtension]];

@@ -3205,12 +3205,13 @@ static AppController *currentApp = nil;
 		if([(NSSegmentedControl*)sender isSelectedForSegment:0])
 		{
 			loopPlayback = YES;
-			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieLoopsAttribute];
+			// [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieLoopsAttribute];
+            // TODO: Reintroduce looping, e.g., via playerDidReachEnd callback. https://stackoverflow.com/questions/27808266/how-do-you-loop-avplayer-in-swift
 		}
 		else
 		{
 			loopPlayback = NO;
-			[mMovie setAttribute:[NSNumber numberWithBool:NO] forKey:QTMovieLoopsAttribute];
+			// [mMovie setAttribute:[NSNumber numberWithBool:NO] forKey:QTMovieLoopsAttribute];
 		}
 		
 		annotationPlayback = [(NSSegmentedControl*)sender isSelectedForSegment:1];

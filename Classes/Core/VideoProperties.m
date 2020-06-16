@@ -28,7 +28,7 @@ static const NSString *ItemStatusContext;
 
 @interface VideoProperties (MovieLoading)
 
--(void)handleLoadStateChanged:(QTMovie *)theMovie;
+-(void)handleLoadStateChanged:(AVPlayer *)theMovie;
 -(void)movieLoadStateChanged:(NSNotification *)notification;
 
 @end
