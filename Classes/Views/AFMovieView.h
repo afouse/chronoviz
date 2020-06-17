@@ -29,7 +29,7 @@
 	int resizeMovieIndex;
 	NSPoint resizeMoviePoint;
 	
-	AVAsset *dragMovie;
+	AVPlayer *dragMovie;
 	
 	NSCursor *magnifyCursor;
 	

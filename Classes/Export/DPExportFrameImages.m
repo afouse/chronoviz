@@ -78,9 +78,10 @@
 	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
 	
 	// Make sure the selected time actually exists in the movie
-    if(CMTimeCompare(startTime, [sourceMovie duration]) == NSOrderedDescending)
+    CMTime duration = [[sourceMovie currentItem] duration];
+    if(CMTimeCompare(startTime, duration) == NSOrderedDescending)
     {
-        startTime = [sourceMovie duration];
+        startTime = duration;
     }
 	
     

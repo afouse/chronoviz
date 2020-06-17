@@ -74,7 +74,7 @@ static NSArray *DPQuicktimeFileTypes = nil;
 			videoProperties = [props retain];
 			range.start = [videoProperties offset];
 			range.start.value = -range.start.value;
-			range.duration = [[videoProperties movie] duration];
+			range.duration = [[[videoProperties movie] currentItem] duration];
 			[videoProperties addObserver:self
 							  forKeyPath:@"offset"
 								 options:0

@@ -566,7 +566,7 @@
 	[baseTimeline release];
 }
 
-- (void)setMovie:(AVAsset *)mov
+- (void)setMovie:(AVPlayer *)mov
 {
 	[super setMovie:mov];
 	

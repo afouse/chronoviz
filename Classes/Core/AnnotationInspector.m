@@ -574,7 +574,7 @@
 		[annotation setIsDuration:YES];
 		CMTime qttime = [annotation startTime];
 		NSTimeInterval duration;
-		duration = CMTimeGetSeconds([[[AppController currentDoc] movie] duration]);
+		duration = CMTimeGetSeconds([[[[AppController currentDoc] movie] currentItem] duration]);
 		qttime.value += qttime.timescale * (duration * .1);
 		[annotation setEndTime:qttime];
 		[endTimeField setStringValue:[annotation endTimeString]];

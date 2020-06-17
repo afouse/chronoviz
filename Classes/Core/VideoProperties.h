@@ -45,7 +45,7 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 @property(retain) NSString *title;
 @property(retain) NSString *description;
 @property(retain) NSDate *startDate;
-@property(retain) AVAsset *movie;
+@property(retain) AVPlayer *movie;
 @property(retain) AVPlayerItem *playerItem;
 @property(retain) AVPlayer *player;
 @property BOOL enabled;

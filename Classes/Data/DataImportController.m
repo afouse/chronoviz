@@ -653,7 +653,7 @@ int importSort( id obj1, id obj2, void *context ) {
 	NSTimeInterval oldTI;
 	NSTimeInterval newTI;
 	
-	oldTI = CMTimeGetSeconds([[[AppController currentDoc] movie] duration]);
+	oldTI = CMTimeGetSeconds([[[[AppController currentDoc] movie] currentItem] duration]);
 	newTI = CMTimeGetSeconds([dataSource range].duration);
 	
 	if([[doc videoProperties] localVideo] && ((newTI - oldTI) > 1))

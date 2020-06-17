@@ -58,7 +58,7 @@
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
 	rangeDuration = CMTimeGetSeconds(range.duration);
-	rangeStart = CMTimeGetSeconds(range.time);
+	rangeStart = CMTimeGetSeconds(range.start);
 	float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	
 	NSRect rect;

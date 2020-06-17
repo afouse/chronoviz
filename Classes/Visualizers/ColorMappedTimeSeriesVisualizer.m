@@ -192,7 +192,7 @@
     TimeSeriesData *data = [[timeline dataSets] objectAtIndex:[subsets indexOfObject:subset]];
 	NSString *dataSetID = [data uuid];
 	
-	rangeTime = CMTimeGetSeconds([timeline range].time);
+	rangeTime = CMTimeGetSeconds([timeline range].start);
 	rangeDuration = CMTimeGetSeconds([timeline range].duration);
 	CGFloat graphWidth = [timeline bounds].size.width;
 	float movieTimeToPixel = graphWidth/rangeDuration;
@@ -398,11 +398,11 @@
 		valueMin = fmin([data minValue],valueMin);
 		valueMax = fmax([data maxValue],valueMax);
 		
-		rangeTime = CMTimeGetSeconds([timeline range].time);
+		rangeTime = CMTimeGetSeconds([timeline range].start);
 		rangeDuration = CMTimeGetSeconds([timeline range].duration);
 		
 		NSMutableArray *dataSubset = [subsets objectAtIndex:index];
-		CMTimeRange dataSubsetRange = [[subsetRanges objectAtIndex:index] QTTimeRangeValue];
+		CMTimeRange dataSubsetRange = [[subsetRanges objectAtIndex:index] CMTimeRangeValue];
 		
 		
 		// Check to see if there are too few or too many points represented
@@ -410,7 +410,7 @@
            || ([dataSubset count] == 0)
 		   || ([dataSubset count] > graphWidth/(subsetResolutionRatio - 0.1)) 
 		   || (([dataSubset count] < graphWidth/(subsetResolutionRatio + 0.5)) && ([[data dataPoints] count] > graphWidth/(subsetResolutionRatio + 1)))
-		   || (!QTEqualTimeRanges([timeline range], dataSubsetRange) && ![timeline resizing]) )
+		   || (!CMTimeRangeEqual([timeline range], dataSubsetRange) && ![timeline resizing]) )
 		{
 			[dataSubset removeAllObjects];
 			
@@ -475,7 +475,7 @@
 	NSTimeInterval pointTime;
 	NSTimeInterval rangeTime;
 	NSTimeInterval rangeDuration;
-	rangeTime = CMTimeGetSeconds([timeline range].time);
+	rangeTime = CMTimeGetSeconds([timeline range].start);
 	rangeDuration = CMTimeGetSeconds([timeline range].duration);
 	
 	CGFloat graphWidth = [timeline bounds].size.width;
@@ -509,7 +509,7 @@
 	NSTimeInterval pointTime;
 	NSTimeInterval rangeTime;
 	NSTimeInterval rangeDuration;
-	rangeTime = CMTimeGetSeconds([timeline range].time);
+	rangeTime = CMTimeGetSeconds([timeline range].start);
 	rangeDuration = CMTimeGetSeconds([timeline range].duration);
 	
 	CGFloat graphWidth = [timeline bounds].size.width;
@@ -556,7 +556,7 @@
 	NSTimeInterval pointTime;
 	NSTimeInterval rangeTime;
 	NSTimeInterval rangeDuration;
-	rangeTime = CMTimeGetSeconds([timeline range].time);
+	rangeTime = CMTimeGetSeconds([timeline range].start);
 	rangeDuration = CMTimeGetSeconds([timeline range].duration);
 	
 	CGFloat graphWidth = [timeline bounds].size.width;
@@ -604,7 +604,7 @@
 
 -(BOOL)updateMarkers
 {
-	if([timeline inLiveResize]) // && QTEqualTimeRanges([timeline range], [[subsetRanges objectAtIndex:0] QTTimeRangeValue]))
+	if([timeline inLiveResize]) // && CMTimeRangeEqual([timeline range], [[subsetRanges objectAtIndex:0] QTTimeRangeValue]))
 	{
 		graphHeight = fmin(graphHeightMax,([timeline bounds].size.height/[[timeline dataSets] count]) - graphSpace);
 		graphHeight = fmax(graphHeightMin,graphHeight);
@@ -616,17 +616,17 @@
 		int index = 0;
 		for(CALayer *graphLayer in graphLayers)
 		{
-			CMTimeRange imageRange = [[subsetRanges objectAtIndex:index] QTTimeRangeValue];
+			CMTimeRange imageRange = [[subsetRanges objectAtIndex:index] CMTimeRangeValue];
 			NSTimeInterval imageStart;
 			NSTimeInterval imageDuration;
 			imageDuration = CMTimeGetSeconds(imageRange.duration);
-			imageStart = CMTimeGetSeconds(imageRange.time);
+			imageStart = CMTimeGetSeconds(imageRange.start);
 			
 			CMTimeRange range = [timeline range];
 			NSTimeInterval rangeDuration;
 			NSTimeInterval rangeStart;
 			rangeDuration = CMTimeGetSeconds(range.duration);
-			rangeStart = CMTimeGetSeconds(range.time);
+			rangeStart = CMTimeGetSeconds(range.start);
 			
 			float scale = imageDuration/rangeDuration;
 			float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;

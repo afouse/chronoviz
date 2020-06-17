@@ -199,7 +199,7 @@ NSString * const DataTypeSpatialY = @"Spatial Y";
 {
 	if((range.duration.value == 0) && (![self timeCoded]))
 	{
-		range = CMTimeRangeMake(kCMTimeZero,[[[AnnotationDocument currentDocument] movie] duration]);
+		range = CMTimeRangeMake(kCMTimeZero,[[[[AnnotationDocument currentDocument] movie] currentItem] duration]);
 	}
 	
 	NSMutableArray *newDataSets = [NSMutableArray array];

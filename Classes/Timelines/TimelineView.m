@@ -364,7 +364,7 @@
         [self showTimes:YES];
     }
     
-	[self setRange:CMTimeRangeMake(kCMTimeZero, [movie duration])];
+	[self setRange:CMTimeRangeMake(kCMTimeZero, [[movie currentItem] duration])];
 	
 	[self redrawAllSegments];
 }
@@ -987,7 +987,7 @@
 		timesLayer.autoresizingMask = (kCALayerHeightSizable | kCALayerWidthSizable);
 		[rootLayer insertSublayer:timesLayer below:visualizationLayer];
 		
-        NSTimeInterval interval = CMTimeGetSeconds([movie duration]);
+        NSTimeInterval interval = CMTimeGetSeconds([[movie currentItem] duration]);
         if(interval > (60*60*6))
         {
             timesVisualizer = [[DateVisualizer alloc] initWithTimelineView:self];
@@ -1277,7 +1277,7 @@
 //	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
 //	long timeScale = range.duration.timescale;
 //	
-//	CMTimeRange newRange = QTMakeTimeRange(CMTimeMake(timeValue,timeScale),
+//	CMTimeRange newRange = CMTimeRangeMake(CMTimeMake(timeValue,timeScale),
 //										   CMTimeMake(range.duration.value - timeValue,timeScale));
 //	
 //	[timeSeriesData scaleFromRange:newRange toRange:range];
@@ -1293,7 +1293,7 @@
 //	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].time.value;
 //	long timeScale = range.duration.timescale;
 //	
-//	CMTimeRange newRange = QTMakeTimeRange(CMTimeMake(0,timeScale),
+//	CMTimeRange newRange = CMTimeRangeMake(CMTimeMake(0,timeScale),
 //										   CMTimeMake(timeValue,timeScale));
 //	
 //	[timeSeriesData scaleFromRange:newRange toRange:range];
@@ -1736,7 +1736,7 @@
 		if([selectedMarker isDuration] && (timeInterval >= originalEndTime))
 		{
 			timeValue = originalEndTime - 1;
-			curPoint.x = ((double)timeValue/[movie duration].value) * [self bounds].size.width;
+			curPoint.x = ((double)timeValue/[[movie currentItem] duration].value) * [self bounds].size.width;
 		}
 		// Snap to existing points on the timeline
 		else
@@ -1785,7 +1785,7 @@
 		if(timeInterval <= originalStartTime)
 		{
 			timeValue = originalStartTime + 1;
-			curPoint.x = ((double)timeValue/[movie duration].value) * [self bounds].size.width;
+			curPoint.x = ((double)timeValue/[[movie currentItem] duration].value) * [self bounds].size.width;
 		}
 		// Snap to existing points on the timeline
 		else

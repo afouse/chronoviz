@@ -260,7 +260,8 @@ static AppController *currentApp = nil;
 	
 	mMovie = nil;
 	activeMovies = [[NSMutableArray alloc] init];
-	log = nil;
+	// log = nil;
+    // TODO: Check what the log does.
 	rateLock = [[NSLock alloc] init];
 	autoSave = NO;
 	fullScreen = NO;
@@ -528,7 +529,7 @@ static AppController *currentApp = nil;
 	}
     
     NSArray *existingMovies = [mMovieView movies];
-    for(AVAsset* movie in existingMovies)
+    for(AVPlayer* movie in existingMovies)
     {
         [mMovieView removeMovie:movie];
     }
@@ -856,7 +857,7 @@ static AppController *currentApp = nil;
     NSMutableArray *movieIDs = [NSMutableArray array];
 	NSMutableArray *movieTitles = [NSMutableArray array];
     NSMutableArray *movieEnabledStates = [NSMutableArray array];
-	for(AVAsset *movie in [mMovieView movies])
+	for(AVPlayer *movie in [mMovieView movies])
 	{
         for(VideoProperties* video in [[AnnotationDocument currentDocument] allMediaProperties])
         {
@@ -1034,7 +1035,7 @@ static AppController *currentApp = nil;
                 {
                     NSArray *movieEnabledStates = [mainStateDict objectForKey:@"MovieEnabledStates"];
                     NSArray *existingMovies = [mMovieView movies];
-                    for(AVAsset* movie in existingMovies)
+                    for(AVPlayer* movie in existingMovies)
                     {
                         [mMovieView removeMovie:movie];
                     }
@@ -3319,9 +3320,9 @@ static AppController *currentApp = nil;
 		{
 			CMTime newTime = CMTimeAdd(currentTime, [mediaProperties offset]);
 			if((newTime.value > 0)
-			   && (CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+			   && (CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedAscending))
 			{
-				[[mediaProperties movie] setCurrentTime:newTime];
+				[[mediaProperties movie] seekToTime:newTime];
 				//[[mediaProperties movie] setRate:rate];
 				[activeMovies addObject:[mediaProperties movie]];
 			}
@@ -3332,7 +3333,7 @@ static AppController *currentApp = nil;
 		}
 	}
 	
-	for(AVAsset* movie in activeMovies)
+	for(AVPlayer* movie in activeMovies)
 	{
 		[movie setRate:rate];
 	}
@@ -3409,9 +3410,9 @@ static AppController *currentApp = nil;
 			{
 				CMTime newTime = CMTimeAdd([mMovie currentTime], [mediaProperties offset]);
 				if((newTime.value > 0)
-				   && (CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+				   && (CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedAscending))
 				{
-					[[mediaProperties movie] setCurrentTime:newTime];
+					[[mediaProperties movie] seekToTime:newTime];
 					[[mediaProperties movie] setRate:[mMovie rate]];
 				}
 				
@@ -3447,7 +3448,7 @@ static AppController *currentApp = nil;
 	{
 		time.value = 0;
 	}
-	[mMovie setCurrentTime:time];
+	[mMovie seekToTime:time];
 	for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
 	{
 		if([mediaProperties enabled])
@@ -3457,11 +3458,11 @@ static AppController *currentApp = nil;
 			{
 				newTime.value = 0;
 			}
-			if(CMTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedDescending)
+			if(CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedDescending)
 			{
-				newTime = [[mediaProperties movie] duration];
+				newTime = [[[mediaProperties movie] currentItem] duration];
 			}
-			[[mediaProperties movie] setCurrentTime:newTime];
+			[[mediaProperties movie] seekToTime:newTime];
 		}
 	}
 	[self updateDisplay:nil];

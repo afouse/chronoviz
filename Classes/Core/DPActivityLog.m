@@ -66,7 +66,7 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
         
         currentActivity = [[coder decodeObjectForKey:@"DPActivityLogCurrentActivity"] retain];
         
-        lastTimePoint = [coder decodeQCMTimeForKey:@"DPActivityLogLastTimePoint"];
+        lastTimePoint = [coder decodeCMTimeForKey:@"DPActivityLogLastTimePoint"];
         
         self.lastRealTime = [NSDate date];
 		

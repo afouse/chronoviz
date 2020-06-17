@@ -179,7 +179,7 @@
 	if(!subset
 	   || ([subset count] > graphWidth/1.9) 
 	   || (([subset count] < graphWidth/2.5) && ([[data dataPoints] count] > graphWidth/3))
-	   || (!QTEqualTimeRanges([timeline range], subsetRange) && ![timeline resizing]) )
+	   || (!CMTimeRangeEqual([timeline range], subsetRange) && ![timeline resizing]) )
 	{
 		[subset release];
 		subset = [[NSMutableArray alloc] initWithCapacity:graphWidth/2];
@@ -461,7 +461,7 @@
     {
         return NO;
     }
-	else if([timeline inLiveResize] && QTEqualTimeRanges([timeline range], subsetRange))
+	else if([timeline inLiveResize] && CMTimeRangeEqual([timeline range], subsetRange))
 	{
 		CGRect graphBounds = NSRectToCGRect([timeline bounds]);
 		//graphBounds.size.width = graphBounds.size.width * [timeline zoomFactor];

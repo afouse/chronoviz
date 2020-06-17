@@ -172,7 +172,7 @@ static void releasePatternImage( void *info )
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
 	rangeDuration = CMTimeGetSeconds(range.duration);
-	rangeStart = CMTimeGetSeconds(range.time);
+	rangeStart = CMTimeGetSeconds(range.start);
 	//CGFloat pixelToMovieTime = rangeDuration/timelineWidth;
 	CGFloat movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	

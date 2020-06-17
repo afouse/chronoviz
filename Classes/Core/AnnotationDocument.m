@@ -29,7 +29,8 @@
 #import "AFAVAssetCreator.h"
 #import <Sparkle/SUUpdater.h>
 #import <CoreServices/CoreServices.h>
-#import <QTKit/QTMovieModernizer.h>
+//#import <QTKit/QTMovieModernizer.h>
+// TODO: Check what depends on the above import. We can probably omit this. https://github.com/benoit-pereira-da-silva/MovieModernizer
 
 NSString * const MediaChangedNotification = @"MediaChangedNotification";
 NSString * const DPMediaAddedKey = @"MediaAdded";
@@ -328,12 +329,15 @@ int const DPCurrentDocumentFormatVersion = 1;
 					NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[filename stringByDeletingLastPathComponent] error:&err];
 					for(NSString* file in files)
 					{
+                        /*
                         NSError* err;
 						if (![QTMovieModernizer requiresModernization:[NSURL URLWithString:file] error:&err]) {
 							[videoProperties setVideoFile:file];
 							[videoProperties saveToFile:videoInfoFile];
 							break;
 						}
+                        */
+                        // TODO: Remove Modernization?
 					}
 				}
 				
@@ -671,6 +675,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 {
     AVAsset *movie = nil;
     NSError *err = nil;
+    /*
 	if (![QTMovieModernizer requiresModernization:[NSURL URLWithString:videoFile] error:&err])
 	{
         [videoProperties setMovie:nil];
@@ -685,12 +690,13 @@ int const DPCurrentDocumentFormatVersion = 1;
             [[AppController currentApp] setMovie:movie];
         }
 	}
+    */
+    // TODO: Omit modernizer?
 	return movie;
 }
 
 - (NSString*)createVideoFileWithDuration:(CMTime)time
 {
-    NSError *error;
     NSString *movieFile = [annotationsDirectory stringByAppendingPathComponent:@"video.mov"];
     NSString *altMovieFile = [annotationsDirectory stringByAppendingPathComponent:@"video1.mov"];
     NSString* imageName = [[NSBundle mainBundle] pathForResource:@"black" ofType:@"gif"];
@@ -709,7 +715,7 @@ int const DPCurrentDocumentFormatVersion = 1;
     
     [AFAVAssetCreator createNewMovieAtPath:[NSURL URLWithString:movieFile]
                                  fromImage:imageObj
-                              withDuration:duration];
+                              withDuration:CMTimeGetSeconds([self duration])];
     
     [imageObj release];
     
@@ -723,9 +729,10 @@ int const DPCurrentDocumentFormatVersion = 1;
 {
 	if([videoProperties localVideo])
 	{
-        [self createVideoFileWithDuration:duration]
+        [self createVideoFileWithDuration:duration];
 		
-		[self setVideoFile:movieFile];
+		// [self setVideoFile:movieFile];
+        // TODO: Is this required?
 		
 		return YES;
 	}
@@ -737,7 +744,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 
 - (CMTime)duration
 {
-	return [[self movie] duration];
+	return [[[self movie] currentItem] duration];
 }
 
 - (int32_t)defaultTimebase
@@ -1070,7 +1077,7 @@ int const DPCurrentDocumentFormatVersion = 1;
                 [properties loadMovie];
                 if(![properties hasVideo])
                 {
-                    [self setDuration:[[properties movie] duration]];
+                    [self setDuration:[[[properties movie] currentItem] duration]];
                     [media addObject:[properties loadMovie]];
                     [mediaProperties addObject:properties];
                     [self saveVideoProperties:properties];

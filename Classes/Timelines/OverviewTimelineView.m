@@ -448,8 +448,7 @@
 
 -(void)update
 {
-	// CMTime currentTime = CMTimeMake([[[AppController currentDoc] movie] currentTime]; TODO: It appears that we need a AVPlayer here, as AVAsset has no current time.
-    CMTime currentTime = CMTimeMake(0, 1);
+    CMTime currentTime = [[[AppController currentDoc] movie] currentTime];
 	if(!CMTimeRangeContainsTime(selection, currentTime))
 	{
 		CMTimeRange newSelection = selection;
@@ -477,7 +476,7 @@
 {	
 	NSMutableData *data = [NSMutableData data];
 	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-	[archiver encodeQTTimeRange:selection forKey:@"OverviewTimeSelection"];
+	[archiver encodeCMTimeRange:selection forKey:@"OverviewTimeSelection"];
 	[archiver finishEncoding];
 	[archiver release];
 	

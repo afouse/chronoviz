@@ -72,7 +72,7 @@ extern int const DPCurrentDocumentFormatVersion;
 - (NSData*)stateForName:(NSString*)stateName;
 - (void)removeStateNamed:(NSString*)stateName;
 
-- (AVAsset*)setVideoFile:(NSString*)videoFile;
+- (AVPlayer*)setVideoFile:(NSString*)videoFile;
 - (BOOL)setDuration:(CMTime)duration;
 - (CMTime)duration;
 - (int32_t)defaultTimebase;
@@ -118,7 +118,7 @@ extern int const DPCurrentDocumentFormatVersion;
 - (NSArray*)categories;
 - (NSArray*)keywords;
 - (NSArray*)dataSources;
-- (AVAsset*)movie;
+- (AVPlayer*)movie;
 - (NSArray*)media;
 - (NSArray*)mediaProperties;
 - (NSArray*)allMediaProperties;

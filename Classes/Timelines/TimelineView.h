@@ -20,7 +20,7 @@
 @class AnnotationFilter;
 
 @interface TimelineView : NSView <AnnotationView,DPStateRecording,NSMenuDelegate,CALayerDelegate> {
-	AVAsset* movie;
+	AVPlayer* movie;
 	BOOL setup;
 	BOOL resizing;
 	
@@ -146,7 +146,7 @@
 -(void)removeFromSuperTimeline;
 -(void)resetTrackingAreas;
 
--(void)setMovie:(AVAsset *)mov;
+-(void)setMovie:(AVPlayer *)mov;
 -(void)setSegmentVisualizer:(SegmentVisualizer *)visualizer;
 -(BOOL)setRangeFromBeginTime:(CMTime)begin andEndTime:(CMTime)end;
 -(void)setBasisMarker:(TimelineMarker*)marker;
@@ -179,7 +179,7 @@
 -(IBAction)alignToPlayhead:(id)sender;
 -(IBAction)resetAlignment:(id)sender;
 
--(AVAsset*)movie;
+-(AVPlayer*)movie;
 -(Annotation*)basisAnnotation;
 -(SegmentVisualizer*)segmentVisualizer;
 -(NSArray*)segments;

@@ -140,7 +140,7 @@
 {	
 	NSDate *annotationsStart = [[[AppController currentDoc] videoProperties] startDate];
 	NSTimeInterval start;
-	start = CMTimeGetSeconds([timeline range].time);
+	start = CMTimeGetSeconds([timeline range].start);
 	NSTimeInterval duration;
 	duration = CMTimeGetSeconds([timeline range].duration); 
 	[startDate release];

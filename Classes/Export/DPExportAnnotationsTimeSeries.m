@@ -80,7 +80,7 @@
     NSMutableArray *timeSeries = [NSMutableArray arrayWithCapacity:entries];
 
     
-    NSMutableArray *annotations = [NSMutableArray arrayWithArray:[[[theDoc annotationsForCategory:category] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isDuration==1"]] sortedArrayUsingComparator:^(id obj1, id obj2) {
+    NSMutableArray *annotations = [NSMutableArray arrayWithArray:[[[theDoc annotationsForCategory:category] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isDuration==1"]] sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
         Annotation *point1 = (Annotation*)obj1;
         Annotation *point2 = (Annotation*)obj2;
         return CMTimeCompare([point1 time], [point2 time]);

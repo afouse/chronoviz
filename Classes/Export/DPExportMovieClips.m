@@ -168,8 +168,12 @@
 		
 		NSError *err;
 
-		NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
+		/*
+        NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
 														 forKey:QTMovieFlatten];
+        */
+        // TODO: Find out what to replace QTMovieFlatten with.
+        NSDictionary *dict = [NSDictionary dictionary];
 		
 		NSMutableArray *sourceVideos = [NSMutableArray array];
 		if(chooseMovie)
@@ -198,7 +202,7 @@
 			{
 				for(VideoProperties *props in sourceVideos)
 				{
-					QTMovie *sourceMovie = [props movie];
+					AVPlayer *sourceMovie = [props movie];
 					NSString *filename = nil;
 					if([[clip title] length] > 0)
 					{
@@ -218,17 +222,18 @@
 					
 					filename = [filename stringByAppendingPathExtension:@"mov"];
 					
-					CMTimeRange sourceMovieRange = QTMakeTimeRange(kCMTimeZero, [sourceMovie duration]);
+					CMTimeRange sourceMovieRange = CMTimeRangeMake(kCMTimeZero, [[sourceMovie currentItem] duration]);
 					CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
 					CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 					
 					// Make sure the selected time actually exists in the movie
-					CMTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime)));
-					startTime = selectionRange.time;
-					endTime = CMTimeAdd(selectionRange.time, selectionRange.duration);
+					CMTimeRange selectionRange = CMTimeRangeGetIntersection(sourceMovieRange, CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime)));
+					startTime = selectionRange.start;
+					endTime = CMTimeAdd(selectionRange.start, selectionRange.duration);
 					
-					QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filename error:&err];
-					[sourceMovie setSelection:QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime))];
+                    /*
+					AVPlayer *newMovie = [[QTMovie alloc] initToWritableFile:filename error:&err];
+					[sourceMovie setSelection:CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime))];
 					[newMovie appendSelectionFromMovie:sourceMovie];
 					
 					NSTimeInterval startTimeInterval;
@@ -243,7 +248,9 @@
 					[self addMovieInfoMetaData:newMovie infoString:infoString];
 					
 					[newMovie updateMovieFile];
-					[newMovie writeToFile:filename withAttributes:dict];	
+					[newMovie writeToFile:filename withAttributes:dict];
+                    */
+                    // TODO: Fix export.
 				}
 			}
 		}
@@ -258,20 +265,21 @@
 
 -(void) exportClip:(Annotation*)clip fromVideo:(VideoProperties*)props toFile:(NSString*)filepath
 {
-	QTMovie *sourceMovie = [props movie];
+	AVPlayer *sourceMovie = [props movie];
 	
-	CMTimeRange sourceMovieRange = QTMakeTimeRange(kCMTimeZero, [sourceMovie duration]);
+	CMTimeRange sourceMovieRange = CMTimeRangeMake(kCMTimeZero, [[sourceMovie currentItem] duration]);
 	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
 	CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 	
 	// Make sure the selected time actually exists in the movie
-	CMTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime)));
-	startTime = selectionRange.time;
-	endTime = CMTimeAdd(selectionRange.time, selectionRange.duration);
+	CMTimeRange selectionRange = CMTimeRangeGetIntersection(sourceMovieRange, CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime)));
+	startTime = selectionRange.start;
+	endTime = CMTimeAdd(selectionRange.start, selectionRange.duration);
 	
+    /*
 	NSError* err = nil;
 	QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filepath error:&err];
-	[sourceMovie setSelection:QTMakeTimeRange(startTime, CMTimeSubtract(endTime, startTime))];
+	[sourceMovie setSelection:CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime))];
 	[newMovie appendSelectionFromMovie:sourceMovie];
 	
 	NSTimeInterval startTimeInterval;
@@ -288,7 +296,9 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
 													 forKey:QTMovieFlatten];
 	[newMovie updateMovieFile];
-	[newMovie writeToFile:filepath withAttributes:dict];	
+	[newMovie writeToFile:filepath withAttributes:dict];
+    */
+    // TODO: Fix export.
 }
 
 // Add the artist name metadata item to a movie file

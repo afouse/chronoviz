@@ -20,17 +20,13 @@
 @synthesize sampleSize;
 @synthesize subsetMethod;
 
-- (id) initWithQTMovie:(QTMovie*)theMovie;
+- (id) initWithQTMovie:(AVPlayer*)theMovie;
 {
 	self = [super init];
 	if (self != nil) {
-		
-		
-		NSError *error = nil;
-		NSURL *url = [[theMovie movieAttributes] objectForKey:QTMovieURLAttribute];
-		movie = [[QTMovie movieWithURL:url error:&error] retain];
+        NSURL *url = [[[theMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
+		movie = [[AVPlayer playerWithURL:url] retain];
 		subsetMethod = DPSubsetMethodMax;
-		//movie = [theMovie retain];
 		keepExtracting = NO;
 	}
 	return self;
@@ -55,7 +51,7 @@
 
 - (BOOL)exportAudioSubset:(int)theSubsetSize
 {
-	return [self exportAudioSubset:theSubsetSize forRange:QTMakeTimeRange(kCMTimeZero, [movie duration])];
+	return [self exportAudioSubset:theSubsetSize forRange:CMTimeRangeMake(kCMTimeZero, [[movie currentItem] duration])];
 }
 
 - (BOOL)exportAudioSubset:(int)theSubsetSize forRange:(CMTimeRange)timeRange
@@ -63,8 +59,6 @@
     BOOL extractionOnWorkerThread = NO;
     BOOL continueExport = YES;
     Handle cloneHandle = NULL;
-	
-	OSErr err;
 	
     if(movie == nil)
 		return NO;
@@ -87,31 +81,12 @@
         };
     }
     
-    // clone the movie and see if we can migrate it to a worker thread for extraction
-//    cloneHandle = NewHandle(0);
-//    if (NULL == cloneHandle) { goto bail; }
-//	
-//    err = PutMovieIntoHandle([movie quickTimeMovie], cloneHandle);
-//    if (err) goto bail;
-//    
-//    err = NewMovieFromHandle(&mCloneMovie, cloneHandle, newMovieActive, NULL);
-//    if (err != noErr || mCloneMovie == NULL) goto bail;
-//    
-//    // if we couldn't migrate this movie, export from the movie on the main thread
-//    if (DetachMovieFromCurrentThread(mCloneMovie) == noErr) {
-//        extractionOnWorkerThread = YES;
-//    } else {
-//        DisposeMovie(mCloneMovie);
-//        mCloneMovie = NULL;
-//    }
-    
     if (extractionOnWorkerThread == YES) {
         // export on a worker thread if we can...
         [NSThread detachNewThreadSelector:@selector(exportOnWorkerThread:) toTarget:self withObject:nil];
     } else {
         // ...if not, we're on the main thread so just call the main-thread worker method
 		NSLog(@"Can't export on worker thread");
-        //[self exportOnMainThreadCallBack:nil];
 		[subsetArray addObjectsFromArray:[self getAudioSubset:theSubsetSize]];
 		
 		if (delegate) {

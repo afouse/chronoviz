@@ -96,7 +96,7 @@
 			
 			
 			NSArray* dataPoints = [dataSet subsetOfSize:width 
-											   forRange:CMTimeRangeMake(CMTimeMake(0,600), [[video movie] duration])];
+											   forRange:CMTimeRangeMake(CMTimeMake(0,600), [[[video movie] currentItem] duration])];
 			
 			for(TimeCodedDataPoint *point in dataPoints)
 			{

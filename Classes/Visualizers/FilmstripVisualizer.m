@@ -68,7 +68,7 @@
 		int width;
 		int numberOfSegments;
 
-		NSSize contentSize = [[[self movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+        NSSize contentSize = (NSSize)[[[[self movie] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		width = ([timeline bounds].size.height *  ratio) + autoSegmentPadding;
 		numberOfSegments = ceil((float)timelineWidth / width);

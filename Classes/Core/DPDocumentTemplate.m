@@ -238,8 +238,8 @@
                 NSTimeInterval oldTI;
                 NSTimeInterval newTI;
                 
-                oldTI = CMTimeGetSeconds([[document movie] duration]);
-                newTI = CMTimeGetSecodns([source range].duration);
+                oldTI = CMTimeGetSeconds([[[document movie] currentItem] duration]);
+                newTI = CMTimeGetSeconds([source range].duration);
                 
                 if([[document videoProperties] localVideo] && ((newTI - oldTI) > 1))
                 {

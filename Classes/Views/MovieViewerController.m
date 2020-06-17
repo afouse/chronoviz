@@ -72,7 +72,7 @@
 		if(properties)
 		{
 			[self window];
-			NSSize contentSize = [[[properties movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+            NSSize contentSize = (NSSize)[[[[properties movie] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 			
 			contentSize.width = contentSize.width;
 			contentSize.height = contentSize.height;
@@ -182,8 +182,9 @@
 
 - (IBAction)moveAlignmentSlider:(id)sender
 {
-	long long timeValue = [[movieView movie] duration].value * [alignmentSlider floatValue];
-	CMTime newTime = CMTimeMake(timeValue,[[movieView movie] duration].timescale);
+    CMTime duration = [[[movieView movie] currentItem] duration];
+	long long timeValue = duration.value * [alignmentSlider floatValue];
+	CMTime newTime = CMTimeMake(timeValue, duration.timescale);
 	[[movieView movie] seekToTime:newTime];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
@@ -193,20 +194,20 @@
 
 - (IBAction)changeOffset:(id)sender
 {
-	CMTime offset = CMTimeMake((NSTimeInterval, 1000000)[offsetField floatValue]); // TODO: Check if the timescale is correct.
+	CMTime offset = CMTimeMake((NSTimeInterval)[offsetField floatValue], 1000000); // TODO: Check if the timescale is correct.
 	[properties setOffset:offset];
 	CMTime newTime = CMTimeAdd([[[AppController currentApp] movie] currentTime], offset);
 	if(newTime.value < 0)
 	{
 		newTime.value = 0;
 	}
-	[[movieView movie] setCurrentTime:newTime];
+	[[movieView movie] seekToTime:newTime];
 	[self update];
 }
 
 - (void)moveAlignmentOneFrameForward
 {
-	[[movieView movie] stepForward];
+	[[[movieView movie] currentItem] stepByCount:1];
 	CMTime newTime = [[movieView movie] currentTime];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
@@ -216,7 +217,7 @@
 
 - (void)moveAlignmentOneFrameBackward
 {
-	[[movieView movie] stepBackward];
+	[[[movieView movie] currentItem] stepByCount:-1];
 	CMTime newTime = [[movieView movie] currentTime];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
@@ -228,9 +229,9 @@
 {
 	CMTime newTime = [[movieView movie] currentTime];
 	newTime.value = newTime.value + newTime.timescale*[[AppController currentApp] stepSize];
-	if(CMTimeCompare(newTime, [[movieView movie] duration]) == NSOrderedDescending)
-		newTime.value = [[movieView movie] duration].value;
-	[[movieView movie] setCurrentTime:newTime];
+	if(CMTimeCompare(newTime, [[[movieView movie] currentItem] duration]) == NSOrderedDescending)
+		newTime.value = [[[movieView movie] currentItem] duration].value;
+	[[movieView movie] seekToTime:newTime];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
 	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
@@ -243,7 +244,7 @@
 	newTime.value = newTime.value - newTime.timescale*[[AppController currentApp] stepSize];
 	if(newTime.value < 0)
 		newTime.value = 0;
-	[[movieView movie] setCurrentTime:newTime];
+	[[movieView movie] seekToTime:newTime];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
 	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
@@ -276,7 +277,7 @@
 		{
 			newTime.value = 0;
 		}
-		[[movieView movie] setCurrentTime:newTime];
+		[[movieView movie] seekToTime:newTime];
 		[self update];
     }
 	else
@@ -331,7 +332,7 @@
 	[timeField setStringValue:[NSString stringWithQTTime:[[AppController currentApp] currentTime]]];
 	if(alignmentBarVisible)
 	{
-		[alignmentSlider setFloatValue:(float)([[movieView movie] currentTime].value)/(float)[[movieView movie] duration].value];
+		[alignmentSlider setFloatValue:(float)([[movieView movie] currentTime].value)/(float)[[[movieView movie] currentItem] duration].value];
 	}
 }
 

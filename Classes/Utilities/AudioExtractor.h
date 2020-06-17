@@ -14,7 +14,7 @@
 @interface AudioExtractor : NSObject {
 
 	id <DataSourceDelegate> delegate;
-	QTMovie *movie;
+	AVPlayer *movie;
 	
 	NSMutableArray *subsetArray;
 	NSInteger subsetSize;

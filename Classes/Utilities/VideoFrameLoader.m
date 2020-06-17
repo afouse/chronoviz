@@ -93,7 +93,6 @@
 					
 					if(!frameVideo)
 					{
-						NSError *error = nil;
 						frameVideo = [AVPlayer playerWithURL:url];
 						[frameMovies setObject:frameVideo forKey:url];
 						
@@ -103,8 +102,7 @@
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
 						
-						NSArray<AVAssetTrack *> *tracks = [[[frameVideo currentItem] asset] tracksWithMediaType:AVMediaTypeVideo];
-                        NSSize contentSize = [tracks[0] naturalSize];
+                        NSSize contentSize = (NSSize)[[[frameVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 						float ratio = contentSize.width/contentSize.height;
 						contentSize.width = (targetHeight *  ratio);
 						contentSize.height = targetHeight;
@@ -246,9 +244,8 @@
 		float interval = duration/targetFrameCount;
 		
 		[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
-		
-        NSArray<AVAssetTrack *> *tracks = [[[frameVideo currentItem] asset] tracksWithMediaType:AVMediaTypeVideo];
-        NSSize contentSize = [tracks[0] naturalSize];
+        
+        NSSize contentSize = (NSSize)[[[frameVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		contentSize.width = (targetHeight *  ratio);
 		contentSize.height = targetHeight;

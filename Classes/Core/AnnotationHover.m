@@ -73,8 +73,9 @@
 		{
 			NSRect frame = [annotationHoverImage frame];
 			frame.origin.x = 0;
-			
-			NSSize contentSize = [[[[AnnotationDocument currentDocument] movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+        
+            NSSize contentSize = (NSSize)[[[[[AnnotationDocument currentDocument] movie] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+            
 			
 			frame.size.width = (contentSize.width/contentSize.height)*frame.size.height*2;
 			
