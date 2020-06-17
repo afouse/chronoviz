@@ -13,7 +13,6 @@
 #import "AnnotationCategory.h"
 #import "TimelineView.h"
 #import "ColorCell.h"
-#import "AFHUDOutlineView.h"
 
 @interface AnnotationQuickEntry (AnnotationQuickEntryPrivateMethods)
 
@@ -121,7 +120,8 @@
 		[annotationTextField setTextColor:[NSColor whiteColor]];
 		
 		[categoriesView setAllowsTypeSelect:YES];
-		[(AFHUDOutlineView*)categoriesView setNextView:annotationTextField];
+		//[(AFHUDOutlineView*)categoriesView setNextView:annotationTextField];
+        // TODO: Reintroduce HUD.
         [categoriesView reloadData];
         
         [[NSNotificationCenter defaultCenter] addObserver:categoriesView

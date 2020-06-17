@@ -29,8 +29,6 @@
 		BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E97E1BC062F4001C4365 /* AVFoundation.framework */; };
 		BB12E9811BC06B30001C4365 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E9801BC06B30001C4365 /* Sparkle.framework */; };
 		BB12E9831BC06B72001C4365 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BB12E9801BC06B30001C4365 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BB12E9851BC0779D001C4365 /* BGHUDAppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */; };
-		BB12E9861BC077C7001C4365 /* BGHUDAppKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BB14982E0F49D2580073AAF3 /* AFMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB14982D0F49D2580073AAF3 /* AFMovieView.m */; };
 		BB163F311440BD8A003A0654 /* DPMaskedSelectionArea.m in Sources */ = {isa = PBXBuildFile; fileRef = BB163F301440BD8A003A0654 /* DPMaskedSelectionArea.m */; };
 		BB198EA112E4D1A700575B02 /* rabbit.png in Resources */ = {isa = PBXBuildFile; fileRef = BB198E9F12E4D1A700575B02 /* rabbit.png */; };
@@ -258,7 +256,6 @@
 		BBCC108112EFA7160041EEB1 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCC108012EFA7160041EEB1 /* IOBluetooth.framework */; };
 		BBCC3BEB1185409800477D82 /* NSMenuPopUpMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3BEA1185409800477D82 /* NSMenuPopUpMenu.m */; };
 		BBCC3C921185615F00477D82 /* AnnotationQuickEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */; };
-		BBCC3DAA11860AEA00477D82 /* AFHUDOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCC3DA911860AEA00477D82 /* AFHUDOutlineView.m */; };
 		BBCCA71913A7CCB1007DB565 /* DPActivityLog.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCCA71813A7CCB1007DB565 /* DPActivityLog.m */; };
 		BBCCA74F13A8679C007DB565 /* ActivityFramesVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCCA74E13A8679C007DB565 /* ActivityFramesVisualizer.m */; };
 		BBCCA76113A93112007DB565 /* activityMaskImage.png in Resources */ = {isa = PBXBuildFile; fileRef = BBCCA76013A93112007DB565 /* activityMaskImage.png */; };
@@ -323,7 +320,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BB12E9861BC077C7001C4365 /* BGHUDAppKit.framework in CopyFiles */,
 				BB12E9831BC06B72001C4365 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -368,7 +364,6 @@
 		BB0AD1E113CCB46E0067E239 /* CompoundDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompoundDataSource.m; sourceTree = "<group>"; };
 		BB12E97E1BC062F4001C4365 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BB12E9801BC06B30001C4365 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
-		BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BGHUDAppKit.framework; sourceTree = "<group>"; };
 		BB14982C0F49D2580073AAF3 /* AFMovieView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFMovieView.h; sourceTree = "<group>"; };
 		BB14982D0F49D2580073AAF3 /* AFMovieView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFMovieView.m; sourceTree = "<group>"; };
 		BB163F2F1440BD8A003A0654 /* DPMaskedSelectionArea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPMaskedSelectionArea.h; sourceTree = "<group>"; };
@@ -680,8 +675,6 @@
 		BBCC3BEA1185409800477D82 /* NSMenuPopUpMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSMenuPopUpMenu.m; sourceTree = "<group>"; };
 		BBCC3C901185615F00477D82 /* AnnotationQuickEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationQuickEntry.h; sourceTree = "<group>"; };
 		BBCC3C911185615F00477D82 /* AnnotationQuickEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationQuickEntry.m; sourceTree = "<group>"; };
-		BBCC3DA811860AEA00477D82 /* AFHUDOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHUDOutlineView.h; sourceTree = "<group>"; };
-		BBCC3DA911860AEA00477D82 /* AFHUDOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHUDOutlineView.m; sourceTree = "<group>"; };
 		BBCCA71713A7CCB1007DB565 /* DPActivityLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPActivityLog.h; sourceTree = "<group>"; };
 		BBCCA71813A7CCB1007DB565 /* DPActivityLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPActivityLog.m; sourceTree = "<group>"; };
 		BBCCA74D13A8679C007DB565 /* ActivityFramesVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityFramesVisualizer.h; sourceTree = "<group>"; };
@@ -791,7 +784,6 @@
 				BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */,
 				BB1A4ECE14992C5800F2998E /* Accelerate.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				BB12E9851BC0779D001C4365 /* BGHUDAppKit.framework in Frameworks */,
 				BB440C510F3CA1CE0058483C /* QuartzCore.framework in Frameworks */,
 				BB7E7AEC1045CD94002D4874 /* WebKit.framework in Frameworks */,
 				BB12E9811BC06B30001C4365 /* Sparkle.framework in Frameworks */,
@@ -969,7 +961,6 @@
 				BBA73E7B1F6383840086098F /* QTKit.framework */,
 				BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */,
 				BBA73E681F5CDADB0086098F /* libsqlite3.tbd */,
-				BB12E9841BC0779D001C4365 /* BGHUDAppKit.framework */,
 				BB12E9801BC06B30001C4365 /* Sparkle.framework */,
 				BB12E97E1BC062F4001C4365 /* AVFoundation.framework */,
 				BB823BEB13F45BB400778076 /* Quartz.framework */,
@@ -1285,8 +1276,6 @@
 				BBE9ACFA162098C300E81861 /* AFDeletionTableView.m */,
 				BB4C1D8D13FD6949004BEEFC /* AFGradientView.h */,
 				BB4C1D8E13FD6949004BEEFC /* AFGradientView.m */,
-				BBCC3DA811860AEA00477D82 /* AFHUDOutlineView.h */,
-				BBCC3DA911860AEA00477D82 /* AFHUDOutlineView.m */,
 				BB3349001565D4A600084AC0 /* AJHBezierUtils.h */,
 				BB3349011565D4A600084AC0 /* AJHBezierUtils.m */,
 				BBC9F7401160EF8E00704059 /* AudioExtractor.h */,
@@ -1733,7 +1722,6 @@
 				BB2954FD117E32A8008C24A8 /* NSImage-Extras.m in Sources */,
 				BBCC3BEB1185409800477D82 /* NSMenuPopUpMenu.m in Sources */,
 				BBCC3C921185615F00477D82 /* AnnotationQuickEntry.m in Sources */,
-				BBCC3DAA11860AEA00477D82 /* AFHUDOutlineView.m in Sources */,
 				BBE7792E118759E100E7738F /* TimelineZoomAnimation.m in Sources */,
 				BBA640731187ADD000580E89 /* PrioritySplitViewDelegate.m in Sources */,
 				BBF47F8E1188EDC100029013 /* TranscriptData.m in Sources */,
