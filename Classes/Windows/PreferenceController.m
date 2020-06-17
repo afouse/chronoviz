@@ -10,8 +10,6 @@
 
 #import "SegmentVisualizer.h"
 #import "SegmentDualVisualizer.h"
-#import "DataPrismLog.h"
-#import "DPLogFileUploader.h"
 
 int const AFBlankSegmentViz = 0;
 int const AFGradientViz = 1;
@@ -59,9 +57,9 @@ int const AFSaveInteractionsUndefined = -1;
 	
 	[saveInteractionsButton setState:[app saveInteractions]];
 	
-	[saveTimePositionButton setState:[[app interactionLog] recordTimePosition]];
-	[saveAnnotationEditsButton setState:[[app interactionLog] recordAnnotationEdits]];
-	[saveVizConfigButton setState:[[app interactionLog] recordState]];
+//    [saveTimePositionButton setState:[[app interactionLog] recordTimePosition]];
+//    [saveAnnotationEditsButton setState:[[app interactionLog] recordAnnotationEdits]];
+//    [saveVizConfigButton setState:[[app interactionLog] recordState]];
 	
 	[uploadInteractionsButton setEnabled:[app saveInteractions]];
 	[uploadInteractionsButton setState:[app uploadInteractions]];
@@ -117,7 +115,7 @@ int const AFSaveInteractionsUndefined = -1;
 {
 	BOOL state = [saveTimePositionButton state];
 	
-	[[[AppController currentApp] interactionLog] setRecordTimePosition:state];
+	//[[[AppController currentApp] interactionLog] setRecordTimePosition:state];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults setBool:state forKey:AFSaveTimePositionKey];
@@ -128,7 +126,7 @@ int const AFSaveInteractionsUndefined = -1;
 {
 	BOOL state = [saveAnnotationEditsButton state];
 	
-	[[[AppController currentApp] interactionLog] setRecordAnnotationEdits:state];
+	//[[[AppController currentApp] interactionLog] setRecordAnnotationEdits:state];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults setBool:state forKey:AFSaveAnnotationEditsKey];	
@@ -138,7 +136,7 @@ int const AFSaveInteractionsUndefined = -1;
 {
 	BOOL state = [saveVizConfigButton state];
 	
-	[[[AppController currentApp] interactionLog] setRecordState:state];
+	//[[[AppController currentApp] interactionLog] setRecordState:state];
 	
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults setBool:state forKey:AFSaveVizConfigKey];
@@ -160,7 +158,7 @@ int const AFSaveInteractionsUndefined = -1;
 
 -(IBAction)uploadNow:(id)sender
 {
-	[[DPLogFileUploader defaultLogFileUploader] uploadLogFiles:self];
+	//[[DPLogFileUploader defaultLogFileUploader] uploadLogFiles:self];
 	//[app uploadLogFiles:self];
 }
 

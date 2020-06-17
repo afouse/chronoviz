@@ -425,16 +425,6 @@
 {
     if(!selectionTimeline)
     {
-//        NSRect visible = [spatialDataView visibleRect];
-//        
-//        NSRect scrollFrame = [notesScrollView frame];
-//        scrollFrame.size.height = scrollFrame.size.height - 100;
-//        scrollFrame.origin.y = 100;
-//        [notesScrollView setFrame:scrollFrame];
-//        
-//        visible.size.height = visible.size.height - 100;
-//        
-//        [anotoView scrollRectToVisible:visible];
         
         NSRect dataFrame = [spatialDataView frame];
         

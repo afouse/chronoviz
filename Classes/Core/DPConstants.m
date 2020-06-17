@@ -8,8 +8,6 @@
 
 #import "DPConstants.h"
 
-NSString * const DataPrismLogState = @"DataPrismLogState";
-
 int const DataPrismSelectTool = 0;
 int const DataPrismZoomTool = 1;
 

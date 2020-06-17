@@ -40,7 +40,6 @@ NSString * const DataTypeAnnotationEndTime = @"Annotation End Time";
 NSString * const DataTypeAnnotationTitle = @"Annotation Title";
 NSString * const DataTypeAnnotationCategory = @"Annotation Category";
 NSString * const DataTypeAnnotation = @"Annotation";
-NSString * const DataTypeAnotoTraces = @"Anoto Traces";
 NSString * const DataTypeAudio = @"Audio";
 NSString * const DataTypeTranscript = @"Transcript";
 NSString * const DataTypeSpatialX = @"Spatial X";

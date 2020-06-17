@@ -28,10 +28,6 @@
 #import "SenseCamDataSource.h"
 #import "ActivityTrailsDataSource.h"
 #import "XPlaneDataSource.h"
-#import "AnotoDataSource.h"
-#import "AnotoViewController.h"
-#import "AnotoView.h"
-#import "AnotoNotesData.h"
 #import "TranscriptView.h"
 #import "TranscriptViewController.h"
 #import "TranscriptData.h"
@@ -845,11 +841,6 @@ int importSort( id obj1, id obj2, void *context ) {
 				[viz toggleAlignCategories];
 			
 			[doc addAnnotations:[(AnnotationSet*)dataSet annotations]];
-		}
-		else if ([dataSet isKindOfClass:[AnotoNotesData class]])
-		{
-			[[[AppController currentApp] viewManager] showData:dataSet];
-			
 		}
 		else if ([dataSet isKindOfClass:[TranscriptData class]])
 		{

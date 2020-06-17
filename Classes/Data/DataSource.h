@@ -36,7 +36,6 @@ extern NSString * const DataTypeAnnotationEndTime;
 extern NSString * const DataTypeAnnotationTitle;
 extern NSString * const DataTypeAnnotationCategory;
 extern NSString * const DataTypeAnnotation;
-extern NSString * const DataTypeAnotoTraces;
 extern NSString * const DataTypeAudio;
 extern NSString * const DataTypeTranscript;
 

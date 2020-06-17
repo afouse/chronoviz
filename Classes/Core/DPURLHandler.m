@@ -10,8 +10,6 @@
 #import "AppController.h"
 #import "AnnotationDocument.h"
 #import "NSString+URIQuery.h"
-#import "AnotoViewController.h"
-#import "AnotoView.h"
 #import <AVKit/AVKit.h>
 
 @implementation DPURLHandler

@@ -70,7 +70,6 @@
                                        DataTypeAnnotationTitle,@"DataTypeAnnotationTitle",
                                        DataTypeAnnotationCategory,@"DataTypeAnnotationCategory",
                                        DataTypeAnnotation,@"DataTypeAnnotation",
-                                       DataTypeAnotoTraces,@"DataTypeAnotoTraces",
                                        DataTypeAudio,@"DataTypeAudio",
                                        DataTypeTranscript,@"DataTypeTranscript",
                                        DataTypeSpatialX,@"DataTypeSpatialX",

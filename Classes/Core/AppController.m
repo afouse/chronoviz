@@ -8,12 +8,10 @@
 
 #import "AppController.h"
 #import "PreferenceController.h"
-#import "VisualizationController.h"
 #import "TimelineMarker.h"
 #import "TimelineView.h"
 #import "MultiTimelineView.h"
 #import "OverviewTimelineView.h"
-#import "InteractionAddSegment.h"
 #import "Annotation.h"
 #import "AnnotationCategory.h"
 #import "AnnotationXMLParser.h"
@@ -48,13 +46,10 @@
 #import "DateVisualizer.h"
 #import "LayeredVisualizer.h"
 #import "AnnotationOverviewVisualizer.h"
-#import "AnotoViewController.h"
-#import "AnotoView.h"
 #import "ProtoVisExport.h"
 #import "DataSource.h"
 #import "InternalDataSource.h"
 #import "AnnotationSet.h"
-#import "AnotoDataSource.h"
 #import "TimeCodedImageFiles.h"
 #import "DPExport.h"
 #import "DPExportMovieClips.h"
@@ -71,13 +66,10 @@
 #import "DPViewManager.h"
 #import "DPConsoleWindowController.h"
 #import "NSStringTimeCodes.h"
-#import "DataPrismLog.h"
 #import "SpatialAnnotationOverlay.h"
-#import "DPLogFileUploader.h"
 #import "DPMappedValueTransformer.h"
 #import "NSMenuPopUpMenu.h"
 #import "DPURLHandler.h"
-#import "EthnographerViewController.h"
 #import "DPActivityLog.h"
 #import "LinkedFilesController.h"
 #import "DPDocumentVariablesController.h"
@@ -122,7 +114,6 @@ NSString * const TapestryTimelineMenuTitle = @"Annotation Tapestry";
 @synthesize stepSize;
 @synthesize playbackRate;
 @synthesize popUpAnnotations;
-@synthesize saveInteractions;
 @synthesize uploadInteractions;
 @synthesize frameLoader;
 @synthesize undoManager;
@@ -139,7 +130,6 @@ static AppController *currentApp = nil;
 	if ( self == [AppController class] ) {
 		NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 		
-		[defaultValues setObject:[NSNumber numberWithInt:AFSaveInteractionsUndefined] forKey:AFSaveInteractionsKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFUploadInteractionsKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFShowPlayheadKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFClickToMovePlayheadKey];
@@ -163,7 +153,6 @@ static AppController *currentApp = nil;
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFOverwriteFileBackupKey];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFUseQuickTimeXKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"AllowPenAnnotations"];
-        [defaultValues setObject:[NSNumber numberWithBool:NO] forKey:@"EthnographerKeepTempAnnotationFiles"];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFUseStaticMapKey];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFTrackActivityKey];
         [defaultValues setObject:[NSNumber numberWithInteger:600] forKey:AFTimebaseKey];
@@ -336,8 +325,6 @@ static AppController *currentApp = nil;
 
 
 - (void)awakeFromNib {
-	
-    [[[DataPrismLog alloc] init] autorelease];
     
 	urlHandler = [[DPURLHandler alloc] initForAppController:self];
 	
@@ -427,39 +414,6 @@ static AppController *currentApp = nil;
 											   options:0
 											   context:NULL];
 	
-	// Prompt for annotation logging if this is the first run.
-	
-	int saveInteractionsState = [[NSUserDefaults standardUserDefaults] integerForKey:AFSaveInteractionsKey];
-	if(saveInteractionsState == AFSaveInteractionsUndefined)
-	{
-
-		NSAlert *alert = [[NSAlert alloc] init];
-		[alert setMessageText:@"Can we record your interactions?"];
-		[alert setInformativeText:@"Annotation can optionally record your interactions with videos.This information will be periodically uploaded to support research on video interaction at the UCSD DCog-HCI Lab.\n\n"
-		 "The information collected will only be of your interaction with the video, consisting of your position in the video at any point, how you got there, and where you made annotations. Any other activity with your computer will not be recorded.\n\n"
-		 "This window won't appear again, but your selection can later be changed in the preferences window."];
-		[alert addButtonWithTitle:@"Record Interactions"];
-		[alert addButtonWithTitle:@"Don't Record"];
-		int result = [alert runModal];
-		if(result == NSAlertFirstButtonReturn)
-		{
-			[self setSaveInteractions:YES];
-			[[NSUserDefaults standardUserDefaults] setInteger:AFSaveInteractionsYes forKey:AFSaveInteractionsKey];
-		}
-		else
-		{
-			[self setSaveInteractions:NO];
-			[[NSUserDefaults standardUserDefaults] setInteger:AFSaveInteractionsNo forKey:AFSaveInteractionsKey];
-		}
-		[alert release];
-	}
-	else if (saveInteractionsState == AFSaveInteractionsYes)
-	{
-		[self setSaveInteractions:YES];
-	} else 
-	{
-		[self setSaveInteractions:NO];
-	}
 	
 	NSString *userID = [[NSUserDefaults standardUserDefaults] stringForKey:AFUserIDKey];
 	if([userID length] == 0)
@@ -516,22 +470,6 @@ static AppController *currentApp = nil;
 		reply = NSTerminateCancel;
 	}
 	
-	// Then check whether we want to upload interaction logs
-	if(saveInteractions && uploadInteractions)
-	{
-		NSDate *lastUpload = [[NSUserDefaults standardUserDefaults] objectForKey:AFLastUploadKey];
-		double oneweek = 60.0*60.0*24.0*7.0;
-        NSTimeInterval howlong = abs([lastUpload timeIntervalSinceNow]);
-		if(howlong > oneweek)
-		{
-			//[self uploadLogFiles:self];
-			BOOL uploading = [[DPLogFileUploader defaultLogFileUploader] uploadLogFilesWithCallbackTarget:self selector:@selector(continueTermination)];
-			
-            if(uploading)
-                reply = NSTerminateLater;
-		}
-	}
-	
 	return reply;
 }
 
@@ -569,13 +507,6 @@ static AppController *currentApp = nil;
 	
 	[inspector setAnnotation:nil];
 	[[inspector window] close];
-	
-	if(saveInteractions && log)
-	{
-		[log saveToDefaultFile];
-		[log release];
-		log = nil;
-	}
 	
 	[backupAnnotationFile release];
 	backupAnnotationFile = nil;
@@ -829,16 +760,6 @@ static AppController *currentApp = nil;
     
 	[mMovieWindow makeKeyAndOrderFront:self];
 	
-	if(saveInteractions)
-	{
-		[log release];
-		log = [[DataPrismLog alloc] init];
-		[(DataPrismLog*)log setDocumentDuration:interval];
-		[(DataPrismLog*)log setStateSource:self];
-		[(DataPrismLog*)log addStateData:[self currentState:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:DataPrismLogState]]];
-		[(DataPrismLog*)log setUserID:[[NSUserDefaults standardUserDefaults] stringForKey:AFUserIDKey]];
-		[(DataPrismLog*)log setDocumentID:[[annotationDoc annotationsDirectory] lastPathComponent]];
-	}
 	
     [[AppController currentApp] endDocumentLoading:self];
     
@@ -1190,26 +1111,6 @@ static AppController *currentApp = nil;
 			[self addAnnotationView:movieViewer];
 			[self addDataWindow:movieViewer];
 			[movieViewer release];
-		}
-		else if([class isEqualToString:@"EthnographerNotesView"])
-		{
-			NSLog(@"Set State: AnotoView");
-			EthnographerViewController *anotoViewController = [[EthnographerViewController alloc] init];
-			[[anotoViewController window] setFrame:NSRectFromString([rects objectAtIndex:i]) display:NO];
-			[(NSObject<DPStateRecording>*)[anotoViewController anotoView] setState:state];
-			[self addDataWindow:anotoViewController];
-			[self addAnnotationView:(NSObject<AnnotationView>*)[anotoViewController anotoView]];
-			[anotoViewController release];
-		}
-		else if([class isEqualToString:@"AnotoView"])
-		{
-			NSLog(@"Set State: AnotoView");
-			AnotoViewController *anotoViewController = [[AnotoViewController alloc] init];
-			[[anotoViewController window] setFrame:NSRectFromString([rects objectAtIndex:i]) display:NO];
-			[(NSObject<DPStateRecording>*)[anotoViewController anotoView] setState:state];
-			[self addDataWindow:anotoViewController];
-			[self addAnnotationView:(NSObject<AnnotationView>*)[anotoViewController anotoView]];
-			[anotoViewController release];
 		}
 		else if([class isEqualToString:@"TranscriptView"])
 		{
@@ -3095,11 +2996,6 @@ static AppController *currentApp = nil;
 	return annotationDoc;
 }
 
-- (DataPrismLog*)interactionLog
-{
-	return log;
-}
-
 - (Annotation*)selectedAnnotation
 {
 	return selectedAnnotation;
@@ -3444,9 +3340,6 @@ static AppController *currentApp = nil;
 	mRate = rate;
 	[rateLock unlock];
 	
-	[[annotationDoc activityLog] addSpeedChange:rate atTime:currentTime];
-	InteractionSpeedChange* speedChange = [log addSpeedChange:rate atTime:currentTime];
-	[speedChange setSource:[self processInteractionSource:source]];
 }
 
 - (void)updateTimeDisplay:(NSTimer *)aTimer
@@ -3527,13 +3420,7 @@ static AppController *currentApp = nil;
 		
 		[self updateTimeDisplay:aTimer];
 	}
-	
-	// Deal with interaction log playback
-	if([log isPlaying])
-	{
-		double position = log.currentPlaybackTime/log.playbackDuration;
-		[timelineView setPlayheadPosition:position];
-	}
+
 	
 	// Update views
 	for(id<AnnotationView> view in annotationViews)
@@ -3607,34 +3494,6 @@ static AppController *currentApp = nil;
 	}
 }
 
-#pragma mark Activity Visualization
-
-- (IBAction)showVisualization:(id)sender
-{
-	if(!vizController) {
-		vizController = [[VisualizationController alloc] init];
-		[vizController setAppController:self];
-		[vizController setInteractionLog:log];
-	}
-	NSLog(@"Showing %@", vizController);
-	[vizController showWindow:self];
-	[[vizController window] makeKeyAndOrderFront:self];
-}
-
-- (IBAction)updateVisualization:(id)sender
-{
-	[vizController updateVisualization];
-}
-
-- (IBAction)exportVisualization:(id)sender
-{
-	NSSavePanel *savePanel = [NSSavePanel savePanel];
-	
-	if([savePanel runModal] == NSFileHandlingPanelOKButton) {
-		[vizController exportImageToFile:[savePanel filename]];
-	}
-}
-
 #pragma mark Logging
 
 - (IBAction)outputLog:(id)sender
@@ -3644,9 +3503,9 @@ static AppController *currentApp = nil;
 	[savePanel setTitle:@"Save Interaction Log"];
 	
 	// files are filtered through the panel:shouldShowFilename: method above
-	if ([savePanel runModal] == NSOKButton) {
-		[log saveToFile:[savePanel filename]];
-	}
+//    if ([savePanel runModal] == NSOKButton) {
+//        [log saveToFile:[savePanel filename]];
+//    }
 }
 
 

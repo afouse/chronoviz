@@ -168,10 +168,6 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	NSObject *image = nil;
 	
 	BOOL recordImage = YES;
-	if(stateFlags && [[stateFlags objectForKey:DataPrismLogState] boolValue])
-	{
-		recordImage = NO;
-	}
 	
 	if(recordImage && mapImage)
 	{

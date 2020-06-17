@@ -10,7 +10,6 @@
 #import "AppController.h"
 #import "AnnotationDocument.h"
 #import "AnnotationCategory.h"
-#import "DataPrismLog.h"
 #import "NSColorHexadecimalValue.h"
 #import "NSStringTimeCodes.h"
 

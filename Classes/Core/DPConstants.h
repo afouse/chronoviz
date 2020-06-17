@@ -25,8 +25,6 @@ extern int const DPRotation270;
 
 extern CGFloat const MIN_TIMELINE_HEIGHT;
 
-extern NSString * const DataPrismLogState;
-
 extern NSString * const DataSetsChangedNotification;
 extern NSString * const DPDataSetRangeChangeNotification;
 extern NSString * const DPDataSetUpdatedNotification;

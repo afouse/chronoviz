@@ -13,7 +13,6 @@
 #import "DPStateRecording.h"
 #import "AnnotationView.h"
 @class PreferenceController;
-@class VisualizationController;
 @class MultiTimelineView;
 @class TimelineView;
 @class TimelineMarker;
@@ -43,7 +42,6 @@
 @class AFMovieView;
 @class DPViewManager;
 @class DPConsoleWindowController;
-@class DataPrismLog;
 @class FeedbackController;
 @class DPURLHandler;
 @class DPDocumentVariablesController;
@@ -134,8 +132,6 @@
 	
 	NSTimer *timer;
 	NSTimer *timeDisplayTimer;
-	DataPrismLog *log;
-	BOOL saveInteractions;
 	BOOL uploadInteractions;
 	
 	NSUndoManager *undoManager;
@@ -147,9 +143,7 @@
     DPPluginManager *appPluginManager;
 	
 	DPURLHandler *urlHandler;
-	
-	VisualizationController *vizController;
-	
+		
 	VideoPropertiesController *videoPropertiesController;
 	
 	VideoFrameLoader *frameLoader;
@@ -220,7 +214,6 @@
 - (NSArray*) annotationViews;
 - (NSArray*) dataWindowControllers;
 - (NSView*)mainView;
-- (DataPrismLog*)interactionLog;
 - (void)addAnnotation:(Annotation*)annotation;
 
 - (MultiTimelineView *)timelineView;

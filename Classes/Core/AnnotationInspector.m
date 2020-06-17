@@ -9,7 +9,6 @@
 #import "AnnotationInspector.h"
 #import "Annotation.h"
 #import "AppController.h"
-#import "DataPrismLog.h"
 #import "AnnotationDocument.h"
 #import "TimelineView.h"
 #import "VideoProperties.h"
@@ -589,10 +588,6 @@
 		[[undoManager prepareWithInvocationTarget:annotation] setIsDuration:NO];
 		[undoManager setActionName:@"Change Annotation Type"];
 		
-		[[[AppController currentApp] interactionLog] addEditOfAnnotation:annotation
-															forAttribute:@"Type" 
-															   withValue:@"Duration"];
-		
 	} else {
 		[startTimeLabel setStringValue:@"Time:"];
 		[endTimeLabel setHidden:YES];
@@ -610,9 +605,6 @@
 		[[undoManager prepareWithInvocationTarget:annotation] setIsDuration:YES];
 		[undoManager setActionName:@"Change Annotation Type"];
 		
-		[[[AppController currentApp] interactionLog] addEditOfAnnotation:annotation
-															forAttribute:@"Type" 
-															   withValue:@"Point"];
 	}
 	[annotation setUpdated];
 }
