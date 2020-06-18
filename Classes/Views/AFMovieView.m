@@ -186,7 +186,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 
 - (void)toggleMute:(id)sender
 {
-	QTMovie *movie = [sender representedObject];
+	AVPlayer *movie = [sender representedObject];
 	if(movie)
 	{
 		[movie setMuted:![movie muted]];
@@ -417,11 +417,12 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	for(AVPlayerLayer *layer in movieLayers)
 	{
 		CALayer *maskLayer = [layer superlayer];
-		QTMovie *movie = [movies objectAtIndex:index];
+		AVPlayer *movie = [movies objectAtIndex:index];
+        AVAsset *asset = [[movie currentItem] asset];
 		CALayer *controlLayer = (CALayer*)[layer valueForKey:@"DPControlLayer"];
 		
 		CGFloat width = boundsRect.size.width * [[layer valueForKey:DPVideoWidthPercentage] floatValue];
-        NSSize contentSize = (NSSize)[[[ movie tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+        NSSize contentSize = (NSSize)[[[ asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
         
 //        CGFloat aspect = 1;
 //        BOOL aperture = [[movie attributeForKey:QTMovieHasApertureModeDimensionsAttribute] boolValue];

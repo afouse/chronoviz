@@ -15,8 +15,10 @@
 +(void)createNewMovieAtPath:(NSURL*)somePath fromImage:(NSImage*)image withDuration:(NSTimeInterval)seconds
 {
     NSError *error = nil;
-    AVAssetWriter *videoWriter = [[AVAssetWriter alloc] initWithURL:somePath fileType:AVFileTypeQuickTimeMovie
-                                                              error:&error];
+    AVAssetWriter *videoWriter = [[AVAssetWriter alloc]
+                                  initWithURL:somePath
+                                  fileType:AVFileTypeQuickTimeMovie
+                                  error:&error];
     NSParameterAssert(videoWriter);
     
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:

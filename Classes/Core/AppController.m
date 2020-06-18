@@ -788,7 +788,7 @@ static AppController *currentApp = nil;
 	[mMovieView setMovie:mMovie];
 	
 	// Set up the timeline
-    NSTimeInterval interval = CMTimeGetSeconds([[mMovie currentItem] duration]);
+    NSTimeInterval interval = CMTimeGetSeconds([[[mMovie currentItem] asset] duration]);
 	if(absoluteTime && (interval > (60*60*6)))
 	{
 		DateVisualizer *dateViz = [[DateVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];

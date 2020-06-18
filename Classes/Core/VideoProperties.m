@@ -106,17 +106,17 @@ static const NSString *ItemStatusContext;
 
 - (BOOL)hasVideo
 {
-    return ([[movie tracksWithMediaType:AVMediaTypeVideo] count] != 0);
+    return ([[[[movie currentItem] asset] tracksWithMediaType:AVMediaTypeVideo] count] != 0);
 }
 
 - (BOOL)hasAudio
 {
-	return ([[movie tracksWithMediaType:AVMediaTypeAudio] count] != 0);
+    return ([[[[movie currentItem] asset] tracksWithMediaType:AVMediaTypeAudio] count] != 0);
 }
 
 #pragma mark Movie Loading
 
-- (AVAsset*)loadMovie
+- (AVPlayer*)loadMovie
 {
 	if(movie)
 	{
@@ -124,7 +124,8 @@ static const NSString *ItemStatusContext;
 	}
     
     NSURL* fileURL = [NSURL fileURLWithPath:videoFile];
-    AVAsset *asset = [AVAsset assetWithURL:fileURL];
+    AVPlayer *asset = [AVPlayer playerWithURL:fileURL];
+    /*
     NSArray *assetKeysToLoadAndTest = @[@"tracks"];
     [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
         
@@ -137,7 +138,7 @@ static const NSString *ItemStatusContext;
         });
         
     }];
-    
+    */
     if(asset == nil)
     {
         NSLog(@"Error loading movie: %@",videoFile);

@@ -58,7 +58,7 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 - (id)initFromFile:(NSString*)file;
 - (void)saveToFile:(NSString*)file;
 
-- (AVAsset*)loadMovie;
+- (AVPlayer*)loadMovie;
 - (BOOL)hasVideo;
 - (BOOL)hasAudio;
 

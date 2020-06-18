@@ -365,10 +365,10 @@ int const DPCurrentDocumentFormatVersion = 1;
 			
 			[self updateMediaFile:videoProperties];
             
-			AVAsset *movie = [videoProperties loadMovie];
+			AVPlayer *movie = [videoProperties loadMovie];
 			if(movie)
 			{
-				[[AppController currentApp] setMovie:movie];
+                [[AppController currentApp] setMainVideo:videoProperties];
 				if([[videoProperties videoFile] rangeOfString:annotationsDirectory].location != NSNotFound)
 				{
 					[videoProperties setLocalVideo:YES];
@@ -712,10 +712,10 @@ int const DPCurrentDocumentFormatVersion = 1;
     {
         deleteFile = altMovieFile;
     }
-    
-    [AFAVAssetCreator createNewMovieAtPath:[NSURL URLWithString:movieFile]
+
+    [AFAVAssetCreator createNewMovieAtPath:[NSURL fileURLWithPath:movieFile]
                                  fromImage:imageObj
-                              withDuration:CMTimeGetSeconds([self duration])];
+                              withDuration:CMTimeGetSeconds(time)];
     
     [imageObj release];
     
@@ -723,6 +723,8 @@ int const DPCurrentDocumentFormatVersion = 1;
     {
         [deleteFile deleteFile];
     }
+    
+    return movieFile;
 }
 
 - (BOOL)setDuration:(CMTime)duration
