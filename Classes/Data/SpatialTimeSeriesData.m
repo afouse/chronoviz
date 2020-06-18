@@ -138,7 +138,7 @@
 	{
 		TimeCodedSpatialPoint *dataPoint = [[TimeCodedSpatialPoint alloc] init];
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
-		[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
+		[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		[dataPoint setY:[[row objectAtIndex:2] floatValue]];
 		[dataPoint setX:[[row objectAtIndex:3] floatValue]];
 		[dataPointArray addObject:dataPoint];

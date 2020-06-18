@@ -104,18 +104,18 @@
 						NSTimeInterval current;
 						current = CMTimeGetSeconds([app currentTime]);
 						current += [[seconds substringFromIndex:1] floatValue];
-						[app moveToTime:CMTimeMake(current, 1000000) fromSender:urlString]; // TODO: Check if the timescale is correct.
+						[app moveToTime:CMTimeMakeWithSeconds(current, 600) fromSender:urlString];
 					}
 					else if(([seconds characterAtIndex:0] == '-') && ([seconds length] > 1))
 					{
 						NSTimeInterval current;
 						current = CMTimeGetSeconds([app currentTime]);
 						current -= [[seconds substringFromIndex:1] floatValue];
-						[app moveToTime:CMTimeMake(current, 1000000) fromSender:urlString]; // TODO: Check if the timescale is correct.
+						[app moveToTime:CMTimeMakeWithSeconds(current, 600) fromSender:urlString];
 					}
 					else
 					{
-						[app moveToTime:CMTimeMake([seconds floatValue], 1000000) fromSender:urlString]; // TODO: Check if the timescale is correct.
+						[app moveToTime:CMTimeMakeWithSeconds([seconds floatValue], 600) fromSender:urlString];
 					}
 					return;
 				}

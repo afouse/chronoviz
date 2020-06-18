@@ -97,7 +97,7 @@
 {
 	NSDate *startDate = [[[self dataArray] objectAtIndex:1] objectAtIndex:0];
 	NSDate *dataTime = [row objectAtIndex:timeColumn];
-	return CMTimeMake([dataTime timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+	return CMTimeMakeWithSeconds([dataTime timeIntervalSinceDate:startDate], 600);
 }
 
 - (NSDate*)parseDate:(NSString*)filename
@@ -153,7 +153,7 @@
 			}
 		}
 		
-		CMTime duration = CMTimeMake([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]], 1000000); // TODO: Check if the timescale is correct.
+		CMTime duration = CMTimeMakeWithSeconds([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]], 600);
 		range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 		[self setDataArray:fileArray];
 	}
@@ -233,7 +233,7 @@
 			
 			TimeCodedString *picture = [[TimeCodedString alloc] init];
 			[picture setValue:0];
-			[picture setTime:CMTimeMake([date timeIntervalSinceDate:startDate], 1000000)]; // TODO: Check if the timescale is correct.
+			[picture setTime:CMTimeMakeWithSeconds([date timeIntervalSinceDate:startDate], 600)];
 			[picture setString:pictureFile];
 			
 			[pictureFileArray addObject:picture];

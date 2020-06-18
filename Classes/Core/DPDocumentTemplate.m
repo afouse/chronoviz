@@ -230,7 +230,7 @@
                 NSArray *importedDataSets = [source importVariables:variables asTypes:types];
                 
                 CMTimeRange range = [source range];
-                range.start = CMTimeMake(starttime, 1000000); // TODO: Check if the timescale is correct.
+                range.start = CMTimeMakeWithSeconds(starttime, 600);
                 [source setRange:range];
                 
                 BOOL setMovie = NO;

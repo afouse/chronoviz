@@ -620,13 +620,13 @@ static NSMutableArray *possibleDataSources = nil;
 		if([item isKindOfClass:[VideoProperties class]])
 		{
 			VideoProperties *video = (VideoProperties*)item;
-			[video setOffset:CMTimeMake(-[object floatValue], 1000000)]; // TODO: Check if the timescale is correct.
+			[video setOffset:CMTimeMakeWithSeconds(-[object floatValue], 600)];
 		}
 		else if([item isKindOfClass:[DataSource class]])
 		{
 			DataSource *data = (DataSource*)item;
 			CMTimeRange range = [data range];
-			range.start = CMTimeMake([object floatValue], 1000000); // TODO: Check if the timescale is correct.
+			range.start = CMTimeMakeWithSeconds([object floatValue], 600);
 			[data setRange:range];
 		}
 	}

@@ -124,7 +124,7 @@
     {
         // NSTimeInterval startTime = [[annotationDoc videoProperties] computeAlignment:videoProperties];
         NSTimeInterval startTime = 0; // TODO: Check why the previous line does not compile. Can't find computeAlignment method.
-        [videoProperties setOffset:CMTimeMake(-startTime, 1000000)]; // TODO: Check if the timescale is correct.
+        [videoProperties setOffset:CMTimeMakeWithSeconds(-startTime, 600)];
     }
 }
 

@@ -637,7 +637,7 @@ int importSort( id obj1, id obj2, void *context ) {
 	if(fabs([timeOffsetField floatValue] - currentOffset) > .0001)
 	{
 		CMTimeRange range = [dataSource range];
-		range.start = CMTimeMake([timeOffsetField floatValue], 1000000); // TODO: Check if the timescale is correct.
+		range.start = CMTimeMakeWithSeconds([timeOffsetField floatValue], 600);
 		[dataSource setRange:range];
 	}
 }

@@ -491,8 +491,8 @@
 		colIndex = 0;
 		for(id utterance in row)
 		{
-			CMTime columnStart = CMTimeMake(currentTime, 1000000); // TODO: Check if the timescale is correct.
-			CMTime columnDuration = CMTimeMake((maxLengths[colIndex]/totalLength)*duration, 1000000); // TODO: Check if the timescale is correct.
+			CMTime columnStart = CMTimeMakeWithSeconds(currentTime, 600);
+			CMTime columnDuration = CMTimeMakeWithSeconds((maxLengths[colIndex]/totalLength)*duration, 600);
 			if(utterance != [NSNull null])
 			{
 				TimeCodedSourcedString *original = [utterances objectAtIndex:rowIndex];
@@ -576,7 +576,7 @@
 					else
 					{
 						TimeCodedSourcedString *tcss = [[TimeCodedSourcedString alloc] init];
-						tcss.time = CMTimeMake(currentStart, 1000000); // TODO: Check if the timescale is correct.
+						tcss.time = CMTimeMakeWithSeconds(currentStart, 600);
 						tcss.duration = kCMTimeZero;
 						tcss.source = @"";
 						tcss.string = @"";
@@ -611,7 +611,7 @@
 				if(currentSpeaker)
 				{
 					TimeCodedSourcedString* currentString = [[TimeCodedSourcedString alloc] init];
-					[currentString setTime:CMTimeMake(currentStart, 1000000)]; // TODO: Check if the timescale is correct.
+					[currentString setTime:CMTimeMakeWithSeconds(currentStart, 600)];
 					[currentString setString:[NSString stringWithString:currentUtterance]];
 					[currentString setSource:currentSpeaker];
 					[currentUtterance setString:@""];
@@ -655,7 +655,7 @@
 	if(currentSpeaker && ([currentUtterance length] > 0))
 	{
 		TimeCodedSourcedString* currentString = [[TimeCodedSourcedString alloc] init];
-		[currentString setTime:CMTimeMake(currentStart, 1000000)]; // TODO: Check if the timescale is correct.
+		[currentString setTime:CMTimeMakeWithSeconds(currentStart, 600)];
 		[currentString setString:[currentUtterance copy]];
 		[currentString setSource:currentSpeaker];
 		[currentUtterance setString:@""];
@@ -676,7 +676,7 @@
 			else
 			{
 				TimeCodedSourcedString *tcss = [[TimeCodedSourcedString alloc] init];
-				tcss.time = CMTimeMake(currentStart, 1000000); // TODO: Check if the timescale is correct.
+				tcss.time = CMTimeMakeWithSeconds(currentStart, 600);
 				tcss.duration = kCMTimeZero;
 				tcss.source = @"";
 				tcss.string = @"";

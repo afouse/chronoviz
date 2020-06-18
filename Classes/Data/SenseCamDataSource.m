@@ -129,7 +129,7 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
 {
 	NSDate *dataTime = [row objectAtIndex:timeColumn];
 	
-	return CMTimeMake([dataTime timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+	return CMTimeMakeWithSeconds([dataTime timeIntervalSinceDate:startDate], 600);
 }
 
 -(NSDate*)startDate
@@ -302,7 +302,7 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
             
             [gregorian release];
             
-            CMTime duration = CMTimeMake([date timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+            CMTime duration = CMTimeMakeWithSeconds([date timeIntervalSinceDate:startDate], 600);
             range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
             
         }
@@ -426,7 +426,7 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
     
     [dateFormatter release];
     
-    CMTime duration = CMTimeMake([date timeIntervalSinceDate:startDate], 1000000); // TODO: Check if the timescale is correct.
+    CMTime duration = CMTimeMakeWithSeconds([date timeIntervalSinceDate:startDate], 600);
     range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 }
 
@@ -474,7 +474,7 @@ NSString * const SenseCamDataImageReasonColumn = @"Image Reason";
 			
 			TimeCodedString *picture = [[TimeCodedString alloc] init];
 			[picture setValue:0];
-			[picture setTime:CMTimeMake([date timeIntervalSinceDate:startDate], 1000000)]; // TODO: Check if the timescale is correct.
+			[picture setTime:CMTimeMakeWithSeconds([date timeIntervalSinceDate:startDate], 600)];
 			[picture setString:pictureFile];
 			
 			[pictureFileArray addObject:picture];

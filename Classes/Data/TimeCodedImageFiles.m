@@ -53,7 +53,7 @@
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
+			[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		}
 		else
 		{

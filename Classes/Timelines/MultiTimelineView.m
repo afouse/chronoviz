@@ -595,7 +595,7 @@
     {
         NSTimeInterval totalDuration = 0;
         totalDuration = CMTimeGetSeconds(range.duration);
-        CMTime timelineDuration = CMTimeMake(totalDuration/(CGFloat)[timelines count], 1000000); // TODO: Check if the timescale is correct.
+        CMTime timelineDuration = CMTimeMakeWithSeconds(totalDuration/(CGFloat)[timelines count], 600);
         
         CMTime start = range.start;
         for(TimelineView *timeline in timelines)

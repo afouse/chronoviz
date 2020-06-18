@@ -165,7 +165,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 
 -(TimeCodedDataPoint*)addValue:(double)value atSeconds:(NSTimeInterval)seconds
 {
-	return [self addValue:value atTime:CMTimeMake(seconds, 1000000)]; // TODO: Check if the timescale is correct.
+	return [self addValue:value atTime:CMTimeMakeWithSeconds(seconds, 600)];
 }
 
 -(void)addPoints:(NSArray*)timeCodedDataPoints
@@ -459,7 +459,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] floatValue], 1000000)]; // TODO: Check if the timescale is correct.
+			[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		}
 		else
 		{

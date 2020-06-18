@@ -122,7 +122,7 @@
     }
 	else if([[aTableColumn identifier] isEqualToString:@"offset"])
     {
-		CMTime offset = CMTimeMake([val floatValue], 1000000); // TODO: Check if the timescale is correct.
+		CMTime offset = CMTimeMakeWithSeconds([val floatValue], 600);
 		if(offset.value == 0)
 		{
 			offset = kCMTimeZero;

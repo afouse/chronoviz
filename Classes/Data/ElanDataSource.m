@@ -238,7 +238,7 @@
 		NSTimeInterval endTime = [[timeSlots objectForKey:endTimeSlot] floatValue];
 		currentAnnotation = [[Annotation alloc] initWithTimeInterval:startTime];
 		[currentAnnotation setIsDuration:YES];
-		[currentAnnotation setEndTime:CMTimeMake(endTime, 1000000)]; // TODO: Check if the timescale is correct.
+		[currentAnnotation setEndTime:CMTimeMakeWithSeconds(endTime, 600)];
 		[currentAnnotation setCategory:currentTierCategory];
 		
 		[currentTier addAnnotation:currentAnnotation];

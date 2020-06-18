@@ -111,7 +111,7 @@
 
 -(void)handleTimeClick:(NSTimeInterval)time
 {
-	currentTime = CMTimeConvertScale(CMTimeMake(time, 1000000),[[AppController currentApp] currentTime].timescale, kCMTimeRoundingMethod_Default); // TODO: Check if the timescale is correct. TODO: Check if QTMakeTimeScaled is correctly replaced by CMTimeConvertScale.
+	currentTime = CMTimeConvertScale(CMTimeMakeWithSeconds(time, 600),[[AppController currentApp] currentTime].timescale, kCMTimeRoundingMethod_Default); // TODO: Check if QTMakeTimeScaled is correctly replaced by CMTimeConvertScale.
 	
 	[[AppController currentApp] moveToTime:currentTime fromSender:self];
 }
@@ -120,7 +120,7 @@
 -(IBAction)alignToPlayhead:(id)sender
 {
 	CMTime playheadTime = [[[AppController currentApp] movie] currentTime];
-	CMTime lineTime = CMTimeSubtract(CMTimeMake(clickedTime, 1000000),[[data source] range].start); // TODO: Check if the timescale is correct.
+	CMTime lineTime = CMTimeSubtract(CMTimeMakeWithSeconds(clickedTime, 600),[[data source] range].start);
 	
 	CMTime diff = CMTimeSubtract(playheadTime, lineTime);
 	CMTimeRange dataRange = [data range];

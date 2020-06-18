@@ -194,7 +194,7 @@
 
 - (IBAction)changeOffset:(id)sender
 {
-	CMTime offset = CMTimeMake((NSTimeInterval)[offsetField floatValue], 1000000); // TODO: Check if the timescale is correct.
+	CMTime offset = CMTimeMakeWithSeconds((NSTimeInterval)[offsetField floatValue], 600);
 	[properties setOffset:offset];
 	CMTime newTime = CMTimeAdd([[[AppController currentApp] movie] currentTime], offset);
 	if(newTime.value < 0)

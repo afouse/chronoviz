@@ -48,8 +48,8 @@
 		NSTimeInterval currentEnd = startRangeEnd + (endRangeEnd - startRangeEnd)*progress;
 		
 
-		[overviewTimeline setSelection:CMTimeRangeMake(CMTimeMake(currentBegin, 1000000), // TODO: Check if the timescale is correct.
-													   CMTimeMake(currentEnd - currentBegin, 1000000))]; // TODO: Check if the timescale is correct.
+		[overviewTimeline setSelection:CMTimeRangeMake(CMTimeMakeWithSeconds(currentBegin, 600),
+													   CMTimeMakeWithSeconds(currentEnd - currentBegin, 600))];
 	}
 	
 }

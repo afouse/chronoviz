@@ -85,7 +85,7 @@
 		for(i = 0; i < numberOfSegments; i++)
 		{
 			NSTimeInterval time = ((float)x)*pixelToMovieTime + rangeStart;
-			CMTime qttime = CMTimeMake(time, 1000000); // TODO: Check if the timescale is correct.
+			CMTime qttime = CMTimeMakeWithSeconds(time, 600);
 			SegmentBoundary *boundary = [[SegmentBoundary alloc] initFromApp:[AppController currentApp] atTime:qttime];
 			
 			TimelineMarker *marker = [super addKeyframe:previous];

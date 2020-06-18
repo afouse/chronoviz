@@ -136,7 +136,7 @@
 
 -(Annotation*)newAnnotationAtSeconds:(float)seconds
 {
-	return [self newAnnotationAtTime:CMTimeMake(seconds, 1000000)]; // TODO: Check if the timescale is correct.
+	return [self newAnnotationAtTime:CMTimeMakeWithSeconds(seconds, 600)];
 }
 
 -(TimeSeriesData*)newTimeSeries

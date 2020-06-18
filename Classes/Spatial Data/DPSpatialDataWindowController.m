@@ -276,7 +276,7 @@
     
     for(NSTimeInterval currentTime = 0; currentTime < duration; currentTime += interval)
     {
-        //CGImageRef image = [spatialDataView frameImageAtTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
+        //CGImageRef image = [spatialDataView frameImageAtTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         NSWindow *thewindow = [self window];
         
@@ -288,7 +288,7 @@
         origin = [thewindow convertBaseToScreen:origin];
         CGRect captureRect = CGRectMake(origin.x, origin.y, viewFrame.size.width, viewFrame.size.height);
         
-        [spatialDataView setCurrentTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
+        [spatialDataView setCurrentTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.3]];
         
@@ -296,7 +296,7 @@
         
         NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:image];    
         
-        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:CMTimeMake(currentTime, 1000000)]; // TODO: Check if the timescale is correct.
+        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         //NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
         NSData *imageData = [bitmap representationUsingType:NSPNGFileType properties:nil];

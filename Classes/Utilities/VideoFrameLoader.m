@@ -289,7 +289,7 @@
 		CGImageWrapper *imageWrap = [imagecache objectForKey:identifier];
 		if(!imageWrap)
 		{
-			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeMake(time, 1000000) // TODO: Check if the timescale is correct.
+			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeMakeWithSeconds(time, 600)
 													 withAttributes:betterFrameDict error:NULL];
 
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
@@ -301,7 +301,7 @@
 	if(tensix)
 	{
 		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];
-		[frameVideo frameImageAtTime:CMTimeMake(time, 1000000) withAttributes:betterFrameDict error:NULL]; // TODO: Check if the timescale is correct.
+		[frameVideo frameImageAtTime:CMTimeMakeWithSeconds(time, 600) withAttributes:betterFrameDict error:NULL];
 		//CGImageRelease(theImage);
 	}
 	
