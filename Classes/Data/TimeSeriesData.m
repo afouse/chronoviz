@@ -281,7 +281,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 	for(TimeCodedDataPoint* point in dataPoints)
 	{
         CMTimeScale originalScale = [point time].timescale;
-        [point setTime:CMTimeConvertScale(CMTimeMultiplyByFloat64(CMTimeSubtract([point time],startDiff), scaleFactor),originalScale, kCMTimeRoundingMethod_Default)]; // TODO: Check rounding method.
+        [point setTime:CMTimeConvertScale(CMTimeMultiplyByFloat64(CMTimeSubtract([point time],startDiff), scaleFactor),originalScale, kCMTimeRoundingMethod_Default)];
 	}
 }
 
