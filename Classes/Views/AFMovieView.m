@@ -476,7 +476,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	CALayer *maskLayer = [[CALayer alloc] init];
 	[maskLayer setMasksToBounds:YES];
 	[maskLayer addSublayer:layer];
-	[layer release];
+	//[layer release];
 	[maskLayer autorelease];
 	
 	for(VideoProperties* video in [[AnnotationDocument currentDocument] mediaProperties])
