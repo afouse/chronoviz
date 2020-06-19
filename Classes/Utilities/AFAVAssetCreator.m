@@ -17,7 +17,7 @@
     NSError *error = nil;
     AVAssetWriter *videoWriter = [[AVAssetWriter alloc]
                                   initWithURL:somePath
-                                  fileType:AVFileTypeQuickTimeMovie
+                                  fileType:AVFileTypeMPEG4
                                   error:&error];
     NSParameterAssert(videoWriter);
     
@@ -60,14 +60,17 @@
             [writerInput markAsFinished];
             // WARNING: finishWriting in the solution above is deprecated.
             // You now need to give a completion handler.
+            [videoWriter finishWriting];
+            //TODO: Move back to async writing
+            /*
             [videoWriter finishWritingWithCompletionHandler:^{
                 NSLog(@"Finished writing...checking completion status...");
                 if (videoWriter.status != AVAssetWriterStatusFailed && videoWriter.status == AVAssetWriterStatusCompleted)
                 {
                     NSLog(@"Video writing succeeded.");
-                    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:somePath display:YES completionHandler:^(NSDocument *document, BOOL alreadyOpen, NSError *err){
-                        NSLog(@"%@",document);
-                    }];
+//                    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:somePath display:YES completionHandler:^(NSDocument *document, BOOL alreadyOpen, NSError *err){
+//                        NSLog(@"%@",document);
+//                    }];
                     
                 } else
                 {
@@ -75,7 +78,7 @@
                 }
                 
             }]; // end videoWriter finishWriting Block
-            
+            */
             CVPixelBufferPoolRelease(adaptor.pixelBufferPool);
             
             NSLog (@"Done");
