@@ -29,8 +29,6 @@
 #import "AFAVAssetCreator.h"
 #import <Sparkle/SUUpdater.h>
 #import <CoreServices/CoreServices.h>
-//#import <QTKit/QTMovieModernizer.h>
-// TODO: Check what depends on the above import. We can probably omit this. https://github.com/benoit-pereira-da-silva/MovieModernizer
 
 NSString * const MediaChangedNotification = @"MediaChangedNotification";
 NSString * const DPMediaAddedKey = @"MediaAdded";
@@ -323,24 +321,6 @@ int const DPCurrentDocumentFormatVersion = 1;
 						
 			if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
 			{
-				// Find if a video exists (support for older file format)
-				if([filename rangeOfString:@"-Annotations"].location != NSNotFound)
-				{
-					NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[filename stringByDeletingLastPathComponent] error:&err];
-					for(NSString* file in files)
-					{
-                        /*
-                        NSError* err;
-						if (![QTMovieModernizer requiresModernization:[NSURL URLWithString:file] error:&err]) {
-							[videoProperties setVideoFile:file];
-							[videoProperties saveToFile:videoInfoFile];
-							break;
-						}
-                        */
-                        // TODO: Remove Modernization?
-					}
-				}
-				
 				// If there's still no video file, create a placeholder video.
 				if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
 				{
@@ -671,27 +651,23 @@ int const DPCurrentDocumentFormatVersion = 1;
 	[super dealloc];
 }
 
-- (AVAsset*)setVideoFile:(NSString*)videoFile
+- (AVPlayer*)setVideoFile:(NSString*)videoFile
 {
-    AVAsset *movie = nil;
-    NSError *err = nil;
-    /*
-	if (![QTMovieModernizer requiresModernization:[NSURL URLWithString:videoFile] error:&err])
-	{
-        [videoProperties setMovie:nil];
-        [videoProperties setVideoFile:videoFile];
-        movie = [videoProperties loadMovie];
-        if(!movie)
-        {
-            NSLog(@"Error loading movie: %@",videoFile);
-        }
-        else
-        {
-            [[AppController currentApp] setMovie:movie];
-        }
-	}
-    */
-    // TODO: Omit modernizer?
+    AVPlayer *movie = nil;
+    
+    [videoProperties setMovie:nil];
+    [videoProperties setVideoFile:videoFile];
+    movie = [videoProperties loadMovie];
+    if(!movie)
+    {
+        NSLog(@"Error loading movie: %@",videoFile);
+    }
+    else
+    {
+        // [[AppController currentApp] setMovie:movie];
+        // TODO: Since we mutated videoProperties, we do not need to set them again, right?
+    }
+
 	return movie;
 }
 
@@ -731,10 +707,9 @@ int const DPCurrentDocumentFormatVersion = 1;
 {
 	if([videoProperties localVideo])
 	{
-        [self createVideoFileWithDuration:duration];
+        NSString *videoFile = [self createVideoFileWithDuration:duration];
 		
-		// [self setVideoFile:movieFile];
-        // TODO: Is this required?
+		[self setVideoFile:videoFile];
 		
 		return YES;
 	}
@@ -1095,7 +1070,8 @@ int const DPCurrentDocumentFormatVersion = 1;
                     [properties retain];
                     [videoProperties release];
                     videoProperties = properties;
-                    [[AppController currentApp] setMovie:[videoProperties loadMovie]];
+                    // [[AppController currentApp] setMovie:[videoProperties loadMovie]];
+                    // TODO: Since we mutated videoProperties, we do not need to set them again, right?
                     [self saveVideoProperties:videoProperties];
                     
                     [[NSNotificationCenter defaultCenter]
