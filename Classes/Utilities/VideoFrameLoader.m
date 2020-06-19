@@ -124,8 +124,12 @@
 				
 				CMTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : CMTimeMake(0, 1);
 				//NSLog(@"Offset: %i",(int)offset.value);
-				theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeAdd([[marker boundary] time],offset)
-																			   withAttributes:frameDict error:NULL];
+                
+                AVAsset *asset = [[frameVideo currentItem] asset];
+                CMTime frameTime = CMTimeAdd([[marker boundary] time], offset);
+                NSError *imageError;
+                theImage = [self generateImageAt:frameTime for:asset error:&imageError];
+                
 			}
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
 			[imagecache setObject:imageWrap forKey:identifier];
@@ -141,6 +145,13 @@
 	{
 		//NSLog(@"Bad frame load");
 	}
+}
+
+- (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVAsset*)asset error:(NSError * _Nullable *)error {
+    AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+    imageGenerator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1, 600);
+    imageGenerator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(1, 600);
+    return [imageGenerator copyCGImageAtTime:requestedTime actualTime:nil error:error];
 }
 
 
@@ -291,8 +302,10 @@
 		CGImageWrapper *imageWrap = [imagecache objectForKey:identifier];
 		if(!imageWrap)
 		{
-			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:CMTimeMakeWithSeconds(time, 600)
-													 withAttributes:betterFrameDict error:NULL];
+            AVAsset *asset = [[frameVideo currentItem] asset];
+            CMTime frameTime = CMTimeMakeWithSeconds(time, 600);
+            NSError *imageError;
+            CGImageRef theImage = [self generateImageAt:frameTime for:asset error:&imageError];
 
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
 			[imagecache setObject:imageWrap forKey:identifier];
@@ -302,8 +315,10 @@
 	
 	if(tensix)
 	{
-		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];
-		[frameVideo frameImageAtTime:CMTimeMakeWithSeconds(time, 600) withAttributes:betterFrameDict error:NULL];
+		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];AVAsset *asset = [[frameVideo currentItem] asset];
+        CMTime frameTime = CMTimeMakeWithSeconds(time, 600);
+        NSError *imageError;
+        [self generateImageAt:frameTime for:asset error:&imageError];
 		//CGImageRelease(theImage);
 	}
 	
