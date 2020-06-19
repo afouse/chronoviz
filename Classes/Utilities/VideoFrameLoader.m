@@ -84,12 +84,10 @@
 			else
 			{
 				AVPlayer *frameVideo = video;
-				NSDictionary *frameDict = CIImageDict;
 				if(!frameVideo)
 				{
 					
 					frameVideo = [frameMovies objectForKey:url];
-					frameDict = [frameSettings objectForKey:url];
 					
 					if(!frameVideo)
 					{
@@ -107,17 +105,6 @@
 						float ratio = contentSize.width/contentSize.height;
 						contentSize.width = (targetHeight *  ratio);
 						contentSize.height = targetHeight;
-						
-						/*
-                        frameDict = [NSDictionary
-                                     dictionaryWithObjectsAndKeys:
-                                     QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-                                     [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
-                                     nil];
-                        */
-                        frameDict = [NSDictionary dictionary]; // TODO: Reimplement storing of information in frameDict.
-                        
-						[frameSettings setObject:frameDict forKey:url];
 						
 					}
 				}
@@ -176,13 +163,6 @@
 		targetFrameCount = 200;
 		targetHeight = 200;
 		
-		/*
-        CIImageDict = [[NSDictionary
-								   dictionaryWithObjectsAndKeys:
-								   QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-								   nil] retain];
-        */
-        // TODO: Reintroduce proper dictionary.
         CIImageDict = [[NSDictionary dictionary] retain];
 		
 
@@ -242,7 +222,6 @@
     NSURL *url = [[[playbackMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
 	
 	AVPlayer *frameVideo = [frameMovies objectForKey:url];
-	NSDictionary *frameDict = [frameSettings objectForKey:url];
 
 	NSTimeInterval duration;
 	duration = CMTimeGetSeconds([[movie currentItem] duration]);
@@ -261,21 +240,7 @@
 		float ratio = contentSize.width/contentSize.height;
 		contentSize.width = (targetHeight *  ratio);
 		contentSize.height = targetHeight;
-		
-		/*
-        frameDict = [NSDictionary
-					 dictionaryWithObjectsAndKeys:
-					 QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-					 [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
-					 nil];
-        */
-        frameDict = [NSDictionary dictionary]; // TODO: Reimplement storing of information in frameDict.
-        
-		[frameSettings setObject:frameDict forKey:url];
-		
 	}
-	
-	NSMutableDictionary *betterFrameDict = [NSMutableDictionary dictionaryWithDictionary:frameDict];
 	
 	float interval = [[movieIntervals objectForKey:url] floatValue];
 	
