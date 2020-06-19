@@ -329,7 +329,7 @@
 
 -(void)update
 {
-	[timeField setStringValue:[NSString stringWithQTTime:[[AppController currentApp] currentTime]]];
+	[timeField setStringValue:[NSString stringWithCMTime:[[AppController currentApp] currentTime]]];
 	if(alignmentBarVisible)
 	{
 		[alignmentSlider setFloatValue:(float)([[movieView movie] currentTime].value)/(float)[[[movieView movie] currentItem] duration].value];

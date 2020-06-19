@@ -1212,9 +1212,13 @@ static AppController *currentApp = nil;
 {
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 	
-	[openPanel setDelegate:self];
+	//[openPanel setDelegate:self];
 	[openPanel setAllowsMultipleSelection:NO];
-	
+
+    NSArray *types = @[@"annotation",@"chronoviztemplate"];
+    types = [types arrayByAddingObjectsFromArray:[AVURLAsset audiovisualTypes]];
+    [openPanel setAllowedFileTypes:types];
+    
 	if ([openPanel runModalForTypes:nil] == NSOKButton) {
 		NSString* filename = [openPanel filename];
 		
@@ -2423,7 +2427,7 @@ static AppController *currentApp = nil;
 	
 	float timelineHeight = [timelineView bounds].size.height;
 	float footer = [[mMovieWindow contentView] bounds].size.height - [splitView bounds].size.height;
-	NSSize contentSize = (NSSize)[[[mMovie tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+    NSSize contentSize = (NSSize)[[[[mainVideo.playerItem asset] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 	contentSize.width = contentSize.width * zoomFactor;
 	contentSize.height = contentSize.height * zoomFactor;
 	contentSize.height += (footer + timelineHeight + [splitView dividerThickness]);
@@ -3347,11 +3351,11 @@ static AppController *currentApp = nil;
 {
 	if(absoluteTime)
 	{
-		[movieTimeButton setTitle:[NSString stringWithQTTime:[mMovie currentTime] sinceDate:[annotationDoc startDate]]];
+		[movieTimeButton setTitle:[NSString stringWithCMTime:[mMovie currentTime] sinceDate:[annotationDoc startDate]]];
 	}
 	else
 	{
-		[movieTimeButton setTitle:[NSString stringWithQTTime:[mMovie currentTime]]];
+		[movieTimeButton setTitle:[NSString stringWithCMTime:[mMovie currentTime]]];
 	}
 }
 

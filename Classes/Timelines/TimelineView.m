@@ -364,7 +364,7 @@
         [self showTimes:YES];
     }
     
-	[self setRange:CMTimeRangeMake(kCMTimeZero, [[movie currentItem] duration])];
+	[self setRange:CMTimeRangeMake(kCMTimeZero, [[[movie currentItem] asset] duration])];
 	
 	[self redrawAllSegments];
 }

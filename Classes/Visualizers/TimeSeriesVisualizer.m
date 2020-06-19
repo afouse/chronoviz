@@ -443,7 +443,7 @@
                 [outsideRangeLayer setFrame:[graphLayer bounds]];
                 [outsideRangeLayer setFontSize:16.0];
                 [outsideRangeLayer setAlignmentMode:kCAAlignmentRight];
-                [outsideRangeLayer setString:[NSString stringWithFormat:@"Data starts\nat %@",[NSString stringWithQTTime:[firstPoint time]]]];
+                [outsideRangeLayer setString:[NSString stringWithFormat:@"Data starts\nat %@",[NSString stringWithCMTime:[firstPoint time]]]];
                 
                 [graphLayer addSublayer:outsideRangeLayer];
             }

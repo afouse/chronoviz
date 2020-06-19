@@ -608,8 +608,8 @@ NSString * const DPMaskedSelectionAreaRemovedNotification = @"MaskedSelectionAre
     {
         current = nil;
         self.transitionsTimeRange = [NSString stringWithFormat:@"%@ to %@",
-                                [NSString stringWithQTTime:kCMTimeZero],
-                                [NSString stringWithQTTime:[[[AppController currentApp] movie] duration]]];
+                                [NSString stringWithCMTime:kCMTimeZero],
+                                [NSString stringWithCMTime:[[[[[AppController currentApp] movie] currentItem] asset] duration]]];
     }
     
     for(TimeCodedSpatialPoint* point in [data dataPoints])

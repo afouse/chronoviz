@@ -124,8 +124,13 @@ static const NSString *ItemStatusContext;
 	}
     
     NSURL* fileURL = [NSURL fileURLWithPath:videoFile];
-    AVPlayer *asset = [AVPlayer playerWithURL:fileURL];
+    self.player = [AVPlayer playerWithURL:fileURL];
+    self.playerItem = self.player.currentItem;
+    
+//    [self.playerItem addObserver:self forKeyPath:@"status"
+//                         options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
     /*
+    AVAsset *asset = [self.playerItem asset];
     NSArray *assetKeysToLoadAndTest = @[@"tracks"];
     [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
         
@@ -138,15 +143,15 @@ static const NSString *ItemStatusContext;
         });
         
     }];
-    */
+    
     if(asset == nil)
     {
         NSLog(@"Error loading movie: %@",videoFile);
     }
+    */
+    [self setMovie:self.player];
     
-    [self setMovie:asset];
-    
-    return asset;
+    return self.player;
 }
 
 - (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys
@@ -203,12 +208,15 @@ static const NSString *ItemStatusContext;
         switch (status) {
             case AVPlayerItemStatusReadyToPlay:
                 // Ready to Play
+                NSLog(@"Status: Ready to play");
                 break;
             case AVPlayerItemStatusFailed:
                 // Failed. Examine AVPlayerItem.error
+                NSLog(@"Status: Load failed");
                 break;
             case AVPlayerItemStatusUnknown:
                 // Not ready
+                NSLog(@"Status: Unknown");
                 break;
         }
     }
