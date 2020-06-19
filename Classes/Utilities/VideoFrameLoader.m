@@ -249,7 +249,6 @@
 	
 	if(!frameVideo)
 	{
-		NSError *error = nil;
 		frameVideo = [AVPlayer playerWithURL:url];
 		[frameMovies setObject:frameVideo forKey:url];
 
@@ -278,13 +277,6 @@
 	
 	NSMutableDictionary *betterFrameDict = [NSMutableDictionary dictionaryWithDictionary:frameDict];
 	
-    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
-	BOOL tensix = NO;
-	if ((version.majorVersion == 10 && version.minorVersion >= 6) || version.majorVersion >= 11) {
-		tensix = YES;
-		[betterFrameDict setObject:[NSNumber numberWithBool:YES] forKey:@"QTMovieFrameImageSessionMode"];
-	}
-	
 	float interval = [[movieIntervals objectForKey:url] floatValue];
 	
 	NSTimeInterval time;
@@ -309,17 +301,6 @@
 			[imageWrap release];
 		}	
 	}
-	
-	if(tensix)
-	{
-		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];AVAsset *asset = [[frameVideo currentItem] asset];
-        CMTime frameTime = CMTimeMakeWithSeconds(time, 600);
-        NSError *imageError;
-        [self generateImageAt:frameTime for:asset error:&imageError];
-		//CGImageRelease(theImage);
-	}
-	
-
 }
 
 
