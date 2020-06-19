@@ -166,15 +166,6 @@
 		NSString *directory = [openPanel filename];	
 		AnnotationCategory *selectedCategory = [[button selectedItem] representedObject];
 		
-		NSError *err;
-
-		/*
-        NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
-														 forKey:QTMovieFlatten];
-        */
-        // TODO: Find out what to replace QTMovieFlatten with.
-        NSDictionary *dict = [NSDictionary dictionary];
-		
 		NSMutableArray *sourceVideos = [NSMutableArray array];
 		if(chooseMovie)
 		{
@@ -250,7 +241,7 @@
 					[newMovie updateMovieFile];
 					[newMovie writeToFile:filename withAttributes:dict];
                     */
-                    // TODO: Fix export.
+                    // TODO: Fix export. Note that dict contained the QTMovieFlatte:YES.
 				}
 			}
 		}
