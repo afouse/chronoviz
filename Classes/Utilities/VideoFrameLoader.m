@@ -278,12 +278,9 @@
 	
 	NSMutableDictionary *betterFrameDict = [NSMutableDictionary dictionaryWithDictionary:frameDict];
 	
-	SInt32 major = 0;
-	SInt32 minor = 0;   
-	Gestalt(gestaltSystemVersionMajor, &major);
-	Gestalt(gestaltSystemVersionMinor, &minor);
+    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
 	BOOL tensix = NO;
-	if ((major == 10 && minor >= 6) || major >= 11) {
+	if ((version.majorVersion == 10 && version.minorVersion >= 6) || version.majorVersion >= 11) {
 		tensix = YES;
 		[betterFrameDict setObject:[NSNumber numberWithBool:YES] forKey:@"QTMovieFrameImageSessionMode"];
 	}
