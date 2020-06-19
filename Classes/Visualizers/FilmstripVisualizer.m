@@ -68,7 +68,8 @@
 		int width;
 		int numberOfSegments;
 
-        NSSize contentSize = (NSSize)[[[[self movie] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+        AVAsset *asset = [[[self movie] currentItem] asset];
+        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		width = ([timeline bounds].size.height *  ratio) + autoSegmentPadding;
 		numberOfSegments = ceil((float)timelineWidth / width);

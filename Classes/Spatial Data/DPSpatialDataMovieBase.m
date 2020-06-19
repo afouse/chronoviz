@@ -51,8 +51,8 @@
             self.yCenterOffset = 0;
             
             AVPlayer *movie = [video movie];
-            
-            NSSize contentSize = (NSSize)[[[movie tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+            AVAsset *asset = [[movie currentItem] asset];
+            NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
             self.aspectRatio = contentSize.width/contentSize.height;
             self.coordinateSpace = CGRectMake(0, 0, contentSize.width, contentSize.height);
             

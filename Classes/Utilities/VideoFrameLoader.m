@@ -101,8 +101,9 @@
 						float interval = duration/targetFrameCount;
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
-						
-                        NSSize contentSize = (NSSize)[[[frameVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+
+                        AVAsset *asset = [[frameVideo currentItem] asset];
+                        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 						float ratio = contentSize.width/contentSize.height;
 						contentSize.width = (targetHeight *  ratio);
 						contentSize.height = targetHeight;
@@ -244,8 +245,9 @@
 		float interval = duration/targetFrameCount;
 		
 		[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
-        
-        NSSize contentSize = (NSSize)[[[frameVideo tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+
+        AVAsset *asset = [[frameVideo currentItem] asset];
+        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		contentSize.width = (targetHeight *  ratio);
 		contentSize.height = targetHeight;

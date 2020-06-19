@@ -72,7 +72,8 @@
 		if(properties)
 		{
 			[self window];
-            NSSize contentSize = (NSSize)[[[[properties movie] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+            AVAsset *asset = [[[properties movie] currentItem] asset];
+            NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 			
 			contentSize.width = contentSize.width;
 			contentSize.height = contentSize.height;
