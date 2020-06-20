@@ -10,6 +10,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		A943B9CE249E569900E5E618 /* MainVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A943B9CD249E569900E5E618 /* MainVideo.m */; };
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
 		BB0159470EACE4BC00B41B99 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159450EACE4BC00B41B99 /* play.png */; };
 		BB0159480EACE4BC00B41B99 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159460EACE4BC00B41B99 /* pause.png */; };
@@ -336,6 +337,8 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A943B9CD249E569900E5E618 /* MainVideo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVideo.m; sourceTree = "<group>"; };
+		A943B9CF249E56A300E5E618 /* MainVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVideo.h; sourceTree = "<group>"; };
 		BB01592E0EACE34300B41B99 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -1104,6 +1107,8 @@
 				BB8456380F15417F004F187E /* SegmentBoundary.h */,
 				BB8456390F15417F004F187E /* SegmentBoundary.m */,
 				BBC57EE90FF566A7001C8E9F /* VideoProperties.h */,
+				A943B9CD249E569900E5E618 /* MainVideo.m */,
+				A943B9CF249E56A300E5E618 /* MainVideo.h */,
 				BBC57EEA0FF566A7001C8E9F /* VideoProperties.m */,
 			);
 			path = Core;
@@ -1688,6 +1693,7 @@
 				BBCE785910961FA10061BFD4 /* DataSource.m in Sources */,
 				BBFD986F109B50120099758A /* AnnotationTableView.m in Sources */,
 				BB35A05E109BA896002A0707 /* MapAnnotationLayer.m in Sources */,
+				A943B9CE249E569900E5E618 /* MainVideo.m in Sources */,
 				BBF5D7F110A09D4A00DDBEDE /* SenseCamDataSource.m in Sources */,
 				BB2F945510A2354F001550A6 /* TimeCodedString.m in Sources */,
 				BB08C20910A33C8300F188AD /* ImageSequenceView.m in Sources */,

@@ -3238,14 +3238,25 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepOneFrameForward:(id)sender
 {
-	[mMovie stepForward];
-	[self moveToTime:[mMovie currentTime] fromSender:sender];
+    AVAsset *asset = [[mMovie currentItem] asset];
+    float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
+    CMTime oneFrame = CMTimeMake(1, framerate);
+    CMTime newTime = CMTimeAdd([mMovie currentTime], oneFrame);
+    // [[mMovie currentItem] stepByCount:1];
+    // TODO: Why does stepByCount not work?
+	[self moveToTime:newTime fromSender:sender];
 }
 
 - (IBAction)stepOneFrameBackward:(id)sender
 {
-	[mMovie stepBackward];
-	[self moveToTime:[mMovie currentTime] fromSender:sender];
+    AVAsset *asset = [[mMovie currentItem] asset];
+    float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
+    CMTime oneFrame = CMTimeMake(1, framerate);
+    CMTime newTime = CMTimeSubtract([mMovie currentTime], oneFrame);
+    // [[mMovie currentItem] stepByCount:-1];
+    // TODO: Why does stepByCount not work?
+	[self moveToTime:newTime fromSender:sender];
+    // TODO: Why does moveToTime not move to the time when actual video is loaded?
 }
 
 - (IBAction)fastForward:(id)sender
