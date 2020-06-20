@@ -11,6 +11,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A943B9CE249E569900E5E618 /* MainVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A943B9CD249E569900E5E618 /* MainVideo.m */; };
+		A943B9D1249E5D2D00E5E618 /* MainVideoLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = A943B9D0249E5D2D00E5E618 /* MainVideoLoader.m */; };
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
 		BB0159470EACE4BC00B41B99 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159450EACE4BC00B41B99 /* play.png */; };
 		BB0159480EACE4BC00B41B99 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159460EACE4BC00B41B99 /* pause.png */; };
@@ -339,6 +340,8 @@
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A943B9CD249E569900E5E618 /* MainVideo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVideo.m; sourceTree = "<group>"; };
 		A943B9CF249E56A300E5E618 /* MainVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVideo.h; sourceTree = "<group>"; };
+		A943B9D0249E5D2D00E5E618 /* MainVideoLoader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVideoLoader.m; sourceTree = "<group>"; };
+		A943B9D2249E5D3600E5E618 /* MainVideoLoader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVideoLoader.h; sourceTree = "<group>"; };
 		BB01592E0EACE34300B41B99 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -1107,6 +1110,8 @@
 				BB8456380F15417F004F187E /* SegmentBoundary.h */,
 				BB8456390F15417F004F187E /* SegmentBoundary.m */,
 				BBC57EE90FF566A7001C8E9F /* VideoProperties.h */,
+				A943B9D0249E5D2D00E5E618 /* MainVideoLoader.m */,
+				A943B9D2249E5D3600E5E618 /* MainVideoLoader.h */,
 				A943B9CD249E569900E5E618 /* MainVideo.m */,
 				A943B9CF249E56A300E5E618 /* MainVideo.h */,
 				BBC57EEA0FF566A7001C8E9F /* VideoProperties.m */,
@@ -1740,6 +1745,7 @@
 				BBFE228C11A9D7DC00D4C96D /* AnnotationSearchFilter.m in Sources */,
 				BBD2408D11C291DC001CDE54 /* TiledPDFDelegate.m in Sources */,
 				BBD240B911C2E7B5001CDE54 /* NSString+URIQuery.m in Sources */,
+				A943B9D1249E5D2D00E5E618 /* MainVideoLoader.m in Sources */,
 				BB49DD1611CABAEA00F9C601 /* DPViewManager.m in Sources */,
 				BB606D1A11CC0E7400E037BC /* TiledImage.m in Sources */,
 				BB342EDF11D277E500893573 /* DPConsoleWindowController.m in Sources */,
