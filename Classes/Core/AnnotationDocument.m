@@ -257,49 +257,25 @@ int const DPCurrentDocumentFormatVersion = 1;
 			{
 				[self addCategory:category];
 			}
-		}
+        } else {
+            NSArray *defaultCategories = [AnnotationDocument defaultCategories];
+            for(AnnotationCategory* category in defaultCategories)
+            {
+                [self addCategory:category];
+            }
+        }
 		
 		///////////////////////////
 		// Load the video info file
 		///////////////////////////
         NSLog(@"Loading video info");
 		
-		// If the video info file doesn't exist, create one.
-		if(![[NSFileManager defaultManager] fileExistsAtPath:videoInfoFile])
-		{
-			VideoProperties *properties = [[VideoProperties alloc] init];
-			[properties saveToFile:videoInfoFile];
-			[properties release];
-		}
+        ensureVideoPropertiesFileExistsAt(videoInfoFile);
 		
 		// If we created one successfully, load it.
 		if([[NSFileManager defaultManager] fileExistsAtPath:videoInfoFile])
 		{
-			videoProperties = [[VideoProperties alloc] initFromFile:videoInfoFile];
-						
-			if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
-			{
-				// If there's still no video file, create a placeholder video.
-				if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
-				{
-                    CMTime duration = CMTimeMakeWithSeconds([[AppController currentApp] newDocumentDuration], 600);
-									
-                    NSString* movieFile = [self createVideoFileWithDuration:duration];
-					
-					[videoProperties setVideoFile:movieFile];
-					[videoProperties saveToFile:videoInfoFile];
-					
-					if([categories count] == 0)
-					{
-						NSArray *defaultCategories = [AnnotationDocument defaultCategories];
-						for(AnnotationCategory* category in defaultCategories)
-						{
-							[self addCategory:category];
-						}
-					}
-				}
-				
-			}
+            videoProperties = initVideoPropertiesFromFile(videoInfoFile, annotationsDirectory);
 			
 			[self updateMediaFile:videoProperties];
             
@@ -530,13 +506,13 @@ static NSMutableDictionary* loadDocumentProperties(NSString *propertiesFile) {
     
     // Ensure certain keys are initialized.
     
-    setIfNotPresentIn(documentProperties, DPSavedLayoutsKey, ^{return [[NSMutableDictionary alloc] init];});
-    setIfNotPresentIn(documentProperties, DPKeywordsKey, ^{return [[NSMutableDictionary alloc] init];});
+    setIfNotPresent(documentProperties, DPSavedLayoutsKey, ^{return [[NSMutableDictionary alloc] init];});
+    setIfNotPresent(documentProperties, DPKeywordsKey, ^{return [[NSMutableDictionary alloc] init];});
             
     return documentProperties;
 }
 
-static void setIfNotPresentIn(NSMutableDictionary *dict, NSString *key, id (^defaultGenerator)(void)) {
+static void setIfNotPresent(NSMutableDictionary *dict, NSString *key, id (^defaultGenerator)(void)) {
     if (![dict valueForKey:key]) {
         [dict setValue:defaultGenerator()
                               forKey:key];
@@ -562,6 +538,35 @@ static void showInvalidDocumentVersionAlert() {
     {
         [[SUUpdater sharedUpdater] checkForUpdates:nil];
     }
+}
+
+static void ensureVideoPropertiesFileExistsAt(NSString *videoPropertiesFile) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:videoPropertiesFile])
+    {
+        VideoProperties *properties = [[VideoProperties alloc] init];
+        [properties saveToFile:videoPropertiesFile];
+        [properties release];
+    }
+}
+
+static VideoProperties* initVideoPropertiesFromFile(NSString *videoPropertiesFile, NSString *annotationsDirectory) {
+    VideoProperties *videoProperties = [[VideoProperties alloc] initFromFile:videoPropertiesFile];
+                
+    if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
+    {
+        // If there's still no video file, create a placeholder video.
+        if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
+        {
+            CMTime duration = CMTimeMakeWithSeconds([[AppController currentApp] newDocumentDuration], 600);
+                            
+            NSString* movieFile = createVideoFileWithDuration(duration, annotationsDirectory);
+            
+            [videoProperties setVideoFile:movieFile];
+            [videoProperties saveToFile:videoPropertiesFile];
+        }
+    }
+    
+    return videoProperties;
 }
 
 
@@ -688,10 +693,10 @@ static void showInvalidDocumentVersionAlert() {
 	return movie;
 }
 
-- (NSString*)createVideoFileWithDuration:(CMTime)time
+static NSString* createVideoFileWithDuration(CMTime duration, NSString *directory)
 {
-    NSString *movieFile = [annotationsDirectory stringByAppendingPathComponent:@"video.mov"];
-    NSString *altMovieFile = [annotationsDirectory stringByAppendingPathComponent:@"video1.mov"];
+    NSString *movieFile = [directory stringByAppendingPathComponent:@"video.mov"];
+    NSString *altMovieFile = [directory stringByAppendingPathComponent:@"video1.mov"];
     NSString* imageName = [[NSBundle mainBundle] pathForResource:@"black" ofType:@"gif"];
     NSImage* imageObj = [[NSImage alloc] initWithContentsOfFile:imageName];
     
@@ -708,7 +713,7 @@ static void showInvalidDocumentVersionAlert() {
 
     [AFAVAssetCreator createNewMovieAtPath:[NSURL fileURLWithPath:movieFile]
                                  fromImage:imageObj
-                              withDuration:CMTimeGetSeconds(time)];
+                              withDuration:CMTimeGetSeconds(duration)];
     
     [imageObj release];
     
@@ -724,7 +729,7 @@ static void showInvalidDocumentVersionAlert() {
 {
 	if([videoProperties localVideo])
 	{
-        NSString *videoFile = [self createVideoFileWithDuration:duration];
+        NSString *videoFile = createVideoFileWithDuration(duration, annotationsDirectory);
 		
 		[self setVideoFile:videoFile];
 		
