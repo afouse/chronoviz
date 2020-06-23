@@ -32,8 +32,8 @@
 
 - (void)loadCIImage:(TimelineMarker*)marker immediately:(BOOL)now;
 
-- (void)setVideo:(QTMovie*)video;
+- (void)setVideo:(AVPlayer*)video;
 
-- (void)loadAllFramesForMovie:(QTMovie*)movie;
+- (void)loadAllFramesForMovie:(AVPlayer*)movie;
 
 @end

@@ -336,8 +336,6 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A943B9CD249E569900E5E618 /* MainVideo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainVideo.m; sourceTree = "<group>"; };
-		A943B9CF249E56A300E5E618 /* MainVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainVideo.h; sourceTree = "<group>"; };
 		BB01592E0EACE34300B41B99 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -1106,8 +1104,6 @@
 				BB8456380F15417F004F187E /* SegmentBoundary.h */,
 				BB8456390F15417F004F187E /* SegmentBoundary.m */,
 				BBC57EE90FF566A7001C8E9F /* VideoProperties.h */,
-				A943B9CD249E569900E5E618 /* MainVideo.m */,
-				A943B9CF249E56A300E5E618 /* MainVideo.h */,
 				BBC57EEA0FF566A7001C8E9F /* VideoProperties.m */,
 			);
 			path = Core;
