@@ -228,49 +228,15 @@ int const DPCurrentDocumentFormatVersion = 1;
         
         
 		NSString *propertiesFile = [annotationsDirectory stringByAppendingPathComponent:@"properties.plist"];
-		if(![[NSFileManager defaultManager] fileExistsAtPath:propertiesFile])
-		{
-			documentProperties = [[NSMutableDictionary alloc] init];
-		}
-		else
-		{
-			NSString *errorDesc = nil;
-			NSPropertyListFormat format;
-			NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:propertiesFile];
-			documentProperties = [(NSDictionary *)[NSPropertyListSerialization
-												  propertyListFromData:plistXML
-												  mutabilityOption:0
-												  format:&format errorDescription:&errorDesc] mutableCopy];
-			
-			NSDictionary *userVariables = [documentProperties objectForKey:@"DPUserVariables"];
-			if(userVariables)
-			{
-				[documentProperties setObject:[userVariables mutableCopy] forKey:@"DPUserVariables"];
-			}
-            
-		}
-		
-		documentFormatVersion = [[documentProperties valueForKey:@"DPDocumentFormatVersion"] intValue];
-        if(documentFormatVersion > DPCurrentDocumentFormatVersion)
-        {
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:@"This document can't be opened because it was created with a newer version of ChronoViz."];
-            [alert setInformativeText:@"Please update ChronoViz to open this file."];
-            
-            [alert addButtonWithTitle:@"OK"];
-            [alert addButtonWithTitle:@"Update Now"];
-            
-            NSInteger result = [alert runModal];
-            [alert release];
-            if(result == NSAlertSecondButtonReturn)
-            {
-                [[SUUpdater sharedUpdater] checkForUpdates:nil];
-            }
-            
-            
+        
+        NSMutableDictionary *newDocumentProperties = loadDocumentProperties(propertiesFile);
+        if (!isCurrentVersion(newDocumentProperties)) {
+            showInvalidDocumentVersionAlert();
             [self release];
             return nil;
         }
+        
+        documentProperties = newDocumentProperties;
         
         savedLayouts = [[documentProperties valueForKey:@"DPSavedLayouts"] mutableCopy];
 		if(!savedLayouts)
@@ -545,6 +511,53 @@ int const DPCurrentDocumentFormatVersion = 1;
 	}
     
 	return self;
+}
+
+static NSMutableDictionary* loadDocumentProperties(NSString *propertiesFile) {
+    NSMutableDictionary *documentProperties;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:propertiesFile])
+    {
+        documentProperties = [[NSMutableDictionary alloc] init];
+    }
+    else
+    {
+        NSString *errorDesc = nil;
+        NSPropertyListFormat format;
+        NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:propertiesFile];
+        documentProperties = [(NSDictionary *)[NSPropertyListSerialization
+                                              propertyListFromData:plistXML
+                                              mutabilityOption:0
+                                              format:&format errorDescription:&errorDesc] mutableCopy];
+        
+        NSDictionary *userVariables = [documentProperties objectForKey:@"DPUserVariables"];
+        if(userVariables)
+        {
+            [documentProperties setObject:[userVariables mutableCopy] forKey:@"DPUserVariables"];
+        }
+    }
+            
+    return documentProperties;
+}
+            
+static bool isCurrentVersion(NSMutableDictionary *documentProperties) {
+    int documentFormatVersion = [[documentProperties valueForKey:@"DPDocumentFormatVersion"] intValue];
+    return documentFormatVersion <= DPCurrentDocumentFormatVersion;
+}
+
+static void showInvalidDocumentVersionAlert() {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"This document can't be opened because it was created with a newer version of ChronoViz."];
+    [alert setInformativeText:@"Please update ChronoViz to open this file."];
+    
+    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:@"Update Now"];
+    
+    NSInteger result = [alert runModal];
+    [alert release];
+    if(result == NSAlertSecondButtonReturn)
+    {
+        [[SUUpdater sharedUpdater] checkForUpdates:nil];
+    }
 }
 
 
