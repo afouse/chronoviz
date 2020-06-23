@@ -35,6 +35,12 @@ NSString * const DPMediaAddedKey = @"MediaAdded";
 NSString * const DPMediaRemovedKey = @"MediaRemoved";
 NSString * const CategoriesChangedNotification = @"CategoriesChangedNotification";;
 
+NSString * const DPUserVariablesKey = @"DPUserVariables";
+NSString * const DPDocuemtFormatVersionKey = @"DocumentFormatVersion";
+NSString * const DPSavedLayoutsKey = @"DPSavedLayouts";
+NSString * const DPKeywordsKey = @"DPKeywords";
+NSString * const DPCategoriesKey = @"DPCategories";
+
 int const DPCurrentDocumentFormatVersion = 1;
 
 @interface AnnotationDocument (Internal)
@@ -238,27 +244,13 @@ int const DPCurrentDocumentFormatVersion = 1;
         
         documentProperties = newDocumentProperties;
         
-        savedLayouts = [[documentProperties valueForKey:@"DPSavedLayouts"] mutableCopy];
-		if(!savedLayouts)
-		{
-			savedLayouts = [[NSMutableDictionary alloc] init];
-		}
-        [documentProperties setValue:savedLayouts
-                              forKey:@"DPSavedLayouts"];
-        
-		keywords = [[documentProperties valueForKey:@"DPKeywords"] mutableCopy];
-		if(!keywords)
-		{
-			keywords = [[NSMutableArray alloc] init];
-		}
-        [documentProperties setValue:keywords
-                              forKey:@"DPKeywords"];
+        savedLayouts = [[documentProperties valueForKey:DPSavedLayoutsKey] mutableCopy];
+		keywords = [[documentProperties valueForKey:DPKeywordsKey] mutableCopy];
 		
 		categories = [[NSMutableArray alloc] init];
 		
 		NSData *categoriesData = [documentProperties valueForKey:@"DPCategories"];
-		
-		if(categoriesData)
+		if (categoriesData)
 		{
 			NSArray *storedCategories = [NSKeyedUnarchiver unarchiveObjectWithData:categoriesData];
 			for(AnnotationCategory* category in storedCategories)
@@ -529,18 +521,30 @@ static NSMutableDictionary* loadDocumentProperties(NSString *propertiesFile) {
                                               mutabilityOption:0
                                               format:&format errorDescription:&errorDesc] mutableCopy];
         
-        NSDictionary *userVariables = [documentProperties objectForKey:@"DPUserVariables"];
+        NSDictionary *userVariables = [documentProperties objectForKey:DPUserVariablesKey];
         if(userVariables)
         {
-            [documentProperties setObject:[userVariables mutableCopy] forKey:@"DPUserVariables"];
+            [documentProperties setObject:[userVariables mutableCopy] forKey:DPUserVariablesKey];
         }
     }
+    
+    // Ensure certain keys are initialized.
+    
+    setIfNotPresentIn(documentProperties, DPSavedLayoutsKey, ^{return [[NSMutableDictionary alloc] init];});
+    setIfNotPresentIn(documentProperties, DPKeywordsKey, ^{return [[NSMutableDictionary alloc] init];});
             
     return documentProperties;
 }
+
+static void setIfNotPresentIn(NSMutableDictionary *dict, NSString *key, id (^defaultGenerator)(void)) {
+    if (![dict valueForKey:key]) {
+        [dict setValue:defaultGenerator()
+                              forKey:key];
+    }
+}
             
 static bool isCurrentVersion(NSMutableDictionary *documentProperties) {
-    int documentFormatVersion = [[documentProperties valueForKey:@"DPDocumentFormatVersion"] intValue];
+    int documentFormatVersion = [[documentProperties valueForKey:DPDocuemtFormatVersionKey] intValue];
     return documentFormatVersion <= DPCurrentDocumentFormatVersion;
 }
 
