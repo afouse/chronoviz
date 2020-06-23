@@ -1981,8 +1981,6 @@
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../Sample Code/binarygod-BGHUDAppKit-0.6-0-g715e06e/build/Release\"",
-					"\"$(SRCROOT)/../ConnectionKit/build/Release\"",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
@@ -2012,8 +2010,6 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../Sample Code/binarygod-BGHUDAppKit-0.6-0-g715e06e/build/Release\"",
-					"\"$(SRCROOT)/../ConnectionKit/build/Release\"",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
 				);
