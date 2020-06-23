@@ -107,7 +107,7 @@
 
 - (void)addData:(TimeCodedData*)theData;
 - (void)setBackgroundFile:(NSString*)file;
-- (void)setBackgroundMovie:(QTMovie*)movie;
+- (void)setBackgroundMovie:(AVPlayer*)movie;
 - (void)setSpatialBase:(DPSpatialDataBase*)spatialBase;
 - (DPSpatialDataBase*)spatialBase;
 - (IBAction)togglePathVisiblity:(id)sender;

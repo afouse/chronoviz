@@ -248,7 +248,7 @@
     [base release];
 }
 
-- (void)setBackgroundMovie:(QTMovie*)movie
+- (void)setBackgroundMovie:(AVPlayer*)movie
 {
     for(VideoProperties *props in [[AnnotationDocument currentDocument] allMediaProperties])
     {

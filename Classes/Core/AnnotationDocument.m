@@ -555,7 +555,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 - (BOOL)loadVideoProperties:(VideoProperties*)properties
 {
 	[self updateMediaFile:properties];
-	AVAsset *mediaObject = [properties loadMovie];
+	AVPlayer *mediaObject = [properties loadMovie];
 	if(!mediaObject)
 	{
 		return NO;
@@ -1607,7 +1607,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 	return dataSources;
 }
 
-- (AVAsset*)movie
+- (AVPlayer*)movie
 {
 	return [videoProperties loadMovie];
 }

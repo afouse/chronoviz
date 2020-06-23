@@ -189,7 +189,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	AVPlayer *movie = [sender representedObject];
 	if(movie)
 	{
-		[movie setMuted:![movie muted]];
+		[movie setMuted:![movie isMuted]];
 	}
 }
 
