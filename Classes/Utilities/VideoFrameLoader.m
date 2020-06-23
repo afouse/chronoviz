@@ -54,7 +54,9 @@
 		BOOL exact = NO;
 		
 		AVPlayer *playbackMovie = [[marker visualizer] movie];
-        NSURL *url = [[[playbackMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
+        AVAsset *asset = [[playbackMovie currentItem] asset];
+        NSAssert([asset isKindOfClass:[AVURLAsset class]], @"Asset does not have URL.");
+        NSURL *url = [asset URL];
 		
 		CMTime time = [[marker boundary] time];
 		NSTimeInterval timeInterval;
@@ -212,7 +214,9 @@
 - (void)loadAllFramesForMovie:(AVPlayer*)movie
 {
 	AVPlayer *playbackMovie = movie;
-    NSURL *url = [[[playbackMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
+    AVAsset *asset = [[playbackMovie currentItem] asset];
+    NSAssert([asset isKindOfClass:[AVURLAsset class]], @"Asset does not have URL.");
+    NSURL *url = [asset URL];
 	
 	AVPlayer *frameVideo = [frameMovies objectForKey:url];
 

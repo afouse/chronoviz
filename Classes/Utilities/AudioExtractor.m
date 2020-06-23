@@ -24,7 +24,9 @@
 {
 	self = [super init];
 	if (self != nil) {
-        NSURL *url = [[[theMovie currentItem] asset] URL]; // TODO: Check that this replacement is ok.
+        AVAsset *asset = [[theMovie currentItem] asset];
+        NSAssert([asset isKindOfClass:[AVURLAsset class]], @"Asset does not have URL.");
+        NSURL *url = [asset URL];
 		movie = [[AVPlayer playerWithURL:url] retain];
 		subsetMethod = DPSubsetMethodMax;
 		keepExtracting = NO;
