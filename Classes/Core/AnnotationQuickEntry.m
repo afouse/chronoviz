@@ -159,7 +159,7 @@
 {
 	if([hoverWindow isVisible])
 	{
-		Annotation* annotation = [[Annotation alloc] initWithQTTime:currentTime];
+		Annotation* annotation = [[Annotation alloc] initWithCMTime:currentTime];
 		AnnotationCategory *category = (AnnotationCategory*)[categoriesView itemAtRow:[categoriesView selectedRow]];
 		[annotation setCategory:category];
 		

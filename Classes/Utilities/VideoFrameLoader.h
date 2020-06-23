@@ -36,4 +36,6 @@
 
 - (void)loadAllFramesForMovie:(AVPlayer*)movie;
 
++ (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVAsset*)asset error:(NSError**)error;
+
 @end

@@ -1975,17 +1975,18 @@ static AppController *currentApp = nil;
 		// Otherwise get delete the old file and create a new one
 		[self deleteKeyframeFile:annotation];
 		
-		NSImage *image = [mMovie frameImageAtTime:[annotation startTime]];
+        AVAsset *asset = [[mMovie currentItem] asset];
+        CGImageRef imageRef = [VideoFrameLoader generateImageAt:[annotation startTime] for:asset error:nil];
+        NSImage *image = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
 		[annotation setFrameRepresentation:image];
-		for(NSImageRep *imageRep in [image representations])
-		{
-			if([imageRep isKindOfClass:[NSBitmapImageRep class]])
-			{
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
-				NSData *imageData = [(NSBitmapImageRep*)imageRep representationUsingType:NSJPEGFileType properties:imageProps];
-				[imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
-			}
-		}
+        
+        NSData *imageData = [image TIFFRepresentation];
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+        NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
+        imageData = [imageRep representationUsingType:NSJPEGFileType properties:options];
+        [imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
+        
+        [image release];
 		[annotation setImage:[NSURL URLWithString:[NSString stringWithFormat:@"images/%@",imageName]]];
 	}
 }
