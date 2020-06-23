@@ -20,7 +20,7 @@
 @synthesize sampleSize;
 @synthesize subsetMethod;
 
-- (id) initWithQTMovie:(AVPlayer*)theMovie;
+- (id) initWithMovie:(AVPlayer*)theMovie;
 {
 	self = [super init];
 	if (self != nil) {

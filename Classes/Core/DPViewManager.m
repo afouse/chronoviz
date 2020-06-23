@@ -960,7 +960,7 @@ NSString * const DPTapestryTimelineMenuTitle = @"Annotation Tapestry";
 	NSView *mainView = [controller mainView];
 	if([mainView isKindOfClass:[AFMovieView class]])
 	{
-		for(QTMovie* movie in [(AFMovieView*)mainView movies])
+		for(AVPlayer* movie in [(AFMovieView*)mainView movies])
 		{
 			if([video movie] == movie)
 			{

@@ -16,7 +16,7 @@
 @interface DPExportMovieClips (Private) 
 
 -(void) exportClip:(Annotation*)clip fromVideo:(VideoProperties*)props toFile:(NSString*)filepath;
--(void) addMovieInfoMetaData:(QTMovie *)aQTMovie infoString:(NSString *)aNameStr;
+-(void) addMovieInfoMetaData:(AVPlayer *)aMovie infoString:(NSString *)aNameStr;
 -(const char *)langCode;
 
 @end
@@ -293,7 +293,7 @@
 }
 
 // Add the artist name metadata item to a movie file
--(void) addMovieInfoMetaData:(QTMovie *)aQTMovie infoString:(NSString *)aNameStr
+-(void) addMovieInfoMetaData:(AVPlayer *)aMovie infoString:(NSString *)aNameStr
 {
     NSLog(@"Metadata export needs to be updated for AV Foundation!");
     /*

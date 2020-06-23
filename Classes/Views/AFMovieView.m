@@ -163,7 +163,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
     }
 }
 
-- (void)removeMovie:(QTMovie*)movie
+- (void)removeMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)
@@ -189,7 +189,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	AVPlayer *movie = [sender representedObject];
 	if(movie)
 	{
-		[movie setMuted:![movie muted]];
+		[movie setMuted:![movie isMuted]];
 	}
 }
 
@@ -210,7 +210,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	return [[movies copy] autorelease];
 }
 
-- (void)zoomInMovie:(QTMovie*)movie
+- (void)zoomInMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)
@@ -253,7 +253,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 }
 
-- (void)zoomOutMovie:(QTMovie*)movie
+- (void)zoomOutMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)

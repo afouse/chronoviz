@@ -34,7 +34,7 @@
 @property NSTimeInterval sampleSize;
 @property (nonatomic,assign) DPSubsetMethod subsetMethod;
 
-- (id)initWithQTMovie:(QTMovie*)theMovie;
+- (id)initWithMovie:(AVPlayer*)theMovie;
 - (void)setDelegate:(id <DataSourceDelegate>)theDelegate;
 
 - (BOOL)exportAudioSubset:(int)subsetSize;
