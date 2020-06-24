@@ -98,7 +98,7 @@
 						
 						NSTimeInterval duration;
 						duration = CMTimeGetSeconds([[frameVideo currentItem] duration]);
-						float interval = duration/targetFrameCount;
+						float interval = duration/targetFrameCount || 0;
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
 
