@@ -13,7 +13,6 @@
 #import "Annotation.h"
 #import "AnnotationDocument.h"
 #import "DPConstants.h"
-#import "AudioExtractor.h"
 #import "NSStringUUID.h"
 #import <Accelerate/Accelerate.h>
 

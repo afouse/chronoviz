@@ -17,7 +17,6 @@
 #import "TimeSeriesVisualizer.h"
 #import "MultipleTimeSeriesVisualizer.h"
 #import "ColorMappedTimeSeriesVisualizer.h"
-#import "AudioVisualizer.h"
 #import "LayeredVisualizer.h"
 #import "TimeSeriesData.h"
 #import "Annotation.h"
@@ -1023,19 +1022,6 @@
 	[viz release];
 }
 
--(void)visualizeAudio:(id)sender
-{
-	[self setData:nil];
-	AudioVisualizer* viz = [[AudioVisualizer alloc] initWithTimelineView:self];
-	VideoProperties* videoProps = [sender representedObject];
-	if(videoProps)
-	{
-		[viz setVideoProperties:videoProps];
-	}
-	[self setSegmentVisualizer:viz];
-	[viz release];
-}
-
 -(void)visualizeData:(id)sender
 {
 	TimeSeriesData *data = [sender representedObject];
@@ -1086,13 +1072,6 @@
 	else if([segmentVisualizer isKindOfClass:[FilmstripVisualizer class]])
 	{
 		AnnotationFilmstripVisualizer *viz = [[AnnotationFilmstripVisualizer alloc] initWithTimelineView:self andSecondVisualizer:segmentVisualizer];
-		[self setSegmentVisualizer:viz];
-		[viz release];
-	}
-	else if([segmentVisualizer isKindOfClass:[AudioVisualizer class]])
-	{
-		LayeredVisualizer *viz = [[LayeredVisualizer alloc] initWithTimelineView:self andSecondVisualizer:segmentVisualizer];
-		[viz setOverlayAnnotations:YES];
 		[self setSegmentVisualizer:viz];
 		[viz release];
 	}

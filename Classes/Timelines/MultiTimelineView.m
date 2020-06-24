@@ -8,7 +8,6 @@
 
 #import "MultiTimelineView.h"
 #import "AnnotationFilmstripVisualizer.h"
-#import "AudioVisualizer.h"
 #import "TimeSeriesData.h"
 #import "TimeSeriesVisualizer.h"
 #import "VideoProperties.h"
@@ -234,22 +233,6 @@
 {
 	TimelineView *timeline = [self addNewTimeline];
 	AnnotationFilmstripVisualizer *viz = [[AnnotationFilmstripVisualizer alloc] initWithTimelineView:timeline];
-	
-	VideoProperties *video = [sender representedObject];
-	if(video)
-	{
-		[viz setVideoProperties:video];
-	}
-	
-	[timeline setSegmentVisualizer:viz];
-	[viz release];
-	return timeline;
-}
-
-- (TimelineView *)addNewAudioTimeline:(id)sender
-{	
-	TimelineView *timeline = [self addNewTimeline];
-	AudioVisualizer *viz = [[AudioVisualizer alloc] initWithTimelineView:timeline];
 	
 	VideoProperties *video = [sender representedObject];
 	if(video)

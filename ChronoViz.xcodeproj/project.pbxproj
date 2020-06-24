@@ -211,7 +211,6 @@
 		BB9A1F64104351E60069E6EB /* TimeCodedDataPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9A1F63104351E60069E6EB /* TimeCodedDataPoint.m */; };
 		BB9BB42610D068A5008B096F /* MovieViewer.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB9BB42510D068A5008B096F /* MovieViewer.xib */; };
 		BB9BB43710D0697C008B096F /* MovieViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9BB43610D0697C008B096F /* MovieViewerController.m */; };
-		BB9BB4A010D07331008B096F /* AudioVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9BB49F10D07331008B096F /* AudioVisualizer.m */; };
 		BB9DCE321044BB96001EC061 /* MapView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9DCE311044BB96001EC061 /* MapView.m */; };
 		BB9E28C414FEE1B300957754 /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = BB9E28C314FEE1B300957754 /* NSData+Base64.m */; };
 		BBA0C8D11FA6B11000A03796 /* NSCoder+QTLegacy.m in Sources */ = {isa = PBXBuildFile; fileRef = BBA0C8D01FA6B11000A03796 /* NSCoder+QTLegacy.m */; };
@@ -242,7 +241,6 @@
 		BBC9F3EA115D404D00704059 /* TimeVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC9F3E9115D404D00704059 /* TimeVisualizer.m */; };
 		BBC9F4E6115E8F1C00704059 /* AddData.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC9F4E5115E8F1C00704059 /* AddData.png */; };
 		BBC9F4EC115E958200704059 /* DPArrowCursor.png in Resources */ = {isa = PBXBuildFile; fileRef = BBC9F4EB115E958200704059 /* DPArrowCursor.png */; };
-		BBC9F7421160EF8E00704059 /* AudioExtractor.m in Sources */ = {isa = PBXBuildFile; fileRef = BBC9F7411160EF8E00704059 /* AudioExtractor.m */; };
 		BBCAE80F12D27C8A00EDC2D9 /* AnnotationCategory.h in Headers */ = {isa = PBXBuildFile; fileRef = BB3D1EBD1035D85200DB8628 /* AnnotationCategory.h */; };
 		BBCAE90912D29D1A00EDC2D9 /* DPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCAE90812D29D1A00EDC2D9 /* DPConstants.m */; };
 		BBCAE91D12D29F8600EDC2D9 /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E88B30FF04A8C00B4AB4F /* Annotation.m */; };
@@ -605,8 +603,6 @@
 		BB9BB42510D068A5008B096F /* MovieViewer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MovieViewer.xib; sourceTree = "<group>"; };
 		BB9BB43510D0697C008B096F /* MovieViewerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovieViewerController.h; sourceTree = "<group>"; };
 		BB9BB43610D0697C008B096F /* MovieViewerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovieViewerController.m; sourceTree = "<group>"; };
-		BB9BB49E10D07331008B096F /* AudioVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioVisualizer.h; sourceTree = "<group>"; };
-		BB9BB49F10D07331008B096F /* AudioVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioVisualizer.m; sourceTree = "<group>"; };
 		BB9DCE301044BB96001EC061 /* MapView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapView.h; sourceTree = "<group>"; };
 		BB9DCE311044BB96001EC061 /* MapView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapView.m; sourceTree = "<group>"; };
 		BB9E28C214FEE1B300957754 /* NSData+Base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Base64.h"; sourceTree = "<group>"; };
@@ -657,8 +653,6 @@
 		BBC9F3E9115D404D00704059 /* TimeVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeVisualizer.m; sourceTree = "<group>"; };
 		BBC9F4E5115E8F1C00704059 /* AddData.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = AddData.png; sourceTree = "<group>"; };
 		BBC9F4EB115E958200704059 /* DPArrowCursor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = DPArrowCursor.png; sourceTree = "<group>"; };
-		BBC9F7401160EF8E00704059 /* AudioExtractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioExtractor.h; sourceTree = "<group>"; };
-		BBC9F7411160EF8E00704059 /* AudioExtractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioExtractor.m; sourceTree = "<group>"; };
 		BBCAE8FE12D29BAE00EDC2D9 /* DPStateRecording.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPStateRecording.h; sourceTree = "<group>"; };
 		BBCAE90712D29D1A00EDC2D9 /* DPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPConstants.h; sourceTree = "<group>"; };
 		BBCAE90812D29D1A00EDC2D9 /* DPConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPConstants.m; sourceTree = "<group>"; };
@@ -1034,8 +1028,6 @@
 				BB5E4F3D1047444D0093E4E4 /* AnnotationTimeSeriesVisualizer.m */,
 				BBC738B8103B1DD6003006C6 /* AnnotationVisualizer.h */,
 				BBC738B9103B1DD6003006C6 /* AnnotationVisualizer.m */,
-				BB9BB49E10D07331008B096F /* AudioVisualizer.h */,
-				BB9BB49F10D07331008B096F /* AudioVisualizer.m */,
 				BB4C1FD613FDD12C004BEEFC /* ColorMappedTimeSeriesConfigurationController.h */,
 				BB4C1FD713FDD12C004BEEFC /* ColorMappedTimeSeriesConfigurationController.m */,
 				BB4C1FC713FDC910004BEEFC /* ColorMappedTimeSeriesConfigurationWindow.xib */,
@@ -1278,8 +1270,6 @@
 				BB4C1D8E13FD6949004BEEFC /* AFGradientView.m */,
 				BB3349001565D4A600084AC0 /* AJHBezierUtils.h */,
 				BB3349011565D4A600084AC0 /* AJHBezierUtils.m */,
-				BBC9F7401160EF8E00704059 /* AudioExtractor.h */,
-				BBC9F7411160EF8E00704059 /* AudioExtractor.m */,
 				BB3BA433100FE04700CAEA14 /* CGImageWrapper.h */,
 				BB3BA434100FE04700CAEA14 /* CGImageWrapper.m */,
 				BB7674AD134E2341008F76A3 /* CategoryListCell.h */,
@@ -1702,7 +1692,6 @@
 				BB5D3DEE10CD979000D82E5D /* AnnotationCategoryFilter.m in Sources */,
 				BB5D3DF110CD9B7200D82E5D /* AnnotationFilter.m in Sources */,
 				BB9BB43710D0697C008B096F /* MovieViewerController.m in Sources */,
-				BB9BB4A010D07331008B096F /* AudioVisualizer.m in Sources */,
 				BB08263E10DEDA050020E75C /* MediaWindowController.m in Sources */,
 				BBEAA97910F25682009B421B /* AFAlignmentSlider.m in Sources */,
 				BBEAA97C10F2569A009B421B /* AFAlignmentSliderCell.m in Sources */,
@@ -1715,7 +1704,6 @@
 				BB4BCCB4115AB7EA00AD1414 /* AnnotationSet.m in Sources */,
 				BB560009115BE9CF00D6B2E8 /* OverviewTimelineView.m in Sources */,
 				BBC9F3EA115D404D00704059 /* TimeVisualizer.m in Sources */,
-				BBC9F7421160EF8E00704059 /* AudioExtractor.m in Sources */,
 				BBE183991162BD5300B65884 /* DPExportMovieClips.m in Sources */,
 				BB90BFCA1163B20E00E604AD /* DPExport.m in Sources */,
 				BB90C06A1163CB5500E604AD /* DPExportSimileTimeline.m in Sources */,
