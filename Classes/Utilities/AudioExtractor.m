@@ -88,7 +88,7 @@
         [NSThread detachNewThreadSelector:@selector(exportOnWorkerThread:) toTarget:self withObject:nil];
     } else {
         // ...if not, we're on the main thread so just call the main-thread worker method
-		NSLog(@"Can't export on worker thread");
+		NSLog(@"Can't export on worker thread, so calling on main thread.");
 		[subsetArray addObjectsFromArray:[self getAudioSubset:theSubsetSize]];
 		
 		if (delegate) {
@@ -117,6 +117,8 @@
 	[progressIndicator setUsesThreadedAnimation:YES];
 	[progressIndicator startAnimation:self];
 	
+    // Actual audio extraction code is removed.
+    
 	subsetSize = theSubsetSize;
 
 	if(!subsetArray)

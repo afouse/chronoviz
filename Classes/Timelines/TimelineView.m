@@ -2158,6 +2158,7 @@
 	[keyframes setRepresentedObject:videoInfo];
 	[keyframes setTarget:self];
 	
+    /*
 	NSMenuItem *audio = [theMenu addItemWithTitle:@"Visualize Audio Waveform" action:@selector(visualizeAudio:) keyEquivalent:@""];
 	[audio setRepresentedObject:videoInfo];
 	[audio setTarget:self];
@@ -2165,6 +2166,7 @@
 	{
 		[audio setEnabled:NO];
 	}
+     */
 	
 	NSMenuItem *videoItem = nil;
 	NSMenu *keyframesMenu = nil;
@@ -2194,9 +2196,11 @@
 		{
 			if(!audioMenu)
 			{
+                /*
 				audioMenu = [[NSMenu alloc] init];
 				[audio setSubmenu:audioMenu];
 				[audioMenu release];
+                 */
 				
 				videoItem = [audioMenu addItemWithTitle:[videoInfo title] action:@selector(visualizeAudio:) keyEquivalent:@""];
 				[videoItem setRepresentedObject:videoInfo];

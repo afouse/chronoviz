@@ -120,7 +120,6 @@
 
 -(void)loadData
 {
-	NSLog(@"audio load data");
 	resampleTimer = nil;
 	[subset release];
 	subset = nil;
@@ -134,36 +133,31 @@
 	}
 	else
 	{
-        /*
-		QTMovie* movie = [self movie];
+		AVPlayer* movie = [self movie];
 		
 		if(!audioExtractor)
 		{
-			audioExtractor = [[AudioExtractor alloc] initWithQTMovie:movie];
+			audioExtractor = [[AudioExtractor alloc] initWithMovie:movie];
 			[audioExtractor setDelegate:self];
 		}
 		else
 		{
 			[audioExtractor cancelExtraction:self];
 		}
-
 		
 		subsetRange = CMTimeRangeGetIntersection([timeline range], movieRange );
 		[audioExtractor exportAudioSubset:subsetTargetSize forRange:subsetRange];
 		
 		[subset release];
 		subset = [[NSMutableArray alloc] initWithCapacity:subsetTargetSize];
+        fullsubset = nil;
 		
 		if(stopTimer || !loadTimer)
 		{
 			[videoProperties setAudioSubset:subset];
 			[[AppController currentDoc] saveVideoProperties:videoProperties];
 		}
-        */
-        // TODO: Fix the above.
 	}
-
-	[self createGraph];
 }
 
 -(void)createGraph
@@ -194,7 +188,7 @@
 		data = fullsubset;
 	}
 	
-    if([data count] == 0)
+    if(data.count == 0)
     {
         //NSLog(@"Zero points");
         if(graph)
@@ -589,7 +583,6 @@
 	{
 		[videoProperties setAudioSubset:subset];
 		[[AppController currentDoc] saveVideoProperties:videoProperties];
-		fullsubset = subset;
 	}
 	
 }
