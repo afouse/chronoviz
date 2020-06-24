@@ -114,6 +114,7 @@
 												  atDistance:0];
 		[hoverWindow setViewMargin:5.0];
 		[hoverWindow setReleasedWhenClosed:NO];
+        [hoverWindow setDelegate:self];
 		
 		[annotationTextField setDelegate:self];
 		[annotationTextField setString:@""];
@@ -147,6 +148,12 @@
 	}
 	
 	currentTime = time;
+}
+
+- (void)windowDidResignKey:(NSNotification *)aNotification {
+    if (hoverWindow && [aNotification object] == hoverWindow) {
+        [hoverWindow close];
+    }
 }
 
 - (void)cancelQuickEntry

@@ -13,7 +13,7 @@
 @class MAAttachedWindow;
 @class TimelineView;
 
-@interface AnnotationQuickEntry : NSObject <NSTextViewDelegate> {
+@interface AnnotationQuickEntry : NSObject <NSTextViewDelegate, NSWindowDelegate> {
 
 	MAAttachedWindow *hoverWindow;
 	IBOutlet NSView *quickEntryView;
