@@ -3464,7 +3464,8 @@ static AppController *currentApp = nil;
 	{
 		time.value = 0;
 	}
-	[mMovie seekToTime:time];
+    CMTime tolerance = kCMTimeZero;
+	[mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance];
 	for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
 	{
 		if([mediaProperties enabled])
