@@ -973,7 +973,7 @@
 	NSTimeInterval rangeStartInterval = CMTimeGetSeconds([self range].start);
 	durationInterval = rangeStartInterval + durationInterval * (point.x / [self bounds].size.width);
 	
-    return CMTimeMakeWithSeconds(durationInterval, [self range].duration.timescale);
+    return CMTimeMakeWithSeconds(durationInterval, [self range].start.timescale);
 }
 
 -(void)showTimes:(BOOL)showTimes
