@@ -261,7 +261,7 @@ static AppController *currentApp = nil;
 	mMovie = nil;
 	activeMovies = [[NSMutableArray alloc] init];
 	// log = nil;
-    // TODO: Check what the log does.
+    // TODO: The `log` is never declared in this code. What did it do?
 	rateLock = [[NSLock alloc] init];
 	autoSave = NO;
 	fullScreen = NO;
