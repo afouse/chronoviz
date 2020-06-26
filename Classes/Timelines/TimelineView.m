@@ -864,10 +864,12 @@
 - (void)updatePlayheadPosition
 {
 	
-	CGFloat x = [self playheadPosition] * [self bounds].size.width;	
-	
-//	if(x < 0)
-//		x = 0;
+	CGFloat x = [self playheadPosition] * [self bounds].size.width;
+    
+    // NaN is encountered when video is not loaded and `playheadPosition`s call to `currentTime` returns an indefinite time.
+    if (isnan(x)) {
+        return;
+    }
 	
 	[CATransaction begin];
 	[CATransaction setValue:(id)kCFBooleanTrue
