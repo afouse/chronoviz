@@ -40,7 +40,7 @@ static NSDictionary* colorMap = nil;
 
 -(id)initWithTimeInterval:(NSTimeInterval)interval
 {
-    int32_t timebase = [(AnnotationDocument*)document defaultTimebase];
+    int32_t timebase = [(AnnotationDocument*)document defaultTimebase] || 600;
 	return [self initWithCMTime:CMTimeMakeWithSeconds(interval,timebase) andTitle:@"" andAnnotation:@""];
 }
 
