@@ -3239,25 +3239,27 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepOneFrameForward:(id)sender
 {
-    AVAsset *asset = [[mMovie currentItem] asset];
-    float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
-    CMTime oneFrame = CMTimeMake(1, framerate);
-    CMTime newTime = CMTimeAdd([mMovie currentTime], oneFrame);
-    // [[mMovie currentItem] stepByCount:1];
-    // TODO: Why does stepByCount not work?
-	[self moveToTime:newTime fromSender:sender];
+    [self step:sender byFrames:1];
 }
 
 - (IBAction)stepOneFrameBackward:(id)sender
 {
+    [self step:sender byFrames:-1];
+}
+
+- (IBAction)step:(id)sender byFrames:(int)frames
+{
+    // Unfortunately, we cannot use `[[mMovie currentItem] stepByCount:frames]` because we need to trigger `self`
+    // to update the current time via `[self moveToTime:[mMovie currentTime] fromSender:sender]`.
+    // But `stepByCount` is not synchronous, so when we call `[self moveToTime]` we will get the old time from
+    // `[mMovie currentTime]` effectively reseting the frame we just tried to step forward/backward.
+    // Instead we calculate how long a frame is and what the desired new time is.
     AVAsset *asset = [[mMovie currentItem] asset];
     float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
-    CMTime oneFrame = CMTimeMake(1, framerate);
-    CMTime newTime = CMTimeSubtract([mMovie currentTime], oneFrame);
-    // [[mMovie currentItem] stepByCount:-1];
-    // TODO: Why does stepByCount not work?
-	[self moveToTime:newTime fromSender:sender];
-    // TODO: Why does moveToTime not move to the time when actual video is loaded?
+    CMTime oneFrame = CMTimeMake(frames, framerate);
+    CMTime newTime = CMTimeAdd([mMovie currentTime], oneFrame);
+    [self moveToTime:newTime fromSender:sender];
+    
 }
 
 - (IBAction)fastForward:(id)sender
