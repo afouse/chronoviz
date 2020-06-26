@@ -12,7 +12,7 @@
 
 @interface MovieControllerView : NSView {
 	
-	IBOutlet AFMovieView *mMovieView; // TODO: Check whether this is the right view (was auto-suggested).
+	IBOutlet AFMovieView *mMovieView;
 	IBOutlet AppController *mAppController;
 	
 }
