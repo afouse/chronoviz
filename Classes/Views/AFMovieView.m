@@ -340,27 +340,6 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}	
 }
 
-- (AVAssetTrack *)firstVideoTrack:(AVPlayer*)theMovie
-{
-    AVAssetTrack *track = nil;
-    NSEnumerator *enumerator = [[[theMovie currentItem] tracks] objectEnumerator];
-    while ((track = [enumerator nextObject]) != nil)
-    {
-        if ([track isEnabled])
-        {
-            AVMediaType mediaType = [track mediaType];
-            if ([mediaType isEqualTo:AVMediaTypeVideo]) {
-                //if ([mediaType isEqualToString:QTMediaTypeVideo] || [mediaType isEqualToString:QTMediaTypeMPEG])
-                //if ([media hasCharacteristic:QTMediaCharacteristicHasVideoFrameRate])
-                // TODO: Check if the above conditions are still met.
-                    break; // found first video track
-            }
-        }
-    }
-    
-    return track;
-}
-
 - (void)sizeMovieLayersWithAnimation:(BOOL)animate
 {
 	float total = 0;
@@ -423,19 +402,6 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		
 		CGFloat width = boundsRect.size.width * [[layer valueForKey:DPVideoWidthPercentage] floatValue];
         NSSize contentSize = (NSSize)[[[ asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
-        
-//        CGFloat aspect = 1;
-//        BOOL aperture = [[movie attributeForKey:QTMovieHasApertureModeDimensionsAttribute] boolValue];
-//        if(aperture)
-//        {
-//            QTTrack *videoTrack = [self firstVideoTrack:movie];
-//            NSSize apertureDimensions = [videoTrack apertureModeDimensionsForMode:[movie attributeForKey:QTMovieApertureModeAttribute]];
-//            aspect = apertureDimensions.width/apertureDimensions.height;
-//        }
-//        else
-//        {
-//            aspect = (contentSize.width/contentSize.height);
-//        }
         
         CGFloat aspect = contentSize.width/contentSize.height;
 		float sizeRatio = width/height;
