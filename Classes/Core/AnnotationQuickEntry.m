@@ -121,8 +121,6 @@
 		[annotationTextField setTextColor:[NSColor whiteColor]];
 		
 		[categoriesView setAllowsTypeSelect:YES];
-		//[(AFHUDOutlineView*)categoriesView setNextView:annotationTextField];
-        // TODO: Reintroduce HUD.
         [categoriesView reloadData];
         
         [[NSNotificationCenter defaultCenter] addObserver:categoriesView
