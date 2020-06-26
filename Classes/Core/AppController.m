@@ -785,6 +785,12 @@ static AppController *currentApp = nil;
 	[mMovie release];
 	mMovie = movie;
 	
+    // Register notification for looping.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[mMovie currentItem]];
+    
 	[mMovieView setMovie:mMovie];
 	
 	// Set up the timeline
@@ -3107,18 +3113,24 @@ static AppController *currentApp = nil;
 		if([(NSSegmentedControl*)sender isSelectedForSegment:0])
 		{
 			loopPlayback = YES;
-			// [mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieLoopsAttribute];
-            // TODO: Reintroduce looping, e.g., via playerDidReachEnd callback. https://stackoverflow.com/questions/27808266/how-do-you-loop-avplayer-in-swift
 		}
 		else
 		{
 			loopPlayback = NO;
-			// [mMovie setAttribute:[NSNumber numberWithBool:NO] forKey:QTMovieLoopsAttribute];
 		}
 		
 		annotationPlayback = [(NSSegmentedControl*)sender isSelectedForSegment:1];
 
 	}
+}
+
+- (void)playerItemDidReachEnd:(NSNotification *)notification {
+    if (loopPlayback)
+    {
+        AVPlayerItem *p = [notification object];
+        [p seekToTime:kCMTimeZero];
+        [mMovie play];
+    }
 }
 
 - (IBAction)changeTimeFormat:(id)sender
