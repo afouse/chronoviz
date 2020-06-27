@@ -10,6 +10,8 @@
 @class AnnotationDataAnalysisPlugin;
 @class TimeCodedData;
 @class PluginParameter;
+@class PluginAnnotationSet;
+@class AnnotationFilter;
 
 @interface PluginConfiguration : NSObject <NSCoding> {
 
@@ -31,6 +33,9 @@
 
 -(void)setInputValue:(CGFloat)value forIndex:(NSUInteger)index;
 -(PluginParameter*)inputValueForIndex:(NSUInteger)index;
+
+-(void)setAnnotationFilter:(AnnotationFilter*)filter forIndex:(NSUInteger)index;
+-(PluginAnnotationSet*)annotationSetForIndex:(NSUInteger)index;
 
 -(AnnotationDataAnalysisPlugin*)plugin;
 

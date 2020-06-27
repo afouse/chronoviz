@@ -11,6 +11,7 @@
 #import "AnnotationDataAnalysisPlugin.h"
 #import "PluginParameter.h"
 #import "PluginDataSet.h"
+#import "PluginAnnotationSet.h"
 #import "PluginManager.h"
 #import "TimeCodedData.h"
 #import "AnnotationSet.h"
@@ -18,6 +19,8 @@
 #import "PluginDataSource.h"
 #import "Annotation.h"
 #import "AnnotationCategory.h"
+#import "AnnotationCategoryFilter.h"
+#import "AnnotationFilter.h"
 #import "VideoProperties.h"
 #import "DPViewManager.h"
 #import "AppController.h"
@@ -76,6 +79,14 @@
 
 			[dataSets addObject:data];
 		}
+        
+        AnnotationCategory *category = [[[AppController currentDoc] categories] firstObject];
+        for(PluginAnnotationSet *set in [plugin annotationSets])
+        {
+            AnnotationFilter *filter = [[AnnotationCategoryFilter alloc] initForCategories:@[category]];
+            set.annotationFilter = filter;
+            [filter release];
+        }
 	}
 	return self;
 }
@@ -114,6 +125,13 @@
 		[[sender window] close];
 	}
 	
+    
+    for(PluginAnnotationSet *set in [plugin annotationSets])
+    {
+        AnnotationFilter *filter = (AnnotationFilter*) set.annotationFilter;
+        set.annotations = [[[AppController currentDoc] annotations] filteredArrayUsingPredicate:[filter predicate]];
+    }
+    
 	int index = 0;
 	NSArray* allDataSets = [[AppController currentDoc] dataSetsOfClass:[plugin dataVariableClass]];
 	for(id data in dataSets)
@@ -291,6 +309,16 @@
 -(PluginParameter*)inputValueForIndex:(NSUInteger)index
 {
 	return [inputValues objectAtIndex:index];
+}
+
+-(void)setAnnotationFilter:(AnnotationFilter*)filter forIndex:(NSUInteger)index
+{
+    [(PluginAnnotationSet*)[[plugin annotationSets] objectAtIndex:index] setAnnotationFilter:filter];
+}
+
+-(PluginAnnotationSet*)annotationSetForIndex:(NSUInteger)index
+{
+    return [[plugin annotationSets] objectAtIndex:index];
 }
 
 -(AnnotationDataAnalysisPlugin*)plugin

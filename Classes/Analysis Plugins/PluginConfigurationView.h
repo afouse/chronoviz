@@ -24,6 +24,8 @@
 
 - (IBAction)closeWindow:(id)sender;
 
+- (IBAction)changeAnnotationSet:(id)sender;
+
 - (void)setRunButtonsHidden:(BOOL)hideButtons;
 
 @end

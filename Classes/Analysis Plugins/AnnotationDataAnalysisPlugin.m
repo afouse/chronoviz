@@ -13,6 +13,7 @@
 #import "AnnotationCategory.h"
 #import "PluginParameter.h"
 #import "PluginDataSet.h"
+#import "PluginAnnotationSet.h"
 #import "PluginManager.h"
 #import "PluginDataSource.h"
 #import "AnnotationSet.h"
@@ -32,6 +33,7 @@
 		dataParameters = [[NSMutableArray alloc] init];
 		dataSets = [[NSMutableArray alloc] init];
 		inputParameters = [[NSMutableArray alloc] init];
+        annotationSets = [[NSMutableArray alloc] init];
 		requiredDocumentVariables = [[NSMutableArray alloc] init];
         dataVariableClass = [TimeSeriesData class];
 		[self setup];
@@ -46,6 +48,7 @@
 	[resultData release];
 	[dataParameters release];
 	[inputParameters release];
+    [annotationSets release];
 	[dataSets release];
 	[displayName release];
 	[super dealloc];
@@ -117,6 +120,15 @@
 	[inputParameters addObject:param];
 	[param release];
 	return param;
+}
+
+-(PluginAnnotationSet*)addAnnotationSet:(NSString*)name
+{
+    PluginAnnotationSet *set = [[PluginAnnotationSet alloc] init];
+    set.annotationSetName = name;
+    [annotationSets addObject:set];
+    [set release];
+    return set;
 }
 
 #pragma mark Results
@@ -214,6 +226,11 @@
 -(NSArray*)inputParameters
 {
 	return inputParameters;
+}
+
+-(NSArray*)annotationSets
+{
+    return annotationSets;
 }
 
 -(NSArray*)documentVariables
