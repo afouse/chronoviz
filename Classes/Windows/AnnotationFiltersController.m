@@ -446,7 +446,7 @@
     if(attachedWindow)
     {
         [[attachedWindow parentWindow] removeChildWindow:attachedWindow];
-        [attachedWindow release];
+        [attachedWindow close];
         attachedWindow = nil;
         
         [[NSNotificationCenter defaultCenter] removeObserver:self];
