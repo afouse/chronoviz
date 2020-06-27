@@ -127,7 +127,7 @@
 	{
 		resultAnnotations = [[NSMutableArray alloc] init];
 	}
-	Annotation* annotation = [[Annotation alloc] initWithQTTime:time];
+	Annotation* annotation = [[Annotation alloc] initWithCMTime:time];
     // Better to do this at the end of the run in PluginConfiguration
 	// [[AnnotationDocument currentDocument] addAnnotation:annotation];
 	[resultAnnotations addObject:annotation];
