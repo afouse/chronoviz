@@ -335,6 +335,9 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
+		A98624D224AA4D6A00E5618C /* PadCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = PadCategories.py; sourceTree = "<group>"; };
+		A98624D324AA4D6A00E5618C /* Threshold.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Threshold.py; sourceTree = "<group>"; };
 		BB01592E0EACE34300B41B99 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -858,6 +861,7 @@
 		29B97314FDCFA39411CA2CEA /* Annotation */ = {
 			isa = PBXGroup;
 			children = (
+				A98624CD24AA4D4E00E5618C /* Plugin Examples */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -973,6 +977,16 @@
 				BBCC108012EFA7160041EEB1 /* IOBluetooth.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A98624CD24AA4D4E00E5618C /* Plugin Examples */ = {
+			isa = PBXGroup;
+			children = (
+				A98624D124AA4D6900E5618C /* MergeCategories.py */,
+				A98624D224AA4D6A00E5618C /* PadCategories.py */,
+				A98624D324AA4D6A00E5618C /* Threshold.py */,
+			);
+			path = "Plugin Examples";
 			sourceTree = "<group>";
 		};
 		BB1A4ECB1497D6F000F2998E /* App Plugins */ = {
