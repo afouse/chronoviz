@@ -2808,8 +2808,8 @@ static AppController *currentApp = nil;
 - (IBAction)zoomIn:(id)sender
 {
 	CMTimeRange selection = [overviewTimelineView selection];
-	selection.start.value = selection.start.value + selection.duration.value/4;
-	selection.duration.value = selection.duration.value/2;
+	selection.start = CMTimeAdd(selection.start, CMTimeMultiplyByRatio(selection.duration, 1, 4));
+	selection.duration = CMTimeMultiplyByRatio(selection.duration, 1, 2);
 	selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
     
