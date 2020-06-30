@@ -122,6 +122,7 @@ NSString * const TapestryTimelineMenuTitle = @"Annotation Tapestry";
 @synthesize currentTool;
 @synthesize openVideosHalfSize;
 @synthesize absoluteTime;
+@synthesize boundaryListener;
 
 static AppController *currentApp = nil;
 
@@ -776,18 +777,87 @@ static AppController *currentApp = nil;
 }
 
 - (IBAction)newCategorySelected:(id)sender {
-    NSLog(@"%ld", (long)[self.selectedCategoryPopupButton indexOfSelectedItem]);
+    if ([self.selectedCategoryPopupButton indexOfSelectedItem] == 0)
+    {
+        // Normal playback.
+        NSLog(@"Normal playback");
+        [mMovie removeTimeObserver:self.boundaryListener];
+    }
+    else
+    {
+        NSString *selectedCategoryName = [self.selectedCategoryPopupButton titleOfSelectedItem];
+        AnnotationCategory *selectedCategory = [self.document categoryForName:selectedCategoryName];
+        NSLog(@"%@", selectedCategory);
+        
+        NSMutableArray *startTimes = [NSMutableArray array];
+        NSMutableArray *endTimes = [NSMutableArray array];
+        // TODO: Ensure that we traverse the annotations in chronological order.
+        for (Annotation *annotation in [self.document annotationsForCategory:selectedCategory])
+        {
+            if ([annotation isDuration])
+            {
+                // TODO: Ensure that `annotation.startTime` is after latest time in `times`.
+                [startTimes addObject:[NSValue valueWithCMTime:annotation.startTime]];
+                [endTimes addObject:[NSValue valueWithCMTime:annotation.endTime]];
+            }
+        }
+        
+        if ([startTimes count] > 0)
+        {
+            CMTime startTime = [[startTimes firstObject] CMTimeValue];
+            [self moveToTime:startTime fromSender:nil];
+            
+            if ([endTimes count] > 0)
+            {
+                boundaryListener =
+                   [mMovie addBoundaryTimeObserverForTimes:endTimes
+                                                          queue:dispatch_get_main_queue()
+                                                     usingBlock:^{
+                       bool isLastAnnotation = YES;
+                       CMTime nextStartTime;
+                       CMTime currentTime = [mMovie currentTime];
+                       for (NSValue *candidateValue in startTimes)
+                       {
+                           CMTime candidate = [candidateValue CMTimeValue];
+                           if (CMTIME_COMPARE_INLINE(candidate, >=, currentTime))
+                           {
+                               nextStartTime = candidate;
+                               isLastAnnotation = NO;
+                           }
+                       }
+                       
+                       if (isLastAnnotation)
+                       {
+                           if (loopPlayback)
+                           {
+                               [self moveToTime:[[startTimes firstObject] CMTimeValue] fromSender:nil];
+                           }
+                           else
+                           {
+                               [mMovie pause];
+                           }
+                       }
+                       else
+                       {
+                           [self moveToTime:nextStartTime fromSender:nil];
+                       }
+                   }];
+            }
+        }
+    }
 }
 
 - (void)updateCategorySelection{
     [self.selectedCategoryPopupButton removeAllItems];
     
-    NSMutableArray<NSString*> *categoryNames = [[NSMutableArray alloc] init];
-    for (AnnotationCategory *category in self.document.categories) {
-        [categoryNames addObject:category.name];
+    NSMutableArray<NSString*> *options = [[NSMutableArray alloc] init];
+    [options addObject:@"Normal playback"];
+    for (AnnotationCategory *category in self.document.categories)
+    {
+        [options addObject:category.name];
     }
-    [self.selectedCategoryPopupButton addItemsWithTitles:categoryNames];
-    // TODO: Release `categoryNames`?
+    [self.selectedCategoryPopupButton addItemsWithTitles:options];
+    // TODO: Release `options`?
 }
 
 

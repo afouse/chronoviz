@@ -193,6 +193,8 @@
 @property float playbackRate;
 @property float newDocumentDuration;
 @property int currentTool;
+@property (assign) IBOutlet NSPopUpButton *selectedCategoryPopupButton;
+@property(retain) id boundaryListener;
 
 + (AppController*)currentApp;
 + (AnnotationDocument*)currentDoc;
@@ -330,6 +332,5 @@
 
 - (IBAction)goFullScreen:(id)sender; // toggle full screen
 - (IBAction)exitFullScreen:(id)sender;
-@property (assign) IBOutlet NSPopUpButton *selectedCategoryPopupButton;
 
 @end
