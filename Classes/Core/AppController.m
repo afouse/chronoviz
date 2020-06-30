@@ -3110,16 +3110,11 @@ static AppController *currentApp = nil;
 {
 	if([sender isKindOfClass:[NSSegmentedControl class]])
 	{
-		if([(NSSegmentedControl*)sender isSelectedForSegment:0])
-		{
-			loopPlayback = YES;
-		}
-		else
-		{
-			loopPlayback = NO;
-		}
-		
-		annotationPlayback = [(NSSegmentedControl*)sender isSelectedForSegment:1];
+        bool shouldLoop = [(NSSegmentedControl*)sender isSelectedForSegment:0];
+        loopPlayback = shouldLoop;
+        
+        bool shouldRestrictToAnnotation = [(NSSegmentedControl*)sender isSelectedForSegment:1];
+		annotationPlayback = shouldRestrictToAnnotation;
 
 	}
 }
