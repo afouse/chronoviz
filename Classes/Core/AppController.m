@@ -3265,6 +3265,7 @@ static AppController *currentApp = nil;
     // to update the current time via `[self moveToTime:[mMovie currentTime] fromSender:sender]`.
     // But `stepByCount` is not synchronous, so when we call `[self moveToTime]` we will get the old time from
     // `[mMovie currentTime]` effectively reseting the frame we just tried to step forward/backward.
+    // `stepByCount` has *no* mechanism similar to the completionHandler of `seekToTime`.
     // Instead we calculate how long a frame is and what the desired new time is.
     AVAsset *asset = [[mMovie currentItem] asset];
     float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
@@ -3381,7 +3382,8 @@ static AppController *currentApp = nil;
 	}
 	else
 	{
-		[movieTimeButton setTitle:[NSString stringWithCMTime:[mMovie currentTime]]];
+        NSString *timeString = [NSString stringWithCMTime:[mMovie currentTime]];
+        [movieTimeButton setTitle:timeString];
 	}
 }
 
@@ -3479,24 +3481,25 @@ static AppController *currentApp = nil;
 		time.value = 0;
 	}
     CMTime tolerance = kCMTimeZero;
-	[mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance];
-	for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
-	{
-		if([mediaProperties enabled])
-		{
-			CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
-			if(newTime.value < 0)
-			{
-				newTime.value = 0;
-			}
-			if(CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedDescending)
-			{
-				newTime = [[[mediaProperties movie] currentItem] duration];
-			}
-			[[mediaProperties movie] seekToTime:newTime];
-		}
-	}
-	[self updateDisplay:nil];
+    [mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance completionHandler:^(BOOL success){
+        for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
+        {
+            if([mediaProperties enabled])
+            {
+                CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
+                if(newTime.value < 0)
+                {
+                    newTime.value = 0;
+                }
+                if(CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedDescending)
+                {
+                    newTime = [[[mediaProperties movie] currentItem] duration];
+                }
+                [[mediaProperties movie] seekToTime:newTime];
+            }
+        }
+        [self updateDisplay:nil];
+    }];
 }
 
 
