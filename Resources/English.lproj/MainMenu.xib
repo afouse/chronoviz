@@ -641,6 +641,24 @@ DQ
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IhV-Kf-uSF">
+                        <rect key="frame" x="523" y="39" width="100" height="25"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="Item 1" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="0EO-d7-veU" id="DpD-SV-22c">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <menu key="menu" id="X5i-3m-vSa">
+                                <items>
+                                    <menuItem title="Item 1" state="on" id="0EO-d7-veU"/>
+                                    <menuItem title="Item 2" id="mcD-92-OhX"/>
+                                    <menuItem title="Item 3" id="JLE-bv-8Fn"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <action selector="newCategorySelected:" target="375" id="I4W-WY-bK6"/>
+                        </connections>
+                    </popUpButton>
                 </subviews>
                 <connections>
                     <outlet property="mAppController" destination="375" id="445"/>
@@ -794,6 +812,7 @@ DQ
                 <outlet property="saveAsView" destination="835" id="844"/>
                 <outlet property="saveFileTypesButton" destination="836" id="845"/>
                 <outlet property="savedStatesMenu" destination="1466" id="1470"/>
+                <outlet property="selectedCategoryPopupButton" destination="IhV-Kf-uSF" id="WUu-ws-IRH"/>
                 <outlet property="splitView" destination="1017" id="1033"/>
                 <outlet property="timelineSelectionPanel" destination="1389" id="1422"/>
                 <outlet property="timelineSelectionView" destination="1412" id="1423"/>
@@ -1168,7 +1187,7 @@ DQ
             <connections>
                 <outlet property="delegate" destination="757" id="945"/>
             </connections>
-            <point key="canvasLocation" x="140" y="347"/>
+            <point key="canvasLocation" x="-324" y="427"/>
         </window>
         <customObject id="757" customClass="AnnotationInspector">
             <connections>
@@ -1658,7 +1677,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <clipView key="contentView" ambiguous="YES" id="7J9-Gl-bO4">
                             <rect key="frame" x="1" y="1" width="308" height="243"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="1323" id="1321">
                                     <rect key="frame" x="0.0" y="0.0" width="308" height="243"/>
@@ -1744,6 +1763,7 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="140" y="449"/>
         </window>
         <window title="TimelineSelector" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="1389" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
@@ -1759,7 +1779,7 @@ Gw
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES" heightSizable="YES"/>
                         <clipView key="contentView" ambiguous="YES" id="aQf-Hu-DnK">
                             <rect key="frame" x="1" y="0.0" width="308" height="281"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <outlineView verticalHuggingPriority="750" ambiguous="YES" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="20" headerView="1413" indentationPerLevel="16" autoresizesOutlineColumn="YES" outlineTableColumn="1414" id="1412">
                                     <rect key="frame" x="0.0" y="0.0" width="308" height="258"/>
@@ -1770,6 +1790,7 @@ Gw
                                     <tableColumns>
                                         <tableColumn width="305" minWidth="16" maxWidth="1000" id="1414">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
+                                                <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333298560000002" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -1822,6 +1843,7 @@ Gw
                     </button>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="140" y="461"/>
         </window>
         <customObject id="1443" customClass="SUUpdater"/>
     </objects>

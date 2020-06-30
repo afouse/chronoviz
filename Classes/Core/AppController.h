@@ -330,5 +330,6 @@
 
 - (IBAction)goFullScreen:(id)sender; // toggle full screen
 - (IBAction)exitFullScreen:(id)sender;
+@property (assign) IBOutlet NSPopUpButton *selectedCategoryPopupButton;
 
 @end

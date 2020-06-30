@@ -685,7 +685,8 @@ static AppController *currentApp = nil;
 	[self willChangeValueForKey:@"document"];
 	
 	[doc retain];
-	
+    
+    
 	if(annotationDoc)
 	{
 		[self closeDocument];
@@ -765,7 +766,31 @@ static AppController *currentApp = nil;
     [[AppController currentApp] endDocumentLoading:self];
     
 	[self didChangeValueForKey:@"document"];
+    
+    // Populate category playback selector.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateCategorySelection)
+                                                 name:DPCategoryChangeNotification
+                                               object:nil];
+    [self updateCategorySelection];
 }
+
+- (IBAction)newCategorySelected:(id)sender {
+    NSLog(@"%ld", (long)[self.selectedCategoryPopupButton indexOfSelectedItem]);
+}
+
+- (void)updateCategorySelection{
+    [self.selectedCategoryPopupButton removeAllItems];
+    
+    NSMutableArray<NSString*> *categoryNames = [[NSMutableArray alloc] init];
+    for (AnnotationCategory *category in self.document.categories) {
+        [categoryNames addObject:category.name];
+    }
+    [self.selectedCategoryPopupButton addItemsWithTitles:categoryNames];
+    // TODO: Release `categoryNames`?
+}
+
+
 
 - (void)setMainVideo:(VideoProperties *)video;
 {
