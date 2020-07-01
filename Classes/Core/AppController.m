@@ -787,7 +787,8 @@ static AppController *currentApp = nil;
     {
         NSString *selectedCategoryName = [self.selectedCategoryPopupButton titleOfSelectedItem];
         AnnotationCategory *selectedCategory = [self.document categoryForName:selectedCategoryName];
-        NSLog(@"%@", selectedCategory);
+        
+        NSLog(@"Playback limited to category %@", selectedCategory.name);
         
         NSMutableArray *startTimes = [NSMutableArray array];
         NSMutableArray *endTimes = [NSMutableArray array];
@@ -830,7 +831,8 @@ static AppController *currentApp = nil;
                        {
                            if (loopPlayback)
                            {
-                               [self moveToTime:[[startTimes firstObject] CMTimeValue] fromSender:nil];
+                               CMTime firstStartTime = [[startTimes firstObject] CMTimeValue];
+                               [self moveToTime:firstStartTime fromSender:nil];
                            }
                            else
                            {
