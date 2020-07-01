@@ -970,11 +970,12 @@
 
 -(CMTime)timeFromPoint:(NSPoint)point
 {
-	NSTimeInterval durationInterval = CMTimeGetSeconds([self range].duration);
-	NSTimeInterval rangeStartInterval = CMTimeGetSeconds([self range].start);
-	durationInterval = rangeStartInterval + durationInterval * (point.x / [self bounds].size.width);
-	
-    return CMTimeMakeWithSeconds(durationInterval, [self range].start.timescale);
+    CGFloat width = [self bounds].size.width;
+    CGFloat percentage = point.x / width;
+    CMTime durationFromRangeStart = CMTimeMultiplyByFloat64([self range].duration, percentage);
+    CMTime absoluteTime = CMTimeAdd([self range].start, durationFromRangeStart);
+    
+    return absoluteTime;
 }
 
 -(void)showTimes:(BOOL)showTimes
@@ -1700,8 +1701,9 @@
 		}
 		
 		[self setPlayheadPosition:(curPoint.x / [self bounds].size.width)];
+        CMTime newTime = [self timeFromPoint:curPoint];
 		
-		[[AppController currentApp] moveToTime:[self timeFromPoint:curPoint]
+		[[AppController currentApp] moveToTime:newTime
 									fromSender:self];
 	}
 	if(movingLeftMarker)
