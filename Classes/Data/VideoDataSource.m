@@ -31,26 +31,10 @@ static NSArray *DPQuicktimeFileTypes = nil;
 
 +(BOOL)validateFileName:(NSString*)fileName
 {
-	if(!DPQuicktimeFileTypes)
-	{
-		// DPQuicktimeFileTypes = [[QTMovie movieFileTypes:QTIncludeCommonTypes] retain];
-	}
-	//return [DPQuicktimeFileTypes containsObject:[fileName pathExtension]];
-	//return [QTMovie canInitWithFile:fileName];
+    CFStringRef pathExtension = (CFStringRef)[fileName pathExtension];
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
     
-    // NSString *fileExt = [fileName pathExtension];
-    // TODO: Reintroduce file type checking. A possibility is to utilize UTIs (uniform type identifiers, https://developer.apple.com/documentation/coreservices/1448939-uttypecreatepreferredidentifierf?language=objc).
-    /*
-    for(NSString *ext in DPQuicktimeFileTypes)
-    {
-        if([fileExt caseInsensitiveCompare:ext] == NSOrderedSame)
-        {
-            return YES;
-        }
-    }
-    */
-    
-    return NO;
+    return [[AVURLAsset audiovisualTypes] containsObject:(NSString*)type];
 }
 
 -(id)initWithVideoProperties:(VideoProperties*)props
@@ -87,7 +71,7 @@ static NSArray *DPQuicktimeFileTypes = nil;
 -(id)initWithPath:(NSString*)theFile
 {
 	VideoProperties *props = nil;
-	if([AVPlayer canInitWithFile:theFile])
+	if([VideoDataSource validateFileName:theFile])
 	{
 		props = [[[VideoProperties alloc] initWithVideoFile:theFile] autorelease];
 		[props setTitle:[[theFile lastPathComponent] stringByDeletingPathExtension]];
