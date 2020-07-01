@@ -122,7 +122,7 @@ int afTimeCodedPointSort( id obj1, id obj2, void *context ) {
 		int index = 0;
 		for(TimeCodedDataPoint *testPoint in dataPoints)
 		{
-			if(CMTimeCompare(testPoint.time,time) == NSOrderedDescending)
+			if(CMTIME_COMPARE_INLINE(testPoint.time, >, time))
 			{
 				break;
 			}

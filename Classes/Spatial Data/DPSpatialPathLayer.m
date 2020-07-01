@@ -201,7 +201,7 @@
         DPSpatialDataBase *spatialBase = spatialView.spatialBase;
         
         while(//(closestIndex < ([pathSubset count] - 2)) &&
-              (entirePath || (CMTimeCompare(currentTime,currentPoint.time) != NSOrderedAscending)))
+              (entirePath || (CMTIME_COMPARE_INLINE(currentTime, >=, currentPoint.time))))
         {
             if(connected)
             {    

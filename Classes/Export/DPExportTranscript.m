@@ -86,7 +86,7 @@
         for(TimeCodedSourcedString *string in [(TranscriptData*)selectedData timeCodedStrings])
         {
             //NSLog(@"Transcript view string: %@",[string string]);
-            if(![string interpolated] && (CMTimeCompare([string time], lastRowTime) != NSOrderedSame))
+            if(![string interpolated] && (CMTIME_COMPARE_INLINE([string time], !=, lastRowTime)))
             {
                 if([alignment count] > 0)
                 {

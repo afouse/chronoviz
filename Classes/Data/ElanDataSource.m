@@ -244,7 +244,7 @@
 		[currentTier addAnnotation:currentAnnotation];
 		[currentAnnotation release];
 		
-		if(CMTimeCompare(range.duration, [currentAnnotation endTime]) == NSOrderedAscending)
+		if(CMTIME_COMPARE_INLINE(range.duration, <, [currentAnnotation endTime]))
 		{
 			range.duration = [currentAnnotation endTime];
 		}

@@ -301,7 +301,7 @@
 
 - (BOOL)setRangeFromBeginTime:(CMTime)begin andEndTime:(CMTime)end
 {
-	if(CMTimeCompare(begin, end) == NSOrderedAscending)
+	if(CMTIME_COMPARE_INLINE(begin, <, end))
 	{
 		CMTimeRange newRange = CMTimeRangeMake(begin, CMTimeSubtract(end, begin));
 		if(!CMTimeRangeEqual(range, newRange))

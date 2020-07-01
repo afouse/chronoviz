@@ -271,11 +271,13 @@
 	if(overSelection)
 	{
 		CMTime newtime = CMTimeSubtract(current,offset);
-		if(newtime.value < 0)
+        if(newtime.value < 0) {
 			newtime.value = 0;
+        }
 		
-		if(CMTimeCompare(CMTimeRangeGetEnd(range), CMTimeAdd(newtime, selection.duration)) == NSOrderedAscending)
+        if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, CMTimeAdd(newtime, selection.duration))) {
 			newtime = CMTimeSubtract(CMTimeRangeGetEnd(range), selection.duration);
+        }
 		
 		selection.start = newtime;
 		[self setSelection:selection];
@@ -294,7 +296,7 @@
 	else if ((resizeSelectionRight) && ((curPoint.x - selectionStartX) > minSelectionWidth))
 	{
 		CMTime newEnd = CMTimeSubtract(current,offset);
-		if(CMTimeCompare(CMTimeRangeGetEnd(range), newEnd) == NSOrderedAscending)
+		if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, newEnd))
 			newEnd = CMTimeRangeGetEnd(range);
 		
 		selection.duration = CMTimeSubtract(newEnd, selection.start);
@@ -452,7 +454,7 @@
 	if(!CMTimeRangeContainsTime(selection, currentTime))
 	{
 		CMTimeRange newSelection = selection;
-		if(CMTimeCompare(currentTime, selection.start) == NSOrderedAscending)
+		if(CMTIME_COMPARE_INLINE(currentTime, <, selection.start))
 		{
 			newSelection.start = CMTimeSubtract(selection.start, selection.duration);
 			if(newSelection.start.value < 0)
@@ -463,7 +465,7 @@
 		else
 		{
 			newSelection.start = CMTimeRangeGetEnd(selection);
-			if(CMTimeCompare(CMTimeRangeGetEnd(range),CMTimeRangeGetEnd(newSelection)) == NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, CMTimeRangeGetEnd(newSelection)))
 			{
 				newSelection.start = CMTimeSubtract(CMTimeRangeGetEnd(range),selection.duration);
 			}

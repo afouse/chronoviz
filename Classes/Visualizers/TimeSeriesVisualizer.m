@@ -437,7 +437,7 @@
             
             TimeCodedDataPoint *firstPoint = [dataPoints objectAtIndex:0];
             //TimeCodedDataPoint *lastPoint = [dataPoints lastObject];
-            if(CMTimeCompare([firstPoint time], CMTimeRangeGetEnd([timeline range])) == NSOrderedDescending)
+            if(CMTIME_COMPARE_INLINE([firstPoint time], >, CMTimeRangeGetEnd([timeline range])))
             {
                 CATextLayer *outsideRangeLayer = [CATextLayer layer];
                 [outsideRangeLayer setFrame:[graphLayer bounds]];

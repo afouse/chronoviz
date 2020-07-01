@@ -2823,7 +2823,7 @@ static AppController *currentApp = nil;
 {	
 	CMTimeRange selection = [overviewTimelineView selection];
 	
-	if(CMTimeCompare(selection.duration, [[mMovie currentItem] duration]) == NSOrderedAscending)
+	if(CMTIME_COMPARE_INLINE(selection.duration, <, [[mMovie currentItem] duration]))
 	{
 		selection.duration.value = selection.duration.value * 2;
 		selection.start.value = selection.start.value - selection.duration.value/4;
@@ -3225,7 +3225,7 @@ static AppController *currentApp = nil;
 - (IBAction)stepForward:(id)sender
 {
 	CMTime newTime = CMTimeAdd([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
-	if(CMTimeCompare([[mMovie currentItem] duration],newTime) == NSOrderedAscending)
+	if(CMTIME_COMPARE_INLINE([[mMovie currentItem] duration], <, newTime))
 	{
 		newTime = [[mMovie currentItem] duration];
 	}
@@ -3236,7 +3236,7 @@ static AppController *currentApp = nil;
 - (IBAction)stepBack:(id)sender
 {
 	CMTime newTime = CMTimeSubtract([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
-	if(CMTimeCompare(kCMTimeZero,newTime) == NSOrderedDescending)
+	if(CMTIME_COMPARE_INLINE(kCMTimeZero, >, newTime))
 	{
 		newTime = kCMTimeZero;
 	}	
@@ -3395,7 +3395,7 @@ static AppController *currentApp = nil;
 		{
             CMTime currentTime = [mMovie currentTime];
             CMTime normalizedStart = CMTimeConvertScale([selectedAnnotation startTime], currentTime.timescale, kCMTimeRoundingMethod_Default); // TODO: Check if QTMakeTimeScaled is correctly replacesd by CMTimeConvertScale
-			if(CMTimeCompare(currentTime,[selectedAnnotation endTime]) == NSOrderedDescending)
+			if(CMTIME_COMPARE_INLINE(currentTime, >, [selectedAnnotation endTime]))
 			{
 				if(loopPlayback)
 				{
@@ -3410,7 +3410,7 @@ static AppController *currentApp = nil;
 					[self moveToTime:[selectedAnnotation endTime] fromSender:self];
 				}
 			}
-			else if(CMTimeCompare(currentTime,normalizedStart) == NSOrderedAscending)
+			else if(CMTIME_COMPARE_INLINE(currentTime, <, normalizedStart))
 			{
                 
 				if(playing)
@@ -3436,7 +3436,7 @@ static AppController *currentApp = nil;
 			{
 				CMTime newTime = CMTimeAdd([mMovie currentTime], [mediaProperties offset]);
 				if((newTime.value > 0)
-				   && (CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedAscending))
+				   && (CMTIME_COMPARE_INLINE(newTime, <, [[[mediaProperties movie] currentItem] duration])))
 				{
 					[[mediaProperties movie] seekToTime:newTime];
 					[[mediaProperties movie] setRate:[mMovie rate]];
