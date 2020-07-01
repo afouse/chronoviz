@@ -1981,8 +1981,7 @@ static AppController *currentApp = nil;
 		// Otherwise get delete the old file and create a new one
 		[self deleteKeyframeFile:annotation];
 		
-        AVAsset *asset = [[mMovie currentItem] asset];
-        CGImageRef imageRef = [VideoFrameLoader generateImageAt:[annotation startTime] for:asset error:nil];
+        CGImageRef imageRef = [VideoFrameLoader generateImageAt:[annotation startTime] for:mMovie error:nil];
         NSImage *image = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
 		[annotation setFrameRepresentation:image];
         

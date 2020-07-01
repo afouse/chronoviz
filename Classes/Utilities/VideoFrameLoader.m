@@ -114,10 +114,9 @@
 				CMTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : CMTimeMake(0, 1);
 				//NSLog(@"Offset: %i",(int)offset.value);
                 
-                AVAsset *asset = [[frameVideo currentItem] asset];
                 CMTime frameTime = CMTimeAdd([[marker boundary] time], offset);
                 NSError *imageError;
-                theImage = [VideoFrameLoader generateImageAt:frameTime for:asset error:&imageError];
+                theImage = [VideoFrameLoader generateImageAt:frameTime for:frameVideo error:&imageError];
                 
 			}
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
@@ -253,10 +252,9 @@
 		CGImageWrapper *imageWrap = [imagecache objectForKey:identifier];
 		if(!imageWrap)
 		{
-            AVAsset *asset = [[frameVideo currentItem] asset];
             CMTime frameTime = CMTimeMakeWithSeconds(time, 600);
             NSError *imageError;
-            CGImageRef theImage = [VideoFrameLoader generateImageAt:frameTime for:asset error:&imageError];
+            CGImageRef theImage = [VideoFrameLoader generateImageAt:frameTime for:frameVideo error:&imageError];
 
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
 			[imagecache setObject:imageWrap forKey:identifier];
@@ -267,12 +265,16 @@
 
 
 
-+ (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVAsset*)asset error:(NSError * _Nullable *)error {
++ (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVPlayer*)player error:(NSError * _Nullable *)error {
+    AVAsset *asset = [[player currentItem] asset];
+    return [VideoFrameLoader generateImageAt:requestedTime forAsset:asset error:error];
+}
+
++ (CGImageRef)generateImageAt:(CMTime)requestedTime forAsset:(AVAsset*)asset error:(NSError * _Nullable *)error {
     AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
     imageGenerator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1, 600);
     imageGenerator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(1, 600);
     return [imageGenerator copyCGImageAtTime:requestedTime actualTime:nil error:error];
 }
-
 
 @end
