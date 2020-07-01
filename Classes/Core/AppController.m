@@ -3345,7 +3345,7 @@ static AppController *currentApp = nil;
 		{
 			CMTime newTime = CMTimeAdd(currentTime, [mediaProperties offset]);
 			if((newTime.value > 0)
-			   && (CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedAscending))
+			   && CMTIME_COMPARE_INLINE(newTime, <, [[[mediaProperties movie] currentItem] duration]))
 			{
 				[[mediaProperties movie] seekToTime:newTime];
 				//[[mediaProperties movie] setRate:rate];
@@ -3475,24 +3475,24 @@ static AppController *currentApp = nil;
 		time.value = 0;
 	}
     CMTime tolerance = kCMTimeZero;
-    [mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance completionHandler:^(BOOL success){
-        for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
+    for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
+    {
+        if([mediaProperties enabled])
         {
-            if([mediaProperties enabled])
+            CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
+            if(newTime.value < 0)
             {
-                CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
-                if(newTime.value < 0)
-                {
-                    newTime.value = 0;
-                }
-                if(CMTimeCompare(newTime, [[[mediaProperties movie] currentItem] duration]) == NSOrderedDescending)
-                {
-                    newTime = [[[mediaProperties movie] currentItem] duration];
-                }
-                [[mediaProperties movie] seekToTime:newTime];
+                newTime.value = 0;
             }
+            if(CMTIME_COMPARE_INLINE(newTime, >, [[[mediaProperties movie] currentItem] duration]))
+            {
+                newTime = [[[mediaProperties movie] currentItem] duration];
+            }
+            [[mediaProperties movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
         }
-        [self updateDisplay:nil];
+    }
+    [mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance completionHandler:^(BOOL success) {
+            [self updateDisplay:nil];
     }];
 }
 
