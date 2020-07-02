@@ -124,7 +124,7 @@ static NSDictionary* colorMap = nil;
 
 -(void)setStartTime:(CMTime)cmtime
 {
-	if(CMTimeCompare(startTime,cmtime) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(startTime, !=, cmtime))
 	{
 		[self willChangeValueForKey:@"startTime"];
         [self willChangeValueForKey:@"startTimeString"];
@@ -151,7 +151,7 @@ static NSDictionary* colorMap = nil;
 
 -(void)setEndTime:(CMTime)cmtime
 {
-	if(CMTimeCompare(endTime,cmtime) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(endTime, !=, cmtime))
 	{
 		[self willChangeValueForKey:@"endTime"];
         [self willChangeValueForKey:@"endTimeString"];

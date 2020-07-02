@@ -197,7 +197,7 @@
 				matchSegmentIndex = rowOffset[matchRow];
 				for(TimeCodedSourcedString *matchSegment in [array objectAtIndex:matchRow])
 				{
-					if(CMTimeCompare([segment time],[matchSegment time]) == NSOrderedSame)
+					if(CMTIME_COMPARE_INLINE([segment time], ==, [matchSegment time]))
 					{
 						if(![[segment source] isEqualToString:[matchSegment source]])
 						{
@@ -296,7 +296,7 @@
 	for(TimeCodedSourcedString *string in [data timeCodedStrings])
 	{
 		//NSLog(@"Transcript view string: %@",[string string]);
-		if(![string interpolated] && (CMTimeCompare([string time], lastRowTime) != NSOrderedSame))
+		if(![string interpolated] && (CMTIME_COMPARE_INLINE([string time], !=, lastRowTime)))
 		{
 			if([alignment count] > 0)
 			{
@@ -498,7 +498,7 @@
 {
 	CMTime appTime = [[AppController currentApp] currentTime];
 	
-	if(CMTimeCompare(appTime,currentTime) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(appTime, !=, currentTime))
 	{
 		currentTime = appTime;
 		
@@ -507,7 +507,7 @@
 		{
 			if(![string interpolated])
 			{
-				if(CMTimeCompare(appTime, CMTimeAdd([string time],[[data source] range].start)) != NSOrderedDescending)
+				if(CMTIME_COMPARE_INLINE(appTime, <=, CMTimeAdd([string time], [[data source] range].start)))
 				{
 					[webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='#%@'",[self anchorForString:previous]]];
 					return;

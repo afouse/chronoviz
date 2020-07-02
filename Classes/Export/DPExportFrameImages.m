@@ -79,7 +79,7 @@
 	
 	// Make sure the selected time actually exists in the movie
     CMTime duration = [[sourceMovie currentItem] duration];
-    if(CMTimeCompare(startTime, duration) == NSOrderedDescending)
+    if(CMTIME_COMPARE_INLINE(startTime, >, duration))
     {
         startTime = duration;
     }

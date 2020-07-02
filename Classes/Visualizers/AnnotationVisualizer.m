@@ -333,7 +333,7 @@
 		CGFloat start = (startTime - rangeStart) * movieTimeToPixel;
 		CGFloat radius = (height - 2.1)/2.0f;
         CGFloat x = start - (annotationRadius);
-        if((CMTimeCompare(CMTimeRangeGetEnd([timeline range]), [[[timeline movie] currentItem] duration]) != NSOrderedAscending)
+        if((CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd([timeline range]), >=, [[[timeline movie] currentItem] duration]))
            && ((x + (annotationRadius * 2.0)) > [timeline bounds].size.width))
         {
             x = ([timeline bounds].size.width - (annotationRadius * 2.0));

@@ -236,7 +236,7 @@ static const NSString *ItemStatusContext;
 
 -(void)setOffset:(CMTime)cmtime
 {
-	if(CMTimeCompare(cmtime, offset) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(cmtime, !=, offset))
 	{
 		[self willChangeValueForKey:@"startTime"];
 		[self willChangeValueForKey:@"offset"];

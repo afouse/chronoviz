@@ -1052,7 +1052,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	}
 	
 	if(([subsets count] == [indicatorLayers count])
-        && (CMTimeCompare(currentTime, [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame))
+        && (CMTIME_COMPARE_INLINE(currentTime, !=, [[[AppController currentDoc] movie] currentTime])))
 	{
 		NSTimeInterval currentTimeInterval;
 		NSTimeInterval annotationStartTime;

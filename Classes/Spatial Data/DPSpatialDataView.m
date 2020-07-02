@@ -1102,7 +1102,7 @@
 -(void)update
 {
     if([[self window] isVisible]
-       && (needsUpdate || (CMTimeCompare(currentTime, [[AppController currentApp] currentTime]) != NSOrderedSame)))
+       && (needsUpdate || (CMTIME_COMPARE_INLINE(currentTime, !=, [[AppController currentApp] currentTime]))))
 	{
         [self setCurrentTime:[[AppController currentApp] currentTime]];
     }

@@ -620,7 +620,7 @@
 					[currentString release];
 					currentSpeaker = nil;
 					
-					if(CMTimeCompare(range.duration, [currentString time]) == NSOrderedAscending)
+					if(CMTIME_COMPARE_INLINE(range.duration, <, [currentString time]))
 					{
 						range.duration = [currentString time];
 					}

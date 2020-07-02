@@ -86,12 +86,12 @@
 		
 		CMTime sourceRangeEnd = CMTimeRangeGetEnd(sourceRange);
 		
-		if(CMTimeCompare(sourceRange.start, range.start) == NSOrderedAscending)
+		if(CMTIME_COMPARE_INLINE(sourceRange.start, <, range.start))
 		{
 			range.start = sourceRange.start;
 		}
 		
-		if(CMTimeCompare(CMTimeRangeGetEnd(range),sourceRangeEnd) == NSOrderedAscending)
+		if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, sourceRangeEnd))
 		{
 			range.duration = CMTimeSubtract(sourceRangeEnd, range.start);
 		}	

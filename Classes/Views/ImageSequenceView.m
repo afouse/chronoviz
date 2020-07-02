@@ -117,7 +117,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(CMTimeCompare([pictureFile time], currentTime) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, currentTime))
 			{
 				break;
 			}
@@ -157,7 +157,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(CMTimeCompare([pictureFile time], time) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, time))
 			{
 				break;
 			}
@@ -179,7 +179,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(CMTimeCompare([pictureFile time], time) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, time))
 			{
 				break;
 			}

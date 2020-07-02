@@ -186,7 +186,8 @@
     CMTime duration = [[[movieView movie] currentItem] duration];
 	long long timeValue = duration.value * [alignmentSlider floatValue];
 	CMTime newTime = CMTimeMake(timeValue, duration.timescale);
-	[[movieView movie] seekToTime:newTime];
+    CMTime tolerance = kCMTimeZero;
+	[[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
 	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
@@ -202,7 +203,8 @@
 	{
 		newTime.value = 0;
 	}
-	[[movieView movie] seekToTime:newTime];
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 	[self update];
 }
 
@@ -230,9 +232,12 @@
 {
 	CMTime newTime = [[movieView movie] currentTime];
 	newTime.value = newTime.value + newTime.timescale*[[AppController currentApp] stepSize];
-	if(CMTimeCompare(newTime, [[[movieView movie] currentItem] duration]) == NSOrderedDescending)
+	if(CMTIME_COMPARE_INLINE(newTime, >, [[[movieView movie] currentItem] duration]))
+    {
 		newTime.value = [[[movieView movie] currentItem] duration].value;
-	[[movieView movie] seekToTime:newTime];
+    }
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
 	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
@@ -245,7 +250,8 @@
 	newTime.value = newTime.value - newTime.timescale*[[AppController currentApp] stepSize];
 	if(newTime.value < 0)
 		newTime.value = 0;
-	[[movieView movie] seekToTime:newTime];
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
 	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
@@ -278,7 +284,8 @@
 		{
 			newTime.value = 0;
 		}
-		[[movieView movie] seekToTime:newTime];
+        CMTime tolerance = kCMTimeZero;
+        [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 		[self update];
     }
 	else
