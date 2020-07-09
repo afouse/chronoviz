@@ -222,8 +222,6 @@ static PluginManager* defaultPluginManager = nil;
 		//[NSException raise: NSInternalInconsistencyException format: @"%s:%d main() Failed to find the Main.{py,pyc,pyo} file in the application wrapper's Resources directory.", __FILE__, __LINE__];
 	}
 	
-    
-	Py_SetProgramName("/usr/bin/python");
 	Py_Initialize();
 	
 	const char *mainFilePathPtr = [mainFilePath UTF8String];

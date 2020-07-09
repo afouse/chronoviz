@@ -11,16 +11,16 @@ import objc
 try:
     import Foundation
 except:
-    print "handled foundation exception"
+    print("handled foundation exception")
 
 try:
     import AppKit
 except:
-    print "handled appkit exception"
+    print("handled appkit exception")
 
 
 try:
     from PyObjCTools import AppHelper
 except:
-    print "handled PyObjCTools exception"
+    print("handled PyObjCTools exception")
 

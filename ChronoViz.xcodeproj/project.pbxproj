@@ -10,6 +10,8 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		8FA1480924B72F45004667E9 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; };
+		8FA1480A24B72F45004667E9 /* Python.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
 		BB0159470EACE4BC00B41B99 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159450EACE4BC00B41B99 /* play.png */; };
 		BB0159480EACE4BC00B41B99 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159460EACE4BC00B41B99 /* pause.png */; };
@@ -268,7 +270,6 @@
 		BBD408C511165C3C002BBE7E /* prism.icns in Resources */ = {isa = PBXBuildFile; fileRef = BBD408C411165C3B002BBE7E /* prism.icns */; };
 		BBD57215106AA73A007568DA /* PluginManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BBD57214106AA73A007568DA /* PluginManager.m */; };
 		BBD57238106AA777007568DA /* AnnotationDataAnalysisPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = BBD57237106AA777007568DA /* AnnotationDataAnalysisPlugin.m */; };
-		BBD57247106AAF31007568DA /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBD57246106AAF31007568DA /* Python.framework */; };
 		BBD57257106ABEA9007568DA /* main.py in Resources */ = {isa = PBXBuildFile; fileRef = BBD57256106ABEA9007568DA /* main.py */; };
 		BBD6A84F10AA354F00A0C417 /* DateVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BBD6A84E10AA354F00A0C417 /* DateVisualizer.m */; };
 		BBD6A85210AA3E0800A0C417 /* AnnotationTableController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBD6A85110AA3E0800A0C417 /* AnnotationTableController.m */; };
@@ -319,6 +320,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8FA1480A24B72F45004667E9 /* Python.framework in CopyFiles */,
 				BB12E9831BC06B72001C4365 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -335,6 +337,7 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FA1480824B72F45004667E9 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = ../../../../Library/Frameworks/Python.framework; sourceTree = "<group>"; };
 		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
 		A98624D224AA4D6A00E5618C /* PadCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = PadCategories.py; sourceTree = "<group>"; };
 		A98624D324AA4D6A00E5618C /* Threshold.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Threshold.py; sourceTree = "<group>"; };
@@ -698,7 +701,6 @@
 		BBD57214106AA73A007568DA /* PluginManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PluginManager.m; sourceTree = "<group>"; };
 		BBD57236106AA777007568DA /* AnnotationDataAnalysisPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationDataAnalysisPlugin.h; sourceTree = "<group>"; };
 		BBD57237106AA777007568DA /* AnnotationDataAnalysisPlugin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationDataAnalysisPlugin.m; sourceTree = "<group>"; };
-		BBD57246106AAF31007568DA /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = /System/Library/Frameworks/Python.framework; sourceTree = "<absolute>"; };
 		BBD57256106ABEA9007568DA /* main.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; path = main.py; sourceTree = "<group>"; };
 		BBD6A84D10AA354F00A0C417 /* DateVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateVisualizer.h; sourceTree = "<group>"; };
 		BBD6A84E10AA354F00A0C417 /* DateVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateVisualizer.m; sourceTree = "<group>"; };
@@ -778,6 +780,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FA1480924B72F45004667E9 /* Python.framework in Frameworks */,
 				BBA73E7C1F6383840086098F /* QTKit.framework in Frameworks */,
 				BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */,
 				BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */,
@@ -787,7 +790,6 @@
 				BB440C510F3CA1CE0058483C /* QuartzCore.framework in Frameworks */,
 				BB7E7AEC1045CD94002D4874 /* WebKit.framework in Frameworks */,
 				BB12E9811BC06B30001C4365 /* Sparkle.framework in Frameworks */,
-				BBD57247106AAF31007568DA /* Python.framework in Frameworks */,
 				BBAFE55610B61383003E4EE7 /* SystemConfiguration.framework in Frameworks */,
 				BB92B6F8113637CA00C50DF2 /* AudioToolbox.framework in Frameworks */,
 				BBCC108112EFA7160041EEB1 /* IOBluetooth.framework in Frameworks */,
@@ -959,6 +961,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8FA1480824B72F45004667E9 /* Python.framework */,
 				BBA73E7B1F6383840086098F /* QTKit.framework */,
 				BBA73E6A1F5CDB9C0086098F /* CoreMedia.framework */,
 				BBA73E681F5CDADB0086098F /* libsqlite3.tbd */,
@@ -968,7 +971,6 @@
 				BB1A4ECD14992C5700F2998E /* Accelerate.framework */,
 				BB7E7AEB1045CD94002D4874 /* WebKit.framework */,
 				BB440C500F3CA1CE0058483C /* QuartzCore.framework */,
-				BBD57246106AAF31007568DA /* Python.framework */,
 				BBAFE55510B61383003E4EE7 /* SystemConfiguration.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				BB80A2CC1523C77800E821E4 /* Cocoa.framework */,
@@ -1992,15 +1994,18 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
+					"/usr/local/Cellar/python@3.8/3.8.3_1/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Other Sources/ChronoViz_Prefix.pch";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsd.DataPrism;
 				PRODUCT_NAME = ChronoViz;
@@ -2022,13 +2027,16 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)",
+					"/usr/local/Cellar/python@3.8/3.8.3_1/Frameworks",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Other Sources/ChronoViz_Prefix.pch";
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsd.DataPrism;
 				PRODUCT_NAME = ChronoViz;
