@@ -337,6 +337,7 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F2EC00E24BCCB73009E9729 /* AverageColor.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = AverageColor.py; sourceTree = "<group>"; };
 		8FA1480824B72F45004667E9 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = ../../../../Library/Frameworks/Python.framework; sourceTree = "<group>"; };
 		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
 		A98624D224AA4D6A00E5618C /* PadCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = PadCategories.py; sourceTree = "<group>"; };
@@ -985,6 +986,7 @@
 			isa = PBXGroup;
 			children = (
 				A98624D124AA4D6900E5618C /* MergeCategories.py */,
+				8F2EC00E24BCCB73009E9729 /* AverageColor.py */,
 				A98624D224AA4D6A00E5618C /* PadCategories.py */,
 				A98624D324AA4D6A00E5618C /* Threshold.py */,
 			);
