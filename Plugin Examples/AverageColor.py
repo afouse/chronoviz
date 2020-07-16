@@ -90,7 +90,11 @@ try:
                 # we choose the larger ratio.
                 ratio = max(widthRatio, heightRatio)
                 
-                return CGRectMake(selection.origin.x * ratio, selection.origin.y * ratio, selection.size.width * ratio, selection.size.height * ratio)
+                x = math.floor(selection.origin.x * ratio)
+                y = math.floor(selection.origin.y * ratio)
+                width = math.floor(selection.size.width * ratio)
+                height = math.floor(selection.size.height * ratio)
+                return CGRectMake(x, y, width, height)
             
 except objc.error as e:
     if str(e).endswith("is overriding existing Objective-C class"):
@@ -122,7 +126,7 @@ class AverageColor(PluginClass):
         hel.setTarget_(self)
         hel.setAction_("calculate")
         
-        frameTime = CMTimeMakeWithSeconds(1, 600)
+        frameTime = self.currentDocument().movie().currentTime()
         frameRef = VideoFrameLoader.generateImageAt_for_error_(frameTime, self.currentDocument().movie(), objc.NULL)
         image = NSImage.alloc().initWithCGImage_size_(frameRef, NSZeroSize)
         self.imageView = ImageSelection.alloc().initWithFrame_(((10, 50), (500, 500)))
@@ -134,6 +138,7 @@ class AverageColor(PluginClass):
         
     def calculate(self):
         selection = self.imageView.getSelectionInImagePixels()
+        print(selection)
         
         frameRate = self.getFrameRate()
         durationInSeconds = CMTimeGetSeconds(self.currentDocument().movie().currentItem().duration())
@@ -145,23 +150,37 @@ class AverageColor(PluginClass):
         dataSource.setName_("Average color")
         dataSource.addDataSet_(series)
         
-        for frameCount in range(0, end):
+        for frameCount in range(0, end, 2):
             frameTime = CMTimeMake(frameCount, frameRate)
             frameRef = VideoFrameLoader.generateImageAt_for_error_(frameTime, self.currentDocument().movie(), objc.NULL)
-            pixels = self.getPixels_forSelection_(frameRef, selection.origin)
-            pixel, = struct.unpack("B", pixels["r"])
-            series.addValue_atTime_(pixel, frameTime)
+            ls = [self.getL_forPixel_(frameRef, point) for point in self.pointsInRect_(selection)]
+            average = sum(ls) / len(ls)
+            series.addValue_atTime_(average, frameTime)
             if frameCount % frameRate == 0:
-                self.log_(str(CMTimeGetSeconds(frameTime)) + ": " + str(pixel))
+                self.log_(str(CMTimeGetSeconds(frameTime)) + ": " + str(average))
         
         AppController.currentApp().viewManager().showData_(series)
         self.win.close()
+        
+    def pointsInRect_(self, rect):
+        points = [
+            (int(rect.origin.x + x), int(rect.origin.y + y)) for x in range(0, int(rect.size.width)) for y in range(0, int(rect.size.height))
+        ]
+        return points
+    
+    def getL_forPixel_(self, imageRef, pixel):
+        pixels = self.getPixel_forCoords_(imageRef, pixel)
+        r, = struct.unpack("B", pixels["r"])
+        g, = struct.unpack("B", pixels["g"])
+        b, = struct.unpack("B", pixels["b"])
+        h, s, l = self.hslFromR_G_B_(r, g, b)
+        return l
         
     def getFrameRate(self):
         asset = self.currentDocument().movie().currentItem().asset()
         return asset.tracksWithMediaType_(AVMediaTypeVideo).objectAtIndex_(0).nominalFrameRate()
         
-    def getPixels_forSelection_(self, imageRef, selectionPoint):
+    def getPixel_forCoords_(self, imageRef, pixel):
         rawData = CGDataProviderCopyData(CGImageGetDataProvider(imageRef))
         buffer = CFDataGetBytePtr(rawData)
         height = CGImageGetHeight(imageRef)
@@ -172,8 +191,36 @@ class AverageColor(PluginClass):
             # Each pixel has 4 components.
             return (y * width + x) * 4
         
-        offset = coordinatesToOffset(round(selectionPoint.x), round(selectionPoint.y))
+        offset = coordinatesToOffset(pixel[0], pixel[1])
         return {"r": buffer[offset+1], "g": buffer[offset+2], "b": buffer[offset+3], "a": buffer[offset]}
+        
+    def hslFromR_G_B_(self, rByte, gByte, bByte):
+        # Conversion following https://www.rapidtables.com/convert/color/rgb-to-hsl.html
+        r = rByte/255.0
+        g = gByte/255.0
+        b = bByte/255.0
+        
+        cmax = max(r, g, b)
+        cmin = min(r, g, b)
+        delta = cmax - cmin
+        
+        if delta == 0:
+            h = 0
+        elif max == r:
+            h = 60 * (((g - b)/delta) % 6)
+        elif max == g:
+            h = 60 * (((b - r)/delta) + 2)
+        else:
+            h = 60 * (((r - g)/delta) + 4)
+            
+        l = (cmax + cmin)/2
+        
+        if delta == 0:
+            s = 0
+        else:
+            s = delta/(1-abs(2*l-1))
+            
+        return h, s, l
 
     def annotationsForCategory_(self, categoryName):
         category = self.categoryForName_(categoryName)

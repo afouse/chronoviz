@@ -272,8 +272,8 @@
 
 + (CGImageRef)generateImageAt:(CMTime)requestedTime forAsset:(AVAsset*)asset error:(NSError * _Nullable *)error {
     AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
-    imageGenerator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1, 600);
-    imageGenerator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(1, 600);
+    imageGenerator.requestedTimeToleranceBefore = kCMTimeZero;
+    imageGenerator.requestedTimeToleranceAfter = kCMTimeZero;
     return [imageGenerator copyCGImageAtTime:requestedTime actualTime:nil error:error];
 }
 
