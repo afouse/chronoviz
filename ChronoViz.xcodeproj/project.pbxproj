@@ -339,6 +339,7 @@
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2EC00E24BCCB73009E9729 /* AverageColor.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = AverageColor.py; sourceTree = "<group>"; };
 		8FA1480824B72F45004667E9 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = ../../../../Library/Frameworks/Python.framework; sourceTree = "<group>"; };
+		8FC0DCB224C099A70007A469 /* RandomTimeSeries.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = RandomTimeSeries.py; sourceTree = "<group>"; };
 		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
 		A98624D224AA4D6A00E5618C /* PadCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = PadCategories.py; sourceTree = "<group>"; };
 		A98624D324AA4D6A00E5618C /* Threshold.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Threshold.py; sourceTree = "<group>"; };
@@ -989,6 +990,7 @@
 				8F2EC00E24BCCB73009E9729 /* AverageColor.py */,
 				A98624D224AA4D6A00E5618C /* PadCategories.py */,
 				A98624D324AA4D6A00E5618C /* Threshold.py */,
+				8FC0DCB224C099A70007A469 /* RandomTimeSeries.py */,
 			);
 			path = "Plugin Examples";
 			sourceTree = "<group>";
