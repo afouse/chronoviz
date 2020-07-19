@@ -12,10 +12,6 @@ from AVFoundation import *
 
 from Cocoa import *
 
-PluginClass = objc.lookUpClass("AnnotationDataAnalysisPlugin")
-AnnotationCategoryFilter = objc.lookUpClass("AnnotationCategoryFilter")
-VideoFrameLoader = objc.lookUpClass("VideoFrameLoader")
-
 
 # If the class already exists, catch the exception
 # ChronoViz prevents the "main" class in this file from such clashes, but not other classes.
@@ -104,7 +100,7 @@ except objc.error as e:
     else:
         raise e
 
-class AverageColor(PluginClass):
+class AverageColor(AnnotationDataAnalysisPlugin):
     def setup(self):
          # Sets the name of the plugin in the menu
         self.setDisplayName_("Average color")
@@ -137,30 +133,41 @@ class AverageColor(PluginClass):
         self.win.makeKeyAndOrderFront_(self)
         
     def calculate(self):
-        selection = self.imageView.getSelectionInImagePixels()
-        print(selection)
+        self.selection = self.imageView.getSelectionInImagePixels()
+        print(self.selection)
         
         frameRate = self.getFrameRate()
         durationInSeconds = CMTimeGetSeconds(self.currentDocument().movie().currentItem().duration())
         end = min(math.floor(frameRate * durationInSeconds), 500)
         
-        series = TimeSeriesData.alloc().init()
-        series.setName_("Average color data")
+        self.series = TimeSeriesData.alloc().init()
+        self.series.setName_("Average color data")
         dataSource = PluginDataSource.alloc().initWithPath_(None)
         dataSource.setName_("Average color")
-        dataSource.addDataSet_(series)
+        dataSource.addDataSet_(self.series)
+            
+        print("Start analyzing")
+        self.frameCount = 0
+        self.frameRate = self.getFrameRate()
+        frameAnalyzer = VideoFrameAnalyzer.analyze_withDelegate_(self.currentDocument().movie(), self)
+        print("Done analyzing")
         
-        for frameCount in range(0, end, 2):
-            frameTime = CMTimeMake(frameCount, frameRate)
-            frameRef = VideoFrameLoader.generateImageAt_for_error_(frameTime, self.currentDocument().movie(), objc.NULL)
-            ls = [self.getL_forPixel_(frameRef, point) for point in self.pointsInRect_(selection)]
-            average = sum(ls) / len(ls)
-            series.addValue_atTime_(average, frameTime)
-            if frameCount % frameRate == 0:
-                self.log_(str(CMTimeGetSeconds(frameTime)) + ": " + str(average))
-        
-        AppController.currentApp().viewManager().showData_(series)
+        AppController.currentApp().viewManager().showData_(self.series)
         self.win.close()
+        
+    def readFrame_(self, buffer):
+        width = CVPixelBufferGetWidth(buffer)
+        height = CVPixelBufferGetHeight(buffer)
+        
+        CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
+        pointer = CVPixelBufferGetBaseAddress(buffer)
+        ls = [self.getL_width_height_forPixel_(pointer, width, height, point) for point in self.pointsInRect_(self.selection)]
+        average = sum(ls) / len(ls)
+        CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
+        
+        frameTime = CMTimeMake(self.frameCount, self.frameRate)
+        self.series.addValue_atTime_(average, frameTime)
+        self.frameCount += 1
         
     def pointsInRect_(self, rect):
         points = [
@@ -168,8 +175,8 @@ class AverageColor(PluginClass):
         ]
         return points
     
-    def getL_forPixel_(self, imageRef, pixel):
-        pixels = self.getPixel_forCoords_(imageRef, pixel)
+    def getL_width_height_forPixel_(self, buffer, width, height, pixel):
+        pixels = self.getPixel_width_height_forCoords_(buffer, width, height, pixel)
         r, = struct.unpack("B", pixels["r"])
         g, = struct.unpack("B", pixels["g"])
         b, = struct.unpack("B", pixels["b"])
@@ -180,19 +187,14 @@ class AverageColor(PluginClass):
         asset = self.currentDocument().movie().currentItem().asset()
         return asset.tracksWithMediaType_(AVMediaTypeVideo).objectAtIndex_(0).nominalFrameRate()
         
-    def getPixel_forCoords_(self, imageRef, pixel):
-        rawData = CGDataProviderCopyData(CGImageGetDataProvider(imageRef))
-        buffer = CFDataGetBytePtr(rawData)
-        height = CGImageGetHeight(imageRef)
-        width = CGImageGetWidth(imageRef)
-        
+    def getPixel_width_height_forCoords_(self, buffer, width, height, pixel):
         def coordinatesToOffset(x, y):
             # Each y increase is a full row, which adds `width` pixels to the offset.
             # Each pixel has 4 components.
             return (y * width + x) * 4
         
-        offset = coordinatesToOffset(pixel[0], pixel[1])
-        return {"r": buffer[offset+1], "g": buffer[offset+2], "b": buffer[offset+3], "a": buffer[offset]}
+        offset = int(coordinatesToOffset(pixel[0], pixel[1]))
+        return {"r": buffer[offset], "g": buffer[offset+1], "b": buffer[offset+2], "a": buffer[offset+3]}
         
     def hslFromR_G_B_(self, rByte, gByte, bByte):
         # Conversion following https://www.rapidtables.com/convert/color/rgb-to-hsl.html

@@ -10,6 +10,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		8F44271424C1C8FD0000718A /* VideoFrameAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F44271224C1C8FD0000718A /* VideoFrameAnalyzer.m */; };
 		8FA1480924B72F45004667E9 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; };
 		8FA1480A24B72F45004667E9 /* Python.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
@@ -338,6 +339,8 @@
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F2EC00E24BCCB73009E9729 /* AverageColor.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = AverageColor.py; sourceTree = "<group>"; };
+		8F44271224C1C8FD0000718A /* VideoFrameAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoFrameAnalyzer.m; sourceTree = "<group>"; };
+		8F44271324C1C8FD0000718A /* VideoFrameAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFrameAnalyzer.h; sourceTree = "<group>"; };
 		8FA1480824B72F45004667E9 /* Python.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Python.framework; path = ../../../../Library/Frameworks/Python.framework; sourceTree = "<group>"; };
 		8FC0DCB224C099A70007A469 /* RandomTimeSeries.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = RandomTimeSeries.py; sourceTree = "<group>"; };
 		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
@@ -1362,6 +1365,8 @@
 				BB606D1911CC0E7400E037BC /* TiledImage.m */,
 				BBD2408B11C291DC001CDE54 /* TiledPDFDelegate.h */,
 				BBD2408C11C291DC001CDE54 /* TiledPDFDelegate.m */,
+				8F44271324C1C8FD0000718A /* VideoFrameAnalyzer.h */,
+				8F44271224C1C8FD0000718A /* VideoFrameAnalyzer.m */,
 				BB5D6989100E438C005537B3 /* VideoFrameLoader.h */,
 				BB5D698A100E438C005537B3 /* VideoFrameLoader.m */,
 				BBA0C8CF1FA6B11000A03796 /* NSCoder+QTLegacy.h */,
@@ -1681,6 +1686,7 @@
 				BB3D1EBF1035D85200DB8628 /* AnnotationCategory.m in Sources */,
 				BBC738BA103B1DD6003006C6 /* AnnotationVisualizer.m in Sources */,
 				BBF7FF14103CA8E40094BEA2 /* AnnotationFilmstripVisualizer.m in Sources */,
+				8F44271424C1C8FD0000718A /* VideoFrameAnalyzer.m in Sources */,
 				BB9A1F111043497F0069E6EB /* TimeSeriesData.m in Sources */,
 				BB9A1F1410434C800069E6EB /* TimeSeriesVisualizer.m in Sources */,
 				BB9A1F64104351E60069E6EB /* TimeCodedDataPoint.m in Sources */,
