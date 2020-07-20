@@ -142,7 +142,7 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         
         self.series = TimeSeriesData.alloc().init()
         self.series.setName_("Average color data")
-        dataSource = PluginDataSource.alloc().initWithPath_(None)
+        dataSource = PluginManager.defaultPluginManager().dataSourceForPlugin_(self)
         dataSource.setName_("Average color")
         dataSource.addDataSet_(self.series)
             
