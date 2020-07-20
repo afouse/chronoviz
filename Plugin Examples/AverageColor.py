@@ -86,11 +86,14 @@ try:
                 # we choose the larger ratio.
                 ratio = max(widthRatio, heightRatio)
                 
-                x = math.floor(selection.origin.x * ratio)
-                y = math.floor(selection.origin.y * ratio)
+                
                 width = math.floor(selection.size.width * ratio)
                 height = math.floor(selection.size.height * ratio)
-                return CGRectMake(x, y, width, height)
+                x = math.floor(selection.origin.x * ratio)
+                # We need to convert from a bottom-left to a top-left coordinate system.
+                y = math.floor(imageHeight - (selection.origin.y * ratio) - height)
+                rect = CGRectMake(x, y, width, height)
+                return rect
             
 except objc.error as e:
     if str(e).endswith("is overriding existing Objective-C class"):
@@ -134,7 +137,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         
     def calculate(self):
         self.selection = self.imageView.getSelectionInImagePixels()
-        print(self.selection)
         
         frameRate = self.getFrameRate()
         durationInSeconds = CMTimeGetSeconds(self.currentDocument().movie().currentItem().duration())
@@ -158,25 +160,51 @@ class AverageColor(AnnotationDataAnalysisPlugin):
     def readFrame_(self, buffer):
         width = CVPixelBufferGetWidth(buffer)
         height = CVPixelBufferGetHeight(buffer)
+        bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
         
         CVPixelBufferLockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
         pointer = CVPixelBufferGetBaseAddress(buffer)
-        ls = [self.getL_width_height_forPixel_(pointer, width, height, point) for point in self.pointsInRect_(self.selection)]
-        average = sum(ls) / len(ls)
+        average = 0
+        count = self.selection.size.width * self.selection.size.height
+        for point in self.pointsInRect_(self.selection):
+            l = self.getL_bpr_forPixel_(pointer, bytesPerRow, point)
+            """
+            if outputCount >= self.selection.size.width:
+                output += "\n"
+                outputCount = 1
+            else:
+                outputCount += 1
+            if l < 0.25:
+                new = "#"
+            elif l < 0.5:
+                new = "|"
+            elif l < 0.75:
+                new = ":"
+            else:
+                new = "."
+            output += new
+            """
+            average += l
+        average /= count
         CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
-        
+    
         frameTime = CMTimeMake(self.frameCount, self.frameRate)
+        """
+        print(f"{CMTimeGetSeconds(frameTime):.2f}")
+        print(output)
+        print("\n\n")
+        """
         self.series.addValue_atTime_(average, frameTime)
         self.frameCount += 1
         
     def pointsInRect_(self, rect):
         points = [
-            (int(rect.origin.x + x), int(rect.origin.y + y)) for x in range(0, int(rect.size.width)) for y in range(0, int(rect.size.height))
+            (int(rect.origin.x + x), int(rect.origin.y + y)) for y in range(0, int(rect.size.height)) for x in range(0, int(rect.size.width))
         ]
         return points
     
-    def getL_width_height_forPixel_(self, buffer, width, height, pixel):
-        pixels = self.getPixel_width_height_forCoords_(buffer, width, height, pixel)
+    def getL_bpr_forPixel_(self, buffer, bytesPerRow, pixel):
+        pixels = self.getPixel_bpr_forCoords_(buffer, bytesPerRow, pixel)
         r, = struct.unpack("B", pixels["r"])
         g, = struct.unpack("B", pixels["g"])
         b, = struct.unpack("B", pixels["b"])
@@ -187,11 +215,11 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         asset = self.currentDocument().movie().currentItem().asset()
         return asset.tracksWithMediaType_(AVMediaTypeVideo).objectAtIndex_(0).nominalFrameRate()
         
-    def getPixel_width_height_forCoords_(self, buffer, width, height, pixel):
+    def getPixel_bpr_forCoords_(self, buffer, bytesPerRow, pixel):
         def coordinatesToOffset(x, y):
             # Each y increase is a full row, which adds `width` pixels to the offset.
             # Each pixel has 4 components.
-            return (y * width + x) * 4
+            return (y * bytesPerRow) + (x * 4)
         
         offset = int(coordinatesToOffset(pixel[0], pixel[1]))
         return {"r": buffer[offset], "g": buffer[offset+1], "b": buffer[offset+2], "a": buffer[offset+3]}
