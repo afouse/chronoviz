@@ -346,12 +346,6 @@ DQ
                                     <action selector="reloadPlugins:" target="375" id="1302"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Manage Plugin Scripts…" id="1064">
-                                <modifierMask key="keyEquivalentModifierMask"/>
-                                <connections>
-                                    <action selector="showPluginScripts:" target="375" id="1065"/>
-                                </connections>
-                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="1059"/>
                         </items>
                     </menu>
