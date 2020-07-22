@@ -146,15 +146,26 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         dataSource.setName_("Average color")
         dataSource.addDataSet_(self.series)
             
-        print("Start analyzing")
         self.frameCount = 0
+        self.frameRate = self.getFrameRate()
         
+        print("Calling analyze")
+        self.pyobjc_performSelectorInBackground_withObject_('analyze:', None)
+        
+    def analyze_(self, garbage):
+        print("Analzying")
         frameAnalyzer = VideoFrameAnalyzer.analyze_withDelegate_(self.currentDocument().movie(), self)
+        print("Done analyzing")
         
+        self.pyobjc_performSelectorOnMainThread_withObject_('finish:', None)
+    
+    def finish_(self, garbage):
+        print("Finishing")
         AppController.currentApp().viewManager().showData_(self.series)
         self.win.close()
         
     def readFrame_atTime_(self, buffer, frameTimeValue):
+        print("Processing next frame")
         frameTime = frameTimeValue.CMTimeValue()
         
         width = CVPixelBufferGetWidth(buffer)
@@ -165,13 +176,10 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         pointer = CVPixelBufferGetBaseAddress(buffer)
         average = 0
         count = self.selection.size.width * self.selection.size.height
-        """
         output = ""
         outputCount = 0
-        """
         for point in self.pointsInRect_(self.selection):
             l = self.getL_bpr_forPixel_(pointer, bytesPerRow, point)
-            """
             if outputCount >= self.selection.size.width:
                 output += "\n"
                 outputCount = 1
@@ -186,17 +194,13 @@ class AverageColor(AnnotationDataAnalysisPlugin):
             else:
                 new = "."
             output += new
-            """
             average += l
         average /= count
         CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
         
-        """
         print(f"{CMTimeGetSeconds(frameTime)}")
         print(output)
         print("\n\n")
-        """
-        
         self.series.addValue_atTime_(average, frameTime)
         self.frameCount += 1
         

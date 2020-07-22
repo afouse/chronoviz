@@ -35,6 +35,8 @@
 @property BOOL shouldShowProgress;
 
 -(void)performAnalysis;
+-(void)asyncBackground:(NSString *)selector;
+-(void)asyncMain:(NSString *)selector;
 
 // Results methods
 // These create new things to add to the system as a result of running the plugin

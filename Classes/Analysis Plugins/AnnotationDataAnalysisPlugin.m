@@ -72,6 +72,22 @@
 	[self setDisplayName:@"Default Plugin"];
 }
 
+-(void)asyncBackground:(NSString *)selector {
+    NSLog(@"Dispatching background %@", selector);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"Dispatched background");
+        [self performSelector:NSSelectorFromString(selector)];
+    });
+}
+
+-(void)asyncMain:(NSString *)selector {
+    NSLog(@"Dispatching main %@", selector);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"Dispatched main");
+        [self performSelector:NSSelectorFromString(selector)];
+    });
+}
+
 -(void)setDataVariableClass:(NSString*)className
 {
     Class variableClass = NSClassFromString(className);
