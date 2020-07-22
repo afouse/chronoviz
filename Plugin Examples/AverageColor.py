@@ -137,10 +137,8 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         
     def calculate(self):
         self.selection = self.imageView.getSelectionInImagePixels()
-        
-        frameRate = self.getFrameRate()
-        durationInSeconds = CMTimeGetSeconds(self.currentDocument().movie().currentItem().duration())
-        end = min(math.floor(frameRate * durationInSeconds), 500)
+        if not self.selection:
+            return
         
         self.series = TimeSeriesData.alloc().init()
         self.series.setName_("Average color data")
@@ -151,13 +149,15 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         print("Start analyzing")
         self.frameCount = 0
         self.frameRate = self.getFrameRate()
+        
         frameAnalyzer = VideoFrameAnalyzer.analyze_withDelegate_(self.currentDocument().movie(), self)
-        print("Done analyzing")
         
         AppController.currentApp().viewManager().showData_(self.series)
         self.win.close()
         
-    def readFrame_(self, buffer):
+    def readFrame_atTime_(self, buffer, frameTimeValue):
+        frameTime = frameTimeValue.CMTimeValue()
+        
         width = CVPixelBufferGetWidth(buffer)
         height = CVPixelBufferGetHeight(buffer)
         bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
@@ -166,6 +166,10 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         pointer = CVPixelBufferGetBaseAddress(buffer)
         average = 0
         count = self.selection.size.width * self.selection.size.height
+        """
+        output = ""
+        outputCount = 0
+        """
         for point in self.pointsInRect_(self.selection):
             l = self.getL_bpr_forPixel_(pointer, bytesPerRow, point)
             """
@@ -187,13 +191,13 @@ class AverageColor(AnnotationDataAnalysisPlugin):
             average += l
         average /= count
         CVPixelBufferUnlockBaseAddress(buffer, kCVPixelBufferLock_ReadOnly)
-    
-        frameTime = CMTimeMake(self.frameCount, self.frameRate)
+        
         """
-        print(f"{CMTimeGetSeconds(frameTime):.2f}")
+        print(f"{CMTimeGetSeconds(frameTime)}")
         print(output)
         print("\n\n")
         """
+        
         self.series.addValue_atTime_(average, frameTime)
         self.frameCount += 1
         

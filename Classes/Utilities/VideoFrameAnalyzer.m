@@ -17,8 +17,9 @@
     CMSampleBufferRef nextSample = [readerOutput copyNextSampleBuffer];
     while (nextSample != NULL) {
         CVPixelBufferRef frame = CMSampleBufferGetImageBuffer(nextSample);
+        NSValue *time = [NSValue valueWithCMTime:CMSampleBufferGetPresentationTimeStamp(nextSample)];
         if (frame != NULL) {
-            [delegate readFrame:frame];
+            [delegate readFrame:frame atTime:time];
         }
         CFRelease(nextSample);
         nextSample = [readerOutput copyNextSampleBuffer];

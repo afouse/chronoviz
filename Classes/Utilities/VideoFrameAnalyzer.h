@@ -8,5 +8,5 @@
 @end
 
 @interface NSObject(VideoFrameAnalzerDelegate)
-- (void)readFrame:(CVPixelBufferRef)buffer;
+- (void)readFrame:(CVPixelBufferRef)buffer atTime:(NSValue *)time;
 @end
