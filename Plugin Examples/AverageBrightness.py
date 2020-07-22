@@ -103,10 +103,10 @@ except objc.error as e:
     else:
         raise e
 
-class AverageColor(AnnotationDataAnalysisPlugin):
+class AverageBrightness(AnnotationDataAnalysisPlugin):
     def setup(self):
          # Sets the name of the plugin in the menu
-        self.setDisplayName_("Average color")
+        self.setDisplayName_("Extract average brightness in selection")
     
     def performAnalysis(self):
         app = NSApplication.sharedApplication()
@@ -145,9 +145,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         dataSource = PluginManager.defaultPluginManager().dataSourceForPlugin_(self)
         dataSource.setName_("Average color")
         dataSource.addDataSet_(self.series)
-            
-        self.frameCount = 0
-        self.frameRate = self.getFrameRate()
         
         print("Calling analyze")
         self.pyobjc_performSelectorInBackground_withObject_('analyze:', None)
@@ -202,7 +199,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         print(output)
         print("\n\n")
         self.series.addValue_atTime_(average, frameTime)
-        self.frameCount += 1
         
     def pointsInRect_(self, rect):
         points = [
