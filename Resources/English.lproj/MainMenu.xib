@@ -647,7 +647,7 @@ DQ
                         <size key="minSize" width="44" height="23"/>
                         <size key="maxSize" width="44" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1185">
-                            <rect key="frame" x="25" y="14" width="44" height="23"/>
+                            <rect key="frame" x="24" y="14" width="44" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="1186">
                                 <font key="font" metaFont="system"/>
@@ -665,7 +665,7 @@ DQ
                         <size key="minSize" width="44" height="23"/>
                         <size key="maxSize" width="44" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1201">
-                            <rect key="frame" x="7" y="14" width="44" height="23"/>
+                            <rect key="frame" x="6" y="14" width="44" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="1202">
                                 <font key="font" metaFont="system"/>
@@ -678,12 +678,12 @@ DQ
                             <action selector="importData:" target="375" id="1204"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="A21481A8-9378-49CF-BC84-6A70CEEB88A5" label="Timeline Zoom" paletteLabel="Timeline Zoom" id="1184">
+                    <toolbarItem implicitItemIdentifier="A21481A8-9378-49CF-BC84-6A70CEEB88A5" label="Zoom in Timeline" paletteLabel="Zoom in Timeline" id="1184">
                         <nil key="toolTip"/>
                         <size key="minSize" width="63" height="23"/>
                         <size key="maxSize" width="76" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1182">
-                            <rect key="frame" x="6" y="14" width="76" height="23"/>
+                            <rect key="frame" x="11" y="14" width="76" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" state="on" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="1183">
                                 <font key="font" metaFont="system"/>
@@ -739,7 +739,7 @@ DQ
                         <size key="minSize" width="44" height="23"/>
                         <size key="maxSize" width="44" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1385">
-                            <rect key="frame" x="17" y="14" width="44" height="23"/>
+                            <rect key="frame" x="16" y="14" width="44" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="1386">
                                 <font key="font" metaFont="system"/>
