@@ -147,8 +147,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         dataSource.addDataSet_(self.series)
             
         print("Start analyzing")
-        self.frameCount = 0
-        
         frameAnalyzer = VideoFrameAnalyzer.analyze_withDelegate_(self.currentDocument().movie(), self)
         
         AppController.currentApp().viewManager().showData_(self.series)
@@ -198,7 +196,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         """
         
         self.series.addValue_atTime_(average, frameTime)
-        self.frameCount += 1
         
     def pointsInRect_(self, rect):
         points = [
