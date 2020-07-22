@@ -103,10 +103,10 @@ except objc.error as e:
     else:
         raise e
 
-class AverageColor(AnnotationDataAnalysisPlugin):
+class AverageBrightness(AnnotationDataAnalysisPlugin):
     def setup(self):
          # Sets the name of the plugin in the menu
-        self.setDisplayName_("Average color")
+        self.setDisplayName_("Extrat average brightness in selection")
     
     def performAnalysis(self):
         app = NSApplication.sharedApplication()
