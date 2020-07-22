@@ -148,7 +148,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
             
         print("Start analyzing")
         self.frameCount = 0
-        self.frameRate = self.getFrameRate()
         
         frameAnalyzer = VideoFrameAnalyzer.analyze_withDelegate_(self.currentDocument().movie(), self)
         
@@ -214,10 +213,6 @@ class AverageColor(AnnotationDataAnalysisPlugin):
         b, = struct.unpack("B", pixels["b"])
         h, s, l = self.hslFromR_G_B_(r, g, b)
         return l
-        
-    def getFrameRate(self):
-        asset = self.currentDocument().movie().currentItem().asset()
-        return asset.tracksWithMediaType_(AVMediaTypeVideo).objectAtIndex_(0).nominalFrameRate()
         
     def getPixel_bpr_forCoords_(self, buffer, bytesPerRow, pixel):
         def coordinatesToOffset(x, y):
