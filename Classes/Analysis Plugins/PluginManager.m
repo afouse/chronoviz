@@ -348,10 +348,12 @@ static PluginManager* defaultPluginManager = nil;
 	// Check for needed document variables
 	////////
 	
+    /*
 	NSArray *requiredDocVariables = [plugin documentVariables];
 	NSMutableDictionary *existingDocVariables = [[AnnotationDocument currentDocument] documentVariables];
 	NSMutableArray *neededVariables = [NSMutableArray array];
 	
+    /*
 	for(NSString *varName in requiredDocVariables)
 	{
 		id value = [existingDocVariables objectForKey:varName];
@@ -361,6 +363,7 @@ static PluginManager* defaultPluginManager = nil;
 		}
 	}
 	
+    /*
 	if([neededVariables count] > 0)
 	{
 		
@@ -413,6 +416,7 @@ static PluginManager* defaultPluginManager = nil;
 		return;
 	}
 	
+    /*
 	NSUInteger parameterCount = [[plugin dataParameters] count];
 	if(parameterCount > [[[AppController currentDoc] dataSetsOfClass:[plugin dataVariableClass]] count])
 	{
@@ -444,7 +448,8 @@ static PluginManager* defaultPluginManager = nil;
 		[window setContentView:configView];
 		[window makeKeyAndOrderFront:self];
 	}
-	[plugin release];
+     */
+    [plugin performAnalysis];
 }
 
 
