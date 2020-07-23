@@ -345,7 +345,7 @@
 		8FC0DCB224C099A70007A469 /* RandomTimeSeries.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = RandomTimeSeries.py; sourceTree = "<group>"; };
 		A98624D124AA4D6900E5618C /* MergeCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = MergeCategories.py; sourceTree = "<group>"; };
 		A98624D224AA4D6A00E5618C /* PadCategories.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = PadCategories.py; sourceTree = "<group>"; };
-		A98624D324AA4D6A00E5618C /* Threshold.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = Threshold.py; sourceTree = "<group>"; };
+		A98624D324AA4D6A00E5618C /* ThresholdPlugin.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = ThresholdPlugin.py; sourceTree = "<group>"; };
 		BB01592E0EACE34300B41B99 /* AppController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppController.h; sourceTree = "<group>"; };
 		BB01592F0EACE34300B41B99 /* AppController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppController.m; sourceTree = "<group>"; };
 		BB0159450EACE4BC00B41B99 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
@@ -992,7 +992,7 @@
 				A98624D124AA4D6900E5618C /* MergeCategories.py */,
 				8F2EC00E24BCCB73009E9729 /* AverageBrightness.py */,
 				A98624D224AA4D6A00E5618C /* PadCategories.py */,
-				A98624D324AA4D6A00E5618C /* Threshold.py */,
+				A98624D324AA4D6A00E5618C /* ThresholdPlugin.py */,
 				8FC0DCB224C099A70007A469 /* RandomTimeSeries.py */,
 			);
 			path = "Plugin Examples";
