@@ -338,6 +338,7 @@
 		32CA4F630368D1EE00C91783 /* ChronoViz_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChronoViz_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* ChronoViz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChronoViz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F23B19F24E59AF000D7AB15 /* InsideBounds.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = InsideBounds.py; sourceTree = "<group>"; };
 		8F2EC00E24BCCB73009E9729 /* AverageBrightness.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = AverageBrightness.py; sourceTree = "<group>"; };
 		8F44271224C1C8FD0000718A /* VideoFrameAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoFrameAnalyzer.m; sourceTree = "<group>"; };
 		8F44271324C1C8FD0000718A /* VideoFrameAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFrameAnalyzer.h; sourceTree = "<group>"; };
@@ -989,6 +990,7 @@
 		A98624CD24AA4D4E00E5618C /* Plugin Examples */ = {
 			isa = PBXGroup;
 			children = (
+				8F23B19F24E59AF000D7AB15 /* InsideBounds.py */,
 				A98624D124AA4D6900E5618C /* MergeCategories.py */,
 				8F2EC00E24BCCB73009E9729 /* AverageBrightness.py */,
 				A98624D224AA4D6A00E5618C /* PadCategories.py */,
