@@ -409,7 +409,9 @@ static PluginManager* defaultPluginManager = nil;
 		
 	}
 	
-    BOOL needsSelectionUI = ([[plugin dataParameters] count] + [[plugin inputParameters] count]) > 0;
+    BOOL needsSelectionUI = ([[plugin dataParameters] count] +
+                             [[plugin inputParameters] count] +
+                             [[plugin annotationSets] count]) > 0;
     
     if(needsSelectionUI)
     {
@@ -453,6 +455,7 @@ static PluginManager* defaultPluginManager = nil;
             [window setContentView:configView];
             [window makeKeyAndOrderFront:self];
         }
+        [plugin release];
     } else {
        [plugin performAnalysis];
     }
