@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="16097" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment version="1080" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097.2"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="16097"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -410,7 +410,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="316" y="360" width="640" height="658"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="480" height="400"/>
             <view key="contentView" id="372" customClass="MovieControllerView">
                 <rect key="frame" x="0.0" y="0.0" width="640" height="658"/>
@@ -433,7 +433,7 @@ DQ
                                     </textFieldCell>
                                 </textField>
                                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1280">
-                                    <rect key="frame" x="295" y="29" width="95" height="25"/>
+                                    <rect key="frame" x="295.5" y="29" width="95" height="25"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <segmentedCell key="cell" state="on" borderStyle="border" alignment="left" style="texturedRounded" trackingMode="selectAny" id="1281">
                                         <font key="font" metaFont="system"/>
@@ -678,12 +678,12 @@ DQ
                             <action selector="importData:" target="375" id="1204"/>
                         </connections>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="A21481A8-9378-49CF-BC84-6A70CEEB88A5" label="Zoom in Timeline" paletteLabel="Zoom in Timeline" id="1184">
+                    <toolbarItem implicitItemIdentifier="A21481A8-9378-49CF-BC84-6A70CEEB88A5" label="Timeline Zoom" paletteLabel="Timeline Zoom" id="1184">
                         <nil key="toolTip"/>
                         <size key="minSize" width="63" height="23"/>
                         <size key="maxSize" width="76" height="25"/>
                         <segmentedControl key="view" verticalHuggingPriority="750" id="1182">
-                            <rect key="frame" x="11" y="14" width="76" height="23"/>
+                            <rect key="frame" x="5" y="14" width="76" height="23"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
                             <segmentedCell key="cell" state="on" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="1183">
                                 <font key="font" metaFont="system"/>
@@ -800,7 +800,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="713" y="3" width="413" height="466"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="413" height="440"/>
             <view key="contentView" id="692">
                 <rect key="frame" x="0.0" y="0.0" width="413" height="466"/>
@@ -1257,7 +1257,7 @@ DQ
                     <rect key="frame" x="20" y="208" width="303" height="1"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <view key="contentView" id="k9f-oe-MOJ">
-                        <rect key="frame" x="1" y="0.5" width="301" height="0.0"/>
+                        <rect key="frame" x="1" y="1" width="301" height="0.0"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     </view>
                     <color key="borderColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -1278,7 +1278,7 @@ DQ
             <windowStyleMask key="styleMask" titled="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="196" y="389" width="274" height="121"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="958">
                 <rect key="frame" x="0.0" y="0.0" width="274" height="121"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1316,7 +1316,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="235" y="413" width="426" height="146"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="1120">
                 <rect key="frame" x="0.0" y="0.0" width="426" height="146"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1410,11 +1410,11 @@ Gw
                     <rect key="frame" x="20" y="98" width="260" height="252"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="JtB-4Q-x06">
-                        <rect key="frame" x="1" y="0.0" width="243" height="251"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <rect key="frame" x="1" y="0.0" width="258" height="251"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <outlineView focusRingType="none" verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" headerView="1238" indentationPerLevel="16" outlineTableColumn="1239" id="1237">
-                                <rect key="frame" x="0.0" y="0.0" width="243" height="228"/>
+                                <rect key="frame" x="0.0" y="0.0" width="258" height="228"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="calibratedRGB"/>
@@ -1444,7 +1444,7 @@ Gw
                                         </textFieldCell>
                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                     </tableColumn>
-                                    <tableColumn identifier="Color" width="45" minWidth="40" maxWidth="1000" id="1240">
+                                    <tableColumn identifier="Color" width="60" minWidth="40" maxWidth="1000" id="1240">
                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left">
                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -1469,11 +1469,11 @@ Gw
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="1235">
-                        <rect key="frame" x="244" y="23" width="15" height="228"/>
+                        <rect key="frame" x="243" y="23" width="16" height="228"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </scroller>
                     <tableHeaderView key="headerView" id="1238">
-                        <rect key="frame" x="0.0" y="0.0" width="243" height="23"/>
+                        <rect key="frame" x="0.0" y="0.0" width="258" height="23"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </tableHeaderView>
                 </scrollView>
@@ -1482,7 +1482,7 @@ Gw
                     <autoresizingMask key="autoresizingMask"/>
                     <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="1kj-id-FJr">
                         <rect key="frame" x="1" y="1" width="258" height="43"/>
-                        <autoresizingMask key="autoresizingMask"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView drawsBackground="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" spellingCorrection="YES" smartInsertDelete="YES" id="1251">
                                 <rect key="frame" x="0.0" y="0.0" width="258" height="43"/>
@@ -1639,7 +1639,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="235" y="301" width="350" height="350"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="1317">
                 <rect key="frame" x="0.0" y="0.0" width="350" height="350"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -1740,7 +1740,7 @@ Gw
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="230" y="161" width="350" height="380"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1577"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="1390">
                 <rect key="frame" x="0.0" y="0.0" width="350" height="380"/>
                 <autoresizingMask key="autoresizingMask"/>
