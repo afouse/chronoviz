@@ -344,16 +344,16 @@ static PluginManager* defaultPluginManager = nil;
 	Class PluginClass = [[sender representedObject] class];
 	AnnotationDataAnalysisPlugin *plugin = [[PluginClass alloc] init];
 	
-	////////
+	//
 	// Check for needed document variables
-	////////
+	//
 	
-    /*
+    
 	NSArray *requiredDocVariables = [plugin documentVariables];
 	NSMutableDictionary *existingDocVariables = [[AnnotationDocument currentDocument] documentVariables];
 	NSMutableArray *neededVariables = [NSMutableArray array];
 	
-    /*
+    
 	for(NSString *varName in requiredDocVariables)
 	{
 		id value = [existingDocVariables objectForKey:varName];
@@ -363,7 +363,7 @@ static PluginManager* defaultPluginManager = nil;
 		}
 	}
 	
-    /*
+    
 	if([neededVariables count] > 0)
 	{
 		
@@ -409,47 +409,54 @@ static PluginManager* defaultPluginManager = nil;
 		
 	}
 	
-	BOOL result = [self checkDataSets:plugin];
-	if(!result)
-	{
-		[plugin release];
-		return;
-	}
-	
-    /*
-	NSUInteger parameterCount = [[plugin dataParameters] count];
-	if(parameterCount > [[[AppController currentDoc] dataSetsOfClass:[plugin dataVariableClass]] count])
-	{
-		NSAlert* alert = [[NSAlert alloc] init];
-		[alert setMessageText:[NSString stringWithFormat:
-							   @"%@ plugin requires at least %i data set%@ to be loaded.",
-							   [plugin displayName],
-							   [[plugin dataParameters] count],
-							   (parameterCount > 1) ? @"s" : @""]];
-		[alert setInformativeText:@"Please try to run the plugin again after loading more data."];
-		[alert addButtonWithTitle:@"OK"];
-		[alert addButtonWithTitle:@"Load data…"];
-		NSInteger result = [alert runModal];
-		if(result == NSAlertSecondButtonReturn)
-		{
-			[[AppController currentApp] importData:self];
-		}
-	}
-	else
-	{	
-		PluginConfiguration *config = [[PluginConfiguration alloc] initWithPlugin:plugin];
-		
-		PluginConfigurationView *configView = [[PluginConfigurationView alloc] initWithPluginConfiguration:config];
-		
-		NSSize size = [configView bounds].size;
-		
-		NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200,200,size.width,size.height) styleMask:(NSTitledWindowMask | NSClosableWindowMask) backing:NSBackingStoreBuffered defer:NO];
-		[window setTitle:[plugin displayName]];
-		[window setContentView:configView];
-		[window makeKeyAndOrderFront:self];
-	}
-     */
-    [plugin performAnalysis];
+    BOOL needsSelectionUI = ([[plugin dataParameters] count] + [[plugin inputParameters] count]) > 0;
+    
+    if(needsSelectionUI)
+    {
+    
+        BOOL result = [self checkDataSets:plugin];
+        if(!result)
+        {
+            [plugin release];
+            return;
+        }
+        
+        
+        NSUInteger parameterCount = [[plugin dataParameters] count];
+        if(parameterCount > [[[AppController currentDoc] dataSetsOfClass:[plugin dataVariableClass]] count])
+        {
+            NSAlert* alert = [[NSAlert alloc] init];
+            [alert setMessageText:[NSString stringWithFormat:
+                                   @"%@ plugin requires at least %lu data set%@ to be loaded.",
+                                   [plugin displayName],
+                                   (unsigned long)[[plugin dataParameters] count],
+                                   (parameterCount > 1) ? @"s" : @""]];
+            [alert setInformativeText:@"Please try to run the plugin again after loading more data."];
+            [alert addButtonWithTitle:@"OK"];
+            [alert addButtonWithTitle:@"Load data…"];
+            NSInteger result = [alert runModal];
+            if(result == NSAlertSecondButtonReturn)
+            {
+                [[AppController currentApp] importData:self];
+            }
+        }
+        else
+        {
+            PluginConfiguration *config = [[PluginConfiguration alloc] initWithPlugin:plugin];
+            
+            PluginConfigurationView *configView = [[PluginConfigurationView alloc] initWithPluginConfiguration:config];
+            
+            NSSize size = [configView bounds].size;
+            
+            NSWindow *window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200,200,size.width,size.height) styleMask:(NSTitledWindowMask | NSClosableWindowMask) backing:NSBackingStoreBuffered defer:NO];
+            [window setTitle:[plugin displayName]];
+            [window setContentView:configView];
+            [window makeKeyAndOrderFront:self];
+        }
+    } else {
+       [plugin performAnalysis];
+    }
+    
 }
 
 
