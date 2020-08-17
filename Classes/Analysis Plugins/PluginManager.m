@@ -457,7 +457,9 @@ static PluginManager* defaultPluginManager = nil;
         }
         [plugin release];
     } else {
-       [plugin performAnalysis];
+        PluginConfiguration *config = [[PluginConfiguration alloc] initWithPlugin:plugin];
+        [config runPlugin:self];
+        [config release];
     }
     
 }
