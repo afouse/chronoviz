@@ -47,6 +47,7 @@ int const AFDualViz = 12;
 	
 	
 	[pauseWhileAnnotatingButton setState:[app pauseWhileAnnotating]];
+    [showPopUpAnnotationsButton setState:[app popUpAnnotations]];
 	
 	[automaticFileButton setState:[defaults boolForKey:AFAutomaticAnnotationFileKey]];
 	[openVideosHalfSizeButton setState:[app openVideosHalfSize]];
