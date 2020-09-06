@@ -69,12 +69,5 @@ extern int const AFSaveInteractionsUndefined;
 -(IBAction)togglePauseForAnnotations:(id)sender;
 -(IBAction)togglePopUpAnnotations:(id)sender;
 
--(IBAction)toggleSaveInteractions:(id)sender;
--(IBAction)toggleSaveTimePosition:(id)sender;
--(IBAction)toggleSaveAnnotationEdits:(id)sender;
--(IBAction)toggleSaveState:(id)sender;
--(IBAction)toggleSaveScreenCaptures:(id)sender;
--(IBAction)toggleUploadInteractions:(id)sender;
--(IBAction)uploadNow:(id)sender;
 
 @end
