@@ -98,13 +98,13 @@
 	<key>CFBundleVersion</key>
 	<string>5.0.0</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.6.0</string>
+	<string>10.9.0</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>http://chronoviz.com/ChronoVizAppcast.xml</string>
+	<string>https://chronoviz.com/ChronoVizAppcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>UTExportedTypeDeclarations</key>
