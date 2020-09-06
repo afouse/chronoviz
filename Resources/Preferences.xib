@@ -8,6 +8,9 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="PreferenceController">
             <connections>
+                <outlet property="automaticFileButton" destination="Tt4-pI-taR" id="2hI-Wi-UJg"/>
+                <outlet property="pauseWhileAnnotatingButton" destination="2ii-y7-woP" id="pgm-ex-VYA"/>
+                <outlet property="showPopUpAnnotationsButton" destination="WzX-Kn-o9h" id="sN2-qW-zhm"/>
                 <outlet property="window" destination="6" id="172"/>
             </connections>
         </customObject>
