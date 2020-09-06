@@ -13,6 +13,7 @@
 #import "MovieViewerController.h"
 #import "Annotation.h"
 #import "DPConstants.h"
+#import "VideoFrameLoader.h"
 #import <QuartzCore/CoreAnimation.h>
 
 @interface AFMovieView (LayerManagement)
@@ -829,10 +830,15 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 			NSImage* image = [[NSImage alloc] initWithSize:imageSize];
 			[image lockFocus];
 			// TODO: Fix the following.
-			[[theDragMovie currentFrameImage] drawInRect:NSMakeRect(0,0,imageSize.width,imageSize.height)
+            
+            CGImageRef imageRef = [VideoFrameLoader generateImageAt:[theDragMovie currentTime] for:theDragMovie error:nil];
+            NSImage *frameimage = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
+                        
+			[frameimage drawInRect:NSMakeRect(0,0,imageSize.width,imageSize.height)
 												fromRect:NSZeroRect 
 											   operation:NSCompositeCopy
 												fraction:0.75];
+            [frameimage release];
 			
 			[image unlockFocus];
 			
