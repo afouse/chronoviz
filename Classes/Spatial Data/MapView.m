@@ -17,7 +17,7 @@
 #import "NSArrayAFBinarySearch.h"
 #import "AnnotationFilter.h"
 #import "AnnotationFiltersController.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
 NSString * const AFMapTypeNormal = @"google.maps.MapTypeId.ROADMAP";
@@ -168,10 +168,6 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	NSObject *image = nil;
 	
 	BOOL recordImage = YES;
-	if(stateFlags && [[stateFlags objectForKey:DataPrismLogState] boolValue])
-	{
-		recordImage = NO;
-	}
 	
 	if(recordImage && mapImage)
 	{
@@ -651,7 +647,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 		i++;
 	}
 		
-	currentTime = QTMakeTime(-1, 600);
+	currentTime = CMTimeMake(-1, 600);
 	[self update];
 }
 
@@ -1056,18 +1052,14 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 	}
 	
 	if(([subsets count] == [indicatorLayers count])
-        && (QTTimeCompare(currentTime, [[[AppController currentDoc] movie] currentTime]) != NSOrderedSame))
+        && (CMTIME_COMPARE_INLINE(currentTime, !=, [[[AppController currentDoc] movie] currentTime])))
 	{
 		NSTimeInterval currentTimeInterval;
-//		NSTimeInterval pointTimeInterval;
 		NSTimeInterval annotationStartTime;
 		NSTimeInterval annotationEndTime;
 		currentTime = [[[AppController currentDoc] movie] currentTime];
-		QTGetTimeInterval(currentTime, &currentTimeInterval);
-//		long currentTimeValue = [[[AppController currentApp] movie] currentTime].timeValue;
-//		long diff = LONG_MAX;
+		currentTimeInterval = CMTimeGetSeconds(currentTime);
 		float diff = FLT_MAX;
-		//TimeCodedGeographicPoint *currentPoint = [subset lastObject];
 		
 		TimeCodedGeographicPoint *currentTimePoint = [[TimeCodedGeographicPoint alloc] init];
 		[currentTimePoint setTime:currentTime];
@@ -1099,7 +1091,7 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 			// 		int index = 0;
 //			for(TimeCodedGeographicPoint *point in subset)
 //			{
-//				QTGetTimeInterval([point time],&pointTimeInterval);
+//				pointTimeInterval = CMTimeGetSeconds([point time]);
 //				if(fabs(pointTimeInterval - currentTimeInterval) > diff)
 //				{
 //					currentPoint = point;
@@ -1142,8 +1134,8 @@ NSString * const AFMapTypeTerrain = @"google.maps.MapTypeId.TERRAIN";
 		{
 			CALayer *annotationIndicator = [layer indicatorLayer];
 			Annotation *annotation = [layer valueForKey:@"annotation"];
-			QTGetTimeInterval([annotation startTime],&annotationStartTime);
-			QTGetTimeInterval([annotation endTime],&annotationEndTime);
+			annotationStartTime = CMTimeGetSeconds([annotation startTime]);
+			annotationEndTime = CMTimeGetSeconds([annotation endTime]);
 			
 			TimeCodedGeographicPoint *currentPoint;
 			if([indicatorLayers count] == 1)

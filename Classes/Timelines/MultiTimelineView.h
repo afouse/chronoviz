@@ -44,7 +44,6 @@
 - (TimelineView *)addNewTimeline;
 - (TimelineView *)addNewAnnotationTimeline:(id)sender;
 - (TimelineView *)addNewKeyframeTimeline:(id)sender;
-- (TimelineView *)addNewAudioTimeline:(id)sender;
 - (TimelineView *)addNewDataTimeline:(id)sender;
 
 - (BOOL)addTimelines:(NSArray*)timelineArray;

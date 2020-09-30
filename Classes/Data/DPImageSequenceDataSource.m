@@ -94,10 +94,10 @@
 	}	
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
 	NSDate *dataTime = [row objectAtIndex:[self timeColumn]];
-	return QTMakeTimeWithTimeInterval([dataTime timeIntervalSinceDate:[self startDate]]);
+	return CMTimeMakeWithSeconds([dataTime timeIntervalSinceDate:[self startDate]], 600);
 }
 
 - (NSDate*)parseDate:(NSString*)filename
@@ -154,8 +154,8 @@
 			}
 		}
 		
-		QTTime duration = QTMakeTimeWithTimeInterval([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]]);
-		range = QTMakeTimeRange(QTMakeTime(0, duration.timeScale),duration);
+		CMTime duration = CMTimeMakeWithSeconds([[[fileArray lastObject] objectAtIndex:0] timeIntervalSinceDate:[[fileArray objectAtIndex:1] objectAtIndex:0]], 600);
+		range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 		[self setDataArray:fileArray];
 	}
 	return dataArray;
@@ -186,8 +186,8 @@
 	[startDate release];
 	startDate = [start retain];
 	
-	QTTime duration = QTMakeTimeWithTimeInterval([end timeIntervalSinceDate:start]);
-	range = QTMakeTimeRange(QTMakeTime(0, duration.timeScale),duration);
+	CMTime duration = CMTimeMakeWithSeconds([end timeIntervalSinceDate:start], 600);
+	range = CMTimeRangeMake(CMTimeMake(0, duration.timescale),duration);
 	
 	NSMutableArray *newDataSets = [NSMutableArray array];
 	
@@ -261,7 +261,7 @@
 			
 			TimeCodedString *picture = [[TimeCodedString alloc] init];
 			[picture setValue:0];
-			[picture setTime:QTMakeTimeWithTimeInterval([date timeIntervalSinceDate:[self startDate]])];
+			[picture setTime:CMTimeMakeWithSeconds([date timeIntervalSinceDate:[self startDate]], 600)];
 			[picture setString:pictureFile];
 			
 			[pictureFileArray addObject:picture];

@@ -74,7 +74,7 @@
 		BOOL drawLine = NO;
 		for(TimeCodedGeographicPoint *point in [mapView displayedData])
 		{
-			if(QTTimeCompare([point time], [annotation endTime]) == NSOrderedDescending)
+			if(CMTIME_COMPARE_INLINE([point time], >, [annotation endTime]))
 			{
 				break;
 			}
@@ -83,7 +83,7 @@
 				[annotationPath lineToPoint:NSMakePoint(([point lon] - [mapView minLon]) * lonToPixel, 
 														([point lat] - [mapView minLat]) * latToPixel)];
 			}
-			else if(QTTimeCompare([point time], [annotation startTime]) == NSOrderedDescending)
+			else if(CMTIME_COMPARE_INLINE([point time], >, [annotation startTime]))
 			{
 				[annotationPath moveToPoint:NSMakePoint(([point lon] - [mapView minLon]) * lonToPixel, 
 														([point lat] - [mapView minLat]) * latToPixel)];

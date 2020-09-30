@@ -11,7 +11,7 @@
 #import "TimeCodedDataPoint.h"
 #import "VideoProperties.h"
 #import "AnnotationDocument.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @implementation ProtoVisExport
 
@@ -96,12 +96,12 @@
 			
 			
 			NSArray* dataPoints = [dataSet subsetOfSize:width 
-											   forRange:QTMakeTimeRange(QTMakeTime(0,600), [[video movie] duration])];
+											   forRange:CMTimeRangeMake(CMTimeMake(0,600), [[[video movie] currentItem] duration])];
 			
 			for(TimeCodedDataPoint *point in dataPoints)
 			{
 				NSTimeInterval time;
-				QTGetTimeInterval([point time], &time);
+				time = CMTimeGetSeconds([point time]);
 				[jsData appendFormat:@"{val: %f, time: %f},\n",(float)[point value], time];
 			}
 			

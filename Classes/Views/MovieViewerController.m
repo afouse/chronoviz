@@ -72,7 +72,8 @@
 		if(properties)
 		{
 			[self window];
-			NSSize contentSize = [[[properties movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+            AVAsset *asset = [[[properties movie] currentItem] asset];
+            NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 			
 			contentSize.width = contentSize.width;
 			contentSize.height = contentSize.height;
@@ -93,8 +94,8 @@
 			[[self window] setTitle:[properties title]];
 			[movieView setMovie:[properties movie]];
 			
-			QTTime offset = [properties offset];
-			[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+			CMTime offset = [properties offset];
+			[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 			
 			[volumeSlider setHidden:![properties hasAudio]];
 			[volumeIcon setHidden:![properties hasAudio]];
@@ -182,71 +183,78 @@
 
 - (IBAction)moveAlignmentSlider:(id)sender
 {
-	long long timeValue = [[movieView movie] duration].timeValue * [alignmentSlider floatValue];
-	QTTime newTime = QTMakeTime(timeValue,[[movieView movie] duration].timeScale);
-	[[movieView movie] setCurrentTime:newTime];
-	QTTime offset = QTTimeDecrement(newTime, [[[AppController currentApp] movie] currentTime]);
+    CMTime duration = [[[movieView movie] currentItem] duration];
+	long long timeValue = duration.value * [alignmentSlider floatValue];
+	CMTime newTime = CMTimeMake(timeValue, duration.timescale);
+    CMTime tolerance = kCMTimeZero;
+	[[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
+	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
-	[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 	[self update];
 }
 
 - (IBAction)changeOffset:(id)sender
 {
-	QTTime offset = QTMakeTimeWithTimeInterval((NSTimeInterval)[offsetField floatValue]);
+	CMTime offset = CMTimeMakeWithSeconds((NSTimeInterval)[offsetField floatValue], 600);
 	[properties setOffset:offset];
-	QTTime newTime = QTTimeIncrement([[[AppController currentApp] movie] currentTime], offset);
-	if(newTime.timeValue < 0)
+	CMTime newTime = CMTimeAdd([[[AppController currentApp] movie] currentTime], offset);
+	if(newTime.value < 0)
 	{
-		newTime.timeValue = 0;
+		newTime.value = 0;
 	}
-	[[movieView movie] setCurrentTime:newTime];
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 	[self update];
 }
 
 - (void)moveAlignmentOneFrameForward
 {
-	[[movieView movie] stepForward];
-	QTTime newTime = [[movieView movie] currentTime];
-	QTTime offset = QTTimeDecrement(newTime, [[[AppController currentApp] movie] currentTime]);
+	[[[movieView movie] currentItem] stepByCount:1];
+	CMTime newTime = [[movieView movie] currentTime];
+	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
-	[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 	[self update];
 }
 
 - (void)moveAlignmentOneFrameBackward
 {
-	[[movieView movie] stepBackward];
-	QTTime newTime = [[movieView movie] currentTime];
-	QTTime offset = QTTimeDecrement(newTime, [[[AppController currentApp] movie] currentTime]);
+	[[[movieView movie] currentItem] stepByCount:-1];
+	CMTime newTime = [[movieView movie] currentTime];
+	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
-	[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 	[self update];
 }
 
 - (void)moveAlignmentOneStepForward
 {
-	QTTime newTime = [[movieView movie] currentTime];
-	newTime.timeValue = newTime.timeValue + newTime.timeScale*[[AppController currentApp] stepSize];
-	if(QTTimeCompare(newTime, [[movieView movie] duration]) == NSOrderedDescending)
-		newTime.timeValue = [[movieView movie] duration].timeValue;
-	[[movieView movie] setCurrentTime:newTime];
-	QTTime offset = QTTimeDecrement(newTime, [[[AppController currentApp] movie] currentTime]);
+	CMTime newTime = [[movieView movie] currentTime];
+	newTime.value = newTime.value + newTime.timescale*[[AppController currentApp] stepSize];
+	if(CMTIME_COMPARE_INLINE(newTime, >, [[[movieView movie] currentItem] duration]))
+    {
+		newTime.value = [[[movieView movie] currentItem] duration].value;
+    }
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
+	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
-	[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 	[self update];
 }
 
 - (void)moveAlignmentOneStepBackward
 {
-	QTTime newTime = [[movieView movie] currentTime];
-	newTime.timeValue = newTime.timeValue - newTime.timeScale*[[AppController currentApp] stepSize];
-	if(newTime.timeValue < 0)
-		newTime.timeValue = 0;
-	[[movieView movie] setCurrentTime:newTime];
-	QTTime offset = QTTimeDecrement(newTime, [[[AppController currentApp] movie] currentTime]);
+	CMTime newTime = [[movieView movie] currentTime];
+	newTime.value = newTime.value - newTime.timescale*[[AppController currentApp] stepSize];
+	if(newTime.value < 0)
+		newTime.value = 0;
+    CMTime tolerance = kCMTimeZero;
+    [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
+	CMTime offset = CMTimeSubtract(newTime, [[[AppController currentApp] movie] currentTime]);
 	[properties setOffset:offset];
-	[offsetField setFloatValue:((CGFloat) offset.timeValue/(CGFloat) offset.timeScale)];
+	[offsetField setFloatValue:((CGFloat) offset.value/(CGFloat) offset.timescale)];
 	[self update];
 }
 
@@ -271,12 +279,13 @@
     }
 	else if ((object == properties) && [keyPath isEqual:@"offset"])
 	{
-		QTTime newTime = QTTimeIncrement([[[AppController currentApp] movie] currentTime], [properties offset]);
-		if(newTime.timeValue < 0)
+		CMTime newTime = CMTimeAdd([[[AppController currentApp] movie] currentTime], [properties offset]);
+		if(newTime.value < 0)
 		{
-			newTime.timeValue = 0;
+			newTime.value = 0;
 		}
-		[[movieView movie] setCurrentTime:newTime];
+        CMTime tolerance = kCMTimeZero;
+        [[movieView movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
 		[self update];
     }
 	else
@@ -328,10 +337,10 @@
 
 -(void)update
 {
-	[timeField setStringValue:[NSString stringWithQTTime:[[AppController currentApp] currentTime]]];
+	[timeField setStringValue:[NSString stringWithCMTime:[[AppController currentApp] currentTime]]];
 	if(alignmentBarVisible)
 	{
-		[alignmentSlider setFloatValue:(float)([[movieView movie] currentTime].timeValue)/(float)[[movieView movie] duration].timeValue];
+		[alignmentSlider setFloatValue:(float)([[movieView movie] currentTime].value)/(float)[[[movieView movie] currentItem] duration].value];
 	}
 }
 

@@ -13,12 +13,11 @@
 #import "Annotation.h"
 #import "AnnotationDocument.h"
 #import "DPConstants.h"
-#import "AudioExtractor.h"
 #import "NSStringUUID.h"
 #import <Accelerate/Accelerate.h>
-#import <QTKit/QTKit.h>
 
 NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboardType";
+static const NSString *ItemStatusContext;
 
 @interface VideoProperties (SerializationSupport)
 
@@ -28,7 +27,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 
 @interface VideoProperties (MovieLoading)
 
--(void)handleLoadStateChanged:(QTMovie *)theMovie;
+-(void)handleLoadStateChanged:(AVPlayer *)theMovie;
 -(void)movieLoadStateChanged:(NSNotification *)notification;
 
 @end
@@ -98,7 +97,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 		[self setLocalVideo:NO];
 		//[self setCategoryColors:[NSMutableDictionary dictionary]];
 		[self setCategories:[NSArray array]];
-		offset = QTZeroTime;
+		offset = kCMTimeZero;
 		
 	}
 	return self;
@@ -106,194 +105,145 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 
 - (BOOL)hasVideo
 {
-	return [[movie attributeForKey:QTMovieHasVideoAttribute] boolValue];
+    return ([[[[movie currentItem] asset] tracksWithMediaType:AVMediaTypeVideo] count] != 0);
 }
 
 - (BOOL)hasAudio
 {
-	return [[movie attributeForKey:QTMovieHasAudioAttribute] boolValue];
+    return ([[[[movie currentItem] asset] tracksWithMediaType:AVMediaTypeAudio] count] != 0);
 }
 
 #pragma mark Movie Loading
 
-- (QTMovie*)loadMovie
+- (AVPlayer*)loadMovie
 {
 	if(movie)
 	{
 		return movie;
 	}
-	
-	BOOL useQuickTimeX = [[NSUserDefaults standardUserDefaults] boolForKey:AFUseQuickTimeXKey];
-	
-	if ([QTMovie canInitWithFile:videoFile])
-	{
-		QTMovie *theMovie = nil;
-		NSError *err = nil;
-		
-		if(useQuickTimeX)
-		{
-			loaded = NO;
-			SInt32 major = 0;
-			SInt32 minor = 0;   
-			Gestalt(gestaltSystemVersionMajor, &major);
-			Gestalt(gestaltSystemVersionMinor, &minor);
-			if ((major == 10 && minor >= 6) || major >= 11) {
-				// For 10.6 or greater
-				NSError *error = nil;
-				NSNumber *loops = [NSNumber numberWithBool:NO];
-				NSNumber *playback = [NSNumber numberWithBool:YES];
-				NSDictionary *attributes =
-				[NSDictionary dictionaryWithObjectsAndKeys:
-				 videoFile, QTMovieFileNameAttribute,
-				 loops, QTMovieLoopsAttribute,
-				 playback, @"QTMovieOpenForPlaybackAttribute",
-				 nil];
-				
-				NSLog(@"Opening with QuickTime X");
-				
-				theMovie = [[QTMovie alloc] initWithAttributes:attributes
-														 error:&error];
-				
-			}
-		}
-		
-		// This will be used in 10.5 or if the 10.6 initialization failed
-		if(!theMovie)
-		{
-			NSLog(@"Opening with QuickTime 7");
-            
-			theMovie = [[QTMovie movieWithFile:videoFile error:&err] retain];
-            //[theMovie setAttribute:QTMovieApertureModeClean forKey:QTMovieApertureModeAttribute];
-			[theMovie setAttribute:0 forKey:QTMovieLoopsAttribute];
-			
-		}
-		
-		[self handleLoadStateChanged:theMovie];
-		
-        if(!loaded)
-        {
     
-            [[NSNotificationCenter defaultCenter]
-             addObserver:self
-             selector:@selector(movieLoadStateChanged:)
-             name:QTMovieLoadStateDidChangeNotification
-             object:theMovie];
-		
-		}
-		
-		while(!loaded)
-		{
-			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-		}
-		
-		
-		if(theMovie == nil)
-		{
-			NSLog(@"Error loading movie: %@",[err localizedDescription]);
-		}
-		
-		[self setMovie:theMovie];
-        [theMovie release];
-		
-		return theMovie;
-	}
-	else 
-	{
-		NSLog(@"Can't load movie %@",videoFile);
-		return nil;
-	}
-}
-
--(void)handleLoadStateChanged:(QTMovie *)theMovie
-{
-    NSInteger loadState = [[theMovie attributeForKey:QTMovieLoadStateAttribute] longValue];
-	
-    if (loadState == QTMovieLoadStateError) {
-		 /* NSError *err = [movie attributeForKey:QTMovieLoadStateErrorAttribute]; */
-		NSLog(@"Load state error");
-    }
-	
-    if (loadState >= QTMovieLoadStateLoaded) {
-        /* can query properties here */
-        /* for instance, if you need to size a QTMovieView based on the movie's natural size, you can do so now */
-        /* you can also put the movie into a view now, even though no media data might yet be available and hence
-		 nothing will be drawn into the view */
-		loaded = YES;
+    NSURL* fileURL = [NSURL fileURLWithPath:videoFile];
+    self.player = [AVPlayer playerWithURL:fileURL];
+    self.playerItem = self.player.currentItem;
+    
+//    [self.playerItem addObserver:self forKeyPath:@"status"
+//                         options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+    /*
+    AVAsset *asset = [self.playerItem asset];
+    NSArray *assetKeysToLoadAndTest = @[@"tracks"];
+    [asset loadValuesAsynchronouslyForKeys:assetKeysToLoadAndTest completionHandler:^(void) {
         
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        // The asset invokes its completion handler on an arbitrary queue when loading is complete.
+        // Because we want to access our AVPlayer in our ensuing set-up, we must dispatch our handler to the main queue.
+        dispatch_async(dispatch_get_main_queue(), ^(void) {
+            
+            [self setUpPlaybackOfAsset:asset withKeys:assetKeysToLoadAndTest];
+            
+        });
+        
+    }];
+    
+    if(asset == nil)
+    {
+        NSLog(@"Error loading movie: %@",videoFile);
     }
-	
-    if (loadState >= QTMovieLoadStatePlayable) {
-        /* can start movie playing here */
+    */
+    [self setMovie:self.player];
+    
+    return self.player;
+}
+
+- (void)setUpPlaybackOfAsset:(AVAsset *)asset withKeys:(NSArray *)keys
+{
+    // This method is called when the AVAsset for our URL has completing the loading of the values of the specified array of keys.
+    // We set up playback of the asset here.
+
+    for (NSString *key in keys)
+    {
+        NSError *error = nil;
+        
+        AVKeyValueStatus status = [asset statusOfValueForKey:key error:&error];
+        
+        if (status == AVKeyValueStatusLoaded) {
+            self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
+            // ensure that this is done before the playerItem is associated with the player
+            
+            [self.playerItem addObserver:self forKeyPath:@"status"
+                                 options:NSKeyValueObservingOptionInitial context:&ItemStatusContext];
+//            [[NSNotificationCenter defaultCenter] addObserver:self
+//                                                     selector:@selector(playerItemDidReachEnd:)
+//                                                         name:AVPlayerItemDidPlayToEndTimeNotification
+//                                                       object:self.playerItem];
+            self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+            loaded = true;
+        }
+        else {
+            // You should deal with the error appropriately.
+            NSLog(@"The asset's tracks were not loaded:\n%@", [error localizedDescription]);
+        }
+    }
+
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary<NSString *,id> *)change
+                       context:(void *)context {
+    // Only handle observations for the PlayerItemContext
+    if (context != &ItemStatusContext) {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+        return;
     }
     
-    if (loadState >= QTMovieLoadStatePlaythroughOK)
-    {
-        //NSLog(@"Playthrough OK");
-    }
-
-    if (loadState >= QTMovieLoadStateComplete)
-    {
-       //NSLog(@"Load complete");
-       // [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if ([keyPath isEqualToString:@"status"]) {
+        AVPlayerItemStatus status = AVPlayerItemStatusUnknown;
+        // Get the status change from the change dictionary
+        NSNumber *statusNumber = change[NSKeyValueChangeNewKey];
+        if ([statusNumber isKindOfClass:[NSNumber class]]) {
+            status = statusNumber.integerValue;
+            playerItemStatus = status;
+        }
+        // Switch over the status
+        switch (status) {
+            case AVPlayerItemStatusReadyToPlay:
+                // Ready to Play
+                NSLog(@"Status: Ready to play");
+                break;
+            case AVPlayerItemStatusFailed:
+                // Failed. Examine AVPlayerItem.error
+                NSLog(@"Status: Load failed");
+                break;
+            case AVPlayerItemStatusUnknown:
+                // Not ready
+                NSLog(@"Status: Unknown");
+                break;
+        }
     }
 }
 
--(void)movieLoadStateChanged:(NSNotification *)notification
-{
-    QTMovie *theMovie = (QTMovie *)[notification object];
-	
-    if (theMovie) {
-        [self handleLoadStateChanged:theMovie];
-    }
-}
-
-- (QTMovie*)movie
+- (AVPlayer*)movie
 {
 	return movie;
 }
 
-- (void)setMovie:(QTMovie *)theMovie
+- (void)setMovie:(AVPlayer *)theMovie
 {
 	[theMovie retain];
 	[movie release];
 	movie = theMovie;
-	
-	[movie setMuted:muted];
-}
-
-- (BOOL)muted
-{
-	if([self movie])
-	{
-		return [[self movie] muted];
-	}
-	else
-	{
-		return muted;
-	}
-}
-
-- (void)setMuted:(BOOL)mute
-{
-	if([self movie])
-	{
-		[[self movie] setMuted:mute];
-	}
-	muted = mute;
 }
 
 
-
--(void)setOffset:(QTTime)qttime
+-(void)setOffset:(CMTime)cmtime
 {
-	if(QTTimeCompare(qttime, offset) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(cmtime, !=, offset))
 	{
 		[self willChangeValueForKey:@"startTime"];
 		[self willChangeValueForKey:@"offset"];
 		
-		offset = qttime;
-		NSTimeInterval offsetInterval = ((double)qttime.timeValue)/((double)qttime.timeScale);
+		offset = cmtime;
+        
+        NSTimeInterval offsetInterval = CMTimeGetSeconds(cmtime);
 		[startDate release];
 		NSDate *documentStartDate = [[[AnnotationDocument currentDocument] videoProperties] startDate];
 		startDate = [[NSDate alloc] initWithTimeInterval:offsetInterval sinceDate:documentStartDate];
@@ -305,7 +255,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 	}
 }
 
-- (QTTime)offset
+- (CMTime)offset
 {
 	return offset;
 }
@@ -317,7 +267,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 
 - (void)setStartTime:(NSTimeInterval)theStartTime
 {
-    [self setOffset:QTMakeTimeWithTimeInterval(-theStartTime)];
+    [self setOffset:CMTimeMakeWithSeconds(-theStartTime,[[AnnotationDocument currentDocument] defaultTimebase])];
 }
 
 - (AnnotationCategory*)categoryForName:(NSString*)categoryName
@@ -342,6 +292,47 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 	[array retain];
 	[categories release];
 	categories = array;
+}
+
+#pragma mark Video Control
+
+- (void)seekToTime:(CMTime)newChaseTime
+{
+    
+    if (CMTIME_COMPARE_INLINE(newChaseTime, !=, chaseTime))
+    {
+        chaseTime = newChaseTime;
+        
+        if (!isSeekInProgress)
+            [self trySeekToChaseTime];
+    }
+}
+
+- (void)trySeekToChaseTime
+{
+    if (playerItemStatus == AVPlayerItemStatusUnknown)
+    {
+        // wait until item becomes ready (KVO player.currentItem.status)
+    }
+    else if (playerItemStatus == AVPlayerItemStatusReadyToPlay)
+    {
+        [self actuallySeekToTime];
+    }
+}
+
+- (void)actuallySeekToTime
+{
+    isSeekInProgress = YES;
+    CMTime seekTimeInProgress = chaseTime;
+    [player seekToTime:seekTimeInProgress toleranceBefore:kCMTimeZero
+              toleranceAfter:kCMTimeZero completionHandler:
+     ^(BOOL isFinished)
+     {
+         if (CMTIME_COMPARE_INLINE(seekTimeInProgress, ==, chaseTime))
+             isSeekInProgress = NO;
+         else
+             [self trySeekToChaseTime];
+     }];
 }
 
 #pragma mark File Coding
@@ -391,7 +382,7 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
             if(audio && ([audio length] > 0))
                 self.audioSubset = [audio componentsSeparatedByString:@","];
             
-            offset = QTZeroTime;
+            offset = kCMTimeZero;
             
             NSMutableArray *categoriesTemp = [NSMutableArray array];
             [self setCategories:categoriesTemp];
@@ -441,70 +432,6 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
     
 }
 
-//- (NSData*)serialize
-//{
-//	NSString *errorDesc;
-//	
-//	NSMutableArray *categoryNames = [NSMutableArray arrayWithCapacity:[categories count]];
-//	NSMutableArray *colors = [NSMutableArray arrayWithCapacity:[categories count]];
-//	NSMutableArray *valueCategories = [NSMutableArray arrayWithCapacity:[categories count]];
-//	for(AnnotationCategory* category in categories)
-//	{
-//		if([category annotation])
-//		{
-//			[categoryNames addObject:[category name]];
-//			[colors addObject:@""];
-//			[valueCategories addObject:@""];
-//		}
-//		else if([category color])
-//		{
-//			[categoryNames addObject:[category name]];
-//			[colors addObject:[[category color] hexadecimalValueOfAnNSColor]];
-//			[valueCategories addObject:@""];
-//			for(AnnotationCategory *value in [category values])
-//			{
-//				[categoryNames addObject:[value name]];
-//				[colors addObject:[[value color] hexadecimalValueOfAnNSColor]];
-//				[valueCategories addObject:[category name]];
-//			}
-//		}
-//	}
-//	
-//	NSMutableString *audioCSV;
-//	
-//	if(audioSubset)
-//	{
-//		audioCSV = [NSMutableString stringWithCapacity:[audioSubset count]];
-//		for(NSNumber *value in audioSubset)
-//		{
-//			[audioCSV appendFormat:@"%f,",[value floatValue]];
-//		}
-//	}
-//	else
-//	{
-//		audioCSV = [NSMutableString stringWithString:@""];
-//	}
-//	
-//	
-//	NSNumber *mutedValue = [NSNumber numberWithBool:muted];
-//	
-//	NSDictionary *colorDict = [NSDictionary dictionaryWithObjects:colors forKeys:categoryNames];
-//	NSDictionary *categoryDict = [NSDictionary dictionaryWithObjects:valueCategories forKeys:categoryNames];
-//	
-//    NSDictionary *plistDict = [NSDictionary dictionaryWithObjects:
-//							   [NSArray arrayWithObjects: videoFile, title, description, startDate, categoryNames, colorDict, categoryDict, audioCSV, mutedValue, nil]
-//														  forKeys:[NSArray arrayWithObjects: @"VideoFile", @"Title", @"Description", @"StartTime", @"Categories", @"CategoryColors",@"ValueCategories", @"AudioSubset",@"Muted",nil]];
-//    NSData *plistData = [NSPropertyListSerialization dataFromPropertyList:plistDict
-//																   format:NSPropertyListXMLFormat_v1_0
-//														 errorDescription:&errorDesc];
-//	if (!plistData) {
-//        NSLog(@"%@",errorDesc);
-//        [errorDesc release];
-//    }
-//	
-//	return plistData;
-//}
-
 - (void)encodeWithCoder:(NSCoder *)coder
 {	
     [coder encodeObject:self.uuid forKey:@"PrismVideoPropertiesUUID"];
@@ -512,15 +439,12 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 	[coder encodeObject:title forKey:@"PrismVideoPropertiesTitle"];
 	[coder encodeObject:description forKey:@"PrismVideoPropertiesDescription"];
 	[coder encodeObject:startDate forKey:@"PrismVideoPropertiesStartTime"];
-	[coder encodeQTTime:offset forKey:@"PrismVideoPropertiesOffset"];
+	[coder encodeCMTime:offset forKey:@"PrismVideoPropertiesOffset"];
 	[coder encodeBool:[self enabled] forKey:@"PrismVideoPropertiesEnabled"];
+    [coder encodeBool:[self muted] forKey:@"PrismVideoPropertiesMuted"];
     
 	NSMutableString *audioCSV;
-	
-	if([self movie])
-	{
-		[coder encodeBool:[[self movie] muted] forKey:@"PrismVideoPropertiesMuted"];
-	}
+
 	
 	if(audioSubset)
 	{
@@ -551,14 +475,14 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 		[self setVideoFile:[coder decodeObjectForKey:@"PrismVideoPropertiesFileName"]];
 		[self setTitle:[coder decodeObjectForKey:@"PrismVideoPropertiesTitle"]];
 		[self setDescription:[coder decodeObjectForKey:@"PrismVideoPropertiesDescription"]];
-		[self setOffset:[coder decodeQTTimeForKey:@"PrismVideoPropertiesOffset"]];
+		[self setOffset:[coder decodeCMTimeForKey:@"PrismVideoPropertiesOffset"]];
 		[self setStartDate:[coder decodeObjectForKey:@"PrismVideoPropertiesStartTime"]];
 		[self setEnabled:[coder decodeBoolForKey:@"PrismVideoPropertiesEnabled"]];
 //		[self setLocalVideo:[coder decodeBoolForKey:@"PrismVideoPropertiesLocalVideo"]];
 		
-		if(offset.timeValue == 0)
+		if(offset.value == 0)
 		{
-			offset = QTZeroTime;
+			offset = kCMTimeZero;
 		}
 		
 		[self setMuted:[coder decodeBoolForKey:@"PrismVideoPropertiesMuted"]];
@@ -568,10 +492,6 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
 			self.audioSubset = [audio componentsSeparatedByString:@","];
 		
 		[self setMovie:nil];
-		
-//		QTTime savedOffset = [coder decodeQTTimeForKey:@"PrismVideoPropertiesOffset"];
-//		if(savedOffset.timeValue != 0)
-//			[self setOffset:savedOffset];
 	}
     return self;
 }
@@ -588,148 +508,6 @@ NSString * const DPVideoPropertiesPasteboardType = @"DPVideoPropertiesPasteboard
     return automatic;
 }
 
-
-#pragma mark Auto Alignment
-
-
-
-- (NSTimeInterval)computeAlignment:(VideoProperties*)otherProps
-{
-    
-    float          *signal, *filter, *result;
-    int32_t         signalStride, filterStride, resultStride;
-    uint32_t        lenSignal, filterLength, resultLength;
-    uint32_t        i;
-    
-    
-    CGFloat sampleLength = 0.033;
-    DPSubsetMethod subsetMethod = DPSubsetMethodRMS;
-    
-    AudioExtractor *ownExtractor = [[AudioExtractor alloc] initWithQTMovie:[self movie]];
-    ownExtractor.subsetMethod = subsetMethod;
-    NSArray *ownAudio = [[ownExtractor getAudioSubsetWithSampleLength:sampleLength] retain];
-    NSTimeInterval ownSampleSize = ownExtractor.sampleSize;
-    [ownExtractor release];
-
-    NSLog(@"Own Audio: %i samples, %f sampleSize",[ownAudio count],ownSampleSize);
-    
-    AudioExtractor *otherExtractor = [[AudioExtractor alloc] initWithQTMovie:[otherProps movie]];
-    otherExtractor.subsetMethod = subsetMethod;
-    NSArray *otherAudio = [[otherExtractor getAudioSubsetWithSampleLength:sampleLength] retain];
-    NSTimeInterval otherSampleSize = otherExtractor.sampleSize;
-    [otherExtractor release];
-    
-    NSLog(@"Other Audio: %i samples, %f sampleSize",[otherAudio count],otherSampleSize);
-    
-    
-    NSArray *signalArray = ownAudio;
-    NSArray *filterArray = otherAudio;
-    CGFloat filterMargin = 0;
-    
-    lenSignal = [signalArray count];
-    filterLength = [filterArray count];
-    
-    CGFloat marginDiff = filterLength - (lenSignal - (1.0/sampleLength * 10));
-    if(marginDiff > 0)
-    {
-        filterMargin = floor(marginDiff/2.0); 
-        filterLength -= (filterMargin * 2);
-    }
-    
-    resultLength = lenSignal - filterLength + 1;
-    
-    signalStride = filterStride = resultStride = 1;
-    
-    printf("\nConvolution ( resultLength = %d, "
-           "filterLength = %d )\n\n", resultLength, filterLength);
-    
-    /* Allocate memory for the input operands and check its availability. */
-    signal = (float *) malloc(lenSignal * sizeof(float));
-    filter = (float *) malloc(filterLength * sizeof(float));
-    result = (float *) malloc(resultLength * sizeof(float));
-    
-    
-    if (signal == NULL || filter == NULL || result == NULL) {
-        printf("\nmalloc failed to allocate memory for the "
-               "convolution sample.\n");
-        exit(0);
-    }
-    
-    i = 0;
-    for(NSNumber *val in signalArray)
-    {
-        signal[i] = [val floatValue];
-        i++;
-    }
-    
-    i = 0;
-    for(NSNumber *val in filterArray)
-    {
-        if((filterMargin == 0) || 
-           ((i > filterMargin) &&  (i < (filterMargin + filterLength))))
-        {
-            filter[i] = [val floatValue];
-        }
-        i++; 
-    }
-    
-    /* Correlation. */
-    vDSP_conv(signal, signalStride, filter, filterStride,
-              result, resultStride, resultLength, filterLength);
-    
-    NSMutableString *output = [[NSMutableString alloc] initWithCapacity:resultLength];
-    
-    float maxCorr = 0;
-    NSTimeInterval maxCorrTime = 0;
-    for(i = 0; i < resultLength; i++)
-    {
-        [output appendFormat:@"%f,%f\n",(i*ownSampleSize),result[i]];
-        if(result[i] > maxCorr)
-        {
-            maxCorr = result[i];
-            maxCorrTime = (i - filterMargin)*ownSampleSize;
-        }
-    }
-    
-    
-    NSError *err = nil;
-    
-    [[ownAudio description] writeToFile:@"/Users/afouse/ownaudio.csv"
-                             atomically:YES
-                               encoding:NSUTF8StringEncoding
-                                  error:&err];
-
-    [[otherAudio description] writeToFile:@"/Users/afouse/otheraudio.csv"
-                             atomically:YES
-                               encoding:NSUTF8StringEncoding
-                                  error:&err];
-    
-    [output writeToFile:@"/Users/afouse/correlation.csv"
-             atomically:YES
-               encoding:NSUTF8StringEncoding
-                  error:&err];
-    [output release];
-
-    if(err)
-    {
-        NSLog(@"Error writing file: %@",[err localizedDescription]);
-    }
-    
-    NSLog(@"Max Corr: %f Time: %f",maxCorr,maxCorrTime);
-    
-    
-    /* Free allocated memory. */
-    free(signal);
-    free(filter);
-    free(result);
-    
-    [ownAudio release];
-    [otherAudio release];
-    
-    
-    
-    return maxCorrTime;
-}
 
 
 

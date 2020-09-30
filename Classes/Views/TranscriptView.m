@@ -49,7 +49,7 @@
 
 @interface TranscriptView (TableConstruction)
 
-- (NSString*)timeRowHTML:(QTTime)time;
+- (NSString*)timeRowHTML:(CMTime)time;
 - (NSString*)transcriptArrayToHTML:(NSArray*)array;
 
 @end
@@ -79,7 +79,7 @@
 //		
 		htmlPath = nil;
 		scrollPosition = nil;
-		currentTime = QTZeroTime;
+		currentTime = kCMTimeZero;
 		
 		webView = [[TranscriptWebView alloc] initWithFrame:NSMakeRect(0,0,[self frame].size.width,[self frame].size.height) frameName:nil groupName:nil];
 		[webView setAutoresizingMask:(NSViewWidthSizable | NSViewHeightSizable)];
@@ -111,7 +111,7 @@
 
 -(void)handleTimeClick:(NSTimeInterval)time
 {
-	currentTime = QTMakeTimeScaled(QTMakeTimeWithTimeInterval(time),[[AppController currentApp] currentTime].timeScale);
+	currentTime = CMTimeConvertScale(CMTimeMakeWithSeconds(time, 600),[[AppController currentApp] currentTime].timescale, kCMTimeRoundingMethod_Default); // TODO: Check if QTMakeTimeScaled is correctly replaced by CMTimeConvertScale.
 	
 	[[AppController currentApp] moveToTime:currentTime fromSender:self];
 }
@@ -119,12 +119,12 @@
 
 -(IBAction)alignToPlayhead:(id)sender
 {
-	QTTime playheadTime = [[[AppController currentApp] movie] currentTime];
-	QTTime lineTime = QTTimeDecrement(QTMakeTimeWithTimeInterval(clickedTime),[[data source] range].time);
+	CMTime playheadTime = [[[AppController currentApp] movie] currentTime];
+	CMTime lineTime = CMTimeSubtract(CMTimeMakeWithSeconds(clickedTime, 600),[[data source] range].start);
 	
-	QTTime diff = QTTimeDecrement(playheadTime, lineTime);
-	QTTimeRange dataRange = [data range];
-	dataRange.time = diff;
+	CMTime diff = CMTimeSubtract(playheadTime, lineTime);
+	CMTimeRange dataRange = [data range];
+	dataRange.start = diff;
 	[[data source] setRange:dataRange];
 	
 	[self reloadData];
@@ -143,10 +143,10 @@
     return YES;
 }
 
-- (NSString*)timeRowHTML:(QTTime)time
+- (NSString*)timeRowHTML:(CMTime)time
 {
 	NSTimeInterval timeInterval;
-	QTGetTimeInterval(time, &timeInterval);
+	timeInterval = CMTimeGetSeconds(time);
 	
 	int hours = timeInterval/(60 * 60);
 	int minutes = (timeInterval - (hours * 60 * 60))/60;
@@ -197,7 +197,7 @@
 				matchSegmentIndex = rowOffset[matchRow];
 				for(TimeCodedSourcedString *matchSegment in [array objectAtIndex:matchRow])
 				{
-					if(QTTimeCompare([segment time],[matchSegment time]) == NSOrderedSame)
+					if(CMTIME_COMPARE_INLINE([segment time], ==, [matchSegment time]))
 					{
 						if(![[segment source] isEqualToString:[matchSegment source]])
 						{
@@ -267,7 +267,7 @@
 			}
 			
 			NSTimeInterval timeInterval;
-			QTGetTimeInterval(QTTimeIncrement([segment time],[[data source] range].time), &timeInterval);
+			timeInterval = CMTimeGetSeconds(CMTimeAdd([segment time],[[data source] range].start));
 			[result appendFormat:@"<a name=\"%@\" title=\"%f\" class=\"speech\" href=\"transcript.html\" onclick=\"DoTimeClick(%f);return false;\">",
 			 [NSString stringWithFormat:@"%@-%1.2f",[segment source],timeInterval],
 			 timeInterval,
@@ -291,12 +291,12 @@
 	
 	NSMutableArray *alignment = [NSMutableArray array];
 	
-	QTTime lastRowTime;
+	CMTime lastRowTime;
 	
 	for(TimeCodedSourcedString *string in [data timeCodedStrings])
 	{
 		//NSLog(@"Transcript view string: %@",[string string]);
-		if(![string interpolated] && (QTTimeCompare([string time], lastRowTime) != NSOrderedSame))
+		if(![string interpolated] && (CMTIME_COMPARE_INLINE([string time], !=, lastRowTime)))
 		{
 			if([alignment count] > 0)
 			{
@@ -305,7 +305,7 @@
 				[alignment removeAllObjects];
 				[table appendString:@"</td></tr>"];
 			}
-			[table appendString:[self timeRowHTML:QTTimeIncrement([string time],[[data source] range].time)]];
+			[table appendString:[self timeRowHTML:CMTimeAdd([string time],[[data source] range].start)]];
 			lastRowTime = [string time];
 		}
 		
@@ -375,7 +375,7 @@
 -(NSString*)anchorForString:(TimeCodedSourcedString*)theString;
 {
 	NSTimeInterval timeInterval;
-	QTGetTimeInterval(QTTimeIncrement([theString time],[[data source] range].time), &timeInterval);
+	timeInterval = CMTimeGetSeconds(CMTimeAdd([theString time],[[data source] range].start));
 	return [NSString stringWithFormat:@"%1.2f",timeInterval];
 }
 
@@ -496,9 +496,9 @@
 
 -(void)update
 {
-	QTTime appTime = [[AppController currentApp] currentTime];
+	CMTime appTime = [[AppController currentApp] currentTime];
 	
-	if(QTTimeCompare(appTime,currentTime) != NSOrderedSame)
+	if(CMTIME_COMPARE_INLINE(appTime, !=, currentTime))
 	{
 		currentTime = appTime;
 		
@@ -507,7 +507,7 @@
 		{
 			if(![string interpolated])
 			{
-				if(QTTimeCompare(appTime, QTTimeIncrement([string time],[[data source] range].time)) != NSOrderedDescending)
+				if(CMTIME_COMPARE_INLINE(appTime, <=, CMTimeAdd([string time], [[data source] range].start)))
 				{
 					[webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"window.location.hash='#%@'",[self anchorForString:previous]]];
 					return;

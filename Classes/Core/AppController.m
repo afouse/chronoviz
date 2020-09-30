@@ -8,12 +8,10 @@
 
 #import "AppController.h"
 #import "PreferenceController.h"
-#import "VisualizationController.h"
 #import "TimelineMarker.h"
 #import "TimelineView.h"
 #import "MultiTimelineView.h"
 #import "OverviewTimelineView.h"
-#import "InteractionAddSegment.h"
 #import "Annotation.h"
 #import "AnnotationCategory.h"
 #import "AnnotationXMLParser.h"
@@ -48,13 +46,10 @@
 #import "DateVisualizer.h"
 #import "LayeredVisualizer.h"
 #import "AnnotationOverviewVisualizer.h"
-#import "AnotoViewController.h"
-#import "AnotoView.h"
 #import "ProtoVisExport.h"
 #import "DataSource.h"
 #import "InternalDataSource.h"
 #import "AnnotationSet.h"
-#import "AnotoDataSource.h"
 #import "TimeCodedImageFiles.h"
 #import "DPExport.h"
 #import "DPExportMovieClips.h"
@@ -71,14 +66,10 @@
 #import "DPViewManager.h"
 #import "DPConsoleWindowController.h"
 #import "NSStringTimeCodes.h"
-#import "DataPrismLog.h"
 #import "SpatialAnnotationOverlay.h"
-#import "FeedbackController.h"
-#import "DPLogFileUploader.h"
 #import "DPMappedValueTransformer.h"
 #import "NSMenuPopUpMenu.h"
 #import "DPURLHandler.h"
-#import "EthnographerViewController.h"
 #import "DPActivityLog.h"
 #import "LinkedFilesController.h"
 #import "DPDocumentVariablesController.h"
@@ -86,7 +77,6 @@
 #import "DPSpatialDataWindowController.h"
 #import "AnnotationViewController.h"
 #import "DPPluginManager.h"
-#import <QTKit/QTKit.h>
 
 NSString * const KeyframeTimelineMenuTitle = @"Keyframes";
 NSString * const AudioTimelineMenuTitle = @"Audio Waveform";
@@ -124,7 +114,6 @@ NSString * const TapestryTimelineMenuTitle = @"Annotation Tapestry";
 @synthesize stepSize;
 @synthesize playbackRate;
 @synthesize popUpAnnotations;
-@synthesize saveInteractions;
 @synthesize uploadInteractions;
 @synthesize frameLoader;
 @synthesize undoManager;
@@ -141,7 +130,6 @@ static AppController *currentApp = nil;
 	if ( self == [AppController class] ) {
 		NSMutableDictionary *defaultValues = [NSMutableDictionary dictionary];
 		
-		[defaultValues setObject:[NSNumber numberWithInt:AFSaveInteractionsUndefined] forKey:AFSaveInteractionsKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFUploadInteractionsKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFShowPlayheadKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:AFClickToMovePlayheadKey];
@@ -165,9 +153,9 @@ static AppController *currentApp = nil;
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFOverwriteFileBackupKey];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFUseQuickTimeXKey];
 		[defaultValues setObject:[NSNumber numberWithBool:YES] forKey:@"AllowPenAnnotations"];
-        [defaultValues setObject:[NSNumber numberWithBool:NO] forKey:@"EthnographerKeepTempAnnotationFiles"];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFUseStaticMapKey];
 		[defaultValues setObject:[NSNumber numberWithBool:NO] forKey:AFTrackActivityKey];
+        [defaultValues setObject:[NSNumber numberWithInteger:600] forKey:AFTimebaseKey];
 		
 		[defaultValues setObject:@"" forKey:AFUserIDKey];
 		[defaultValues setObject:@"" forKey:AFUserNameKey];
@@ -272,7 +260,8 @@ static AppController *currentApp = nil;
 	
 	mMovie = nil;
 	activeMovies = [[NSMutableArray alloc] init];
-	log = nil;
+	// log = nil;
+    // TODO: The `log` is never declared in this code. What did it do?
 	rateLock = [[NSLock alloc] init];
 	autoSave = NO;
 	fullScreen = NO;
@@ -337,8 +326,6 @@ static AppController *currentApp = nil;
 
 
 - (void)awakeFromNib {
-	
-    [[[DataPrismLog alloc] init] autorelease];
     
 	urlHandler = [[DPURLHandler alloc] initForAppController:self];
 	
@@ -428,39 +415,6 @@ static AppController *currentApp = nil;
 											   options:0
 											   context:NULL];
 	
-	// Prompt for annotation logging if this is the first run.
-	
-	int saveInteractionsState = [[NSUserDefaults standardUserDefaults] integerForKey:AFSaveInteractionsKey];
-	if(saveInteractionsState == AFSaveInteractionsUndefined)
-	{
-
-		NSAlert *alert = [[NSAlert alloc] init];
-		[alert setMessageText:@"Can we record your interactions?"];
-		[alert setInformativeText:@"Annotation can optionally record your interactions with videos.This information will be periodically uploaded to support research on video interaction at the UCSD DCog-HCI Lab.\n\n"
-		 "The information collected will only be of your interaction with the video, consisting of your position in the video at any point, how you got there, and where you made annotations. Any other activity with your computer will not be recorded.\n\n"
-		 "This window won't appear again, but your selection can later be changed in the preferences window."];
-		[alert addButtonWithTitle:@"Record Interactions"];
-		[alert addButtonWithTitle:@"Don't Record"];
-		int result = [alert runModal];
-		if(result == NSAlertFirstButtonReturn)
-		{
-			[self setSaveInteractions:YES];
-			[[NSUserDefaults standardUserDefaults] setInteger:AFSaveInteractionsYes forKey:AFSaveInteractionsKey];
-		}
-		else
-		{
-			[self setSaveInteractions:NO];
-			[[NSUserDefaults standardUserDefaults] setInteger:AFSaveInteractionsNo forKey:AFSaveInteractionsKey];
-		}
-		[alert release];
-	}
-	else if (saveInteractionsState == AFSaveInteractionsYes)
-	{
-		[self setSaveInteractions:YES];
-	} else 
-	{
-		[self setSaveInteractions:NO];
-	}
 	
 	NSString *userID = [[NSUserDefaults standardUserDefaults] stringForKey:AFUserIDKey];
 	if([userID length] == 0)
@@ -517,22 +471,6 @@ static AppController *currentApp = nil;
 		reply = NSTerminateCancel;
 	}
 	
-	// Then check whether we want to upload interaction logs
-	if(saveInteractions && uploadInteractions)
-	{
-		NSDate *lastUpload = [[NSUserDefaults standardUserDefaults] objectForKey:AFLastUploadKey];
-		double oneweek = 60.0*60.0*24.0*7.0;
-        NSTimeInterval howlong = abs([lastUpload timeIntervalSinceNow]);
-		if(howlong > oneweek)
-		{
-			//[self uploadLogFiles:self];
-			BOOL uploading = [[DPLogFileUploader defaultLogFileUploader] uploadLogFilesWithCallbackTarget:self selector:@selector(continueTermination)];
-			
-            if(uploading)
-                reply = NSTerminateLater;
-		}
-	}
-	
 	return reply;
 }
 
@@ -571,13 +509,6 @@ static AppController *currentApp = nil;
 	[inspector setAnnotation:nil];
 	[[inspector window] close];
 	
-	if(saveInteractions && log)
-	{
-		[log saveToDefaultFile];
-		[log release];
-		log = nil;
-	}
-	
 	[backupAnnotationFile release];
 	backupAnnotationFile = nil;
 	
@@ -598,7 +529,7 @@ static AppController *currentApp = nil;
 	}
     
     NSArray *existingMovies = [mMovieView movies];
-    for(QTMovie* movie in existingMovies)
+    for(AVPlayer* movie in existingMovies)
     {
         [mMovieView removeMovie:movie];
     }
@@ -764,8 +695,7 @@ static AppController *currentApp = nil;
 	annotationDoc = doc;
 	tempAnnotationDoc = NO;
 	
-    NSTimeInterval interval;
-    QTGetTimeInterval([[self movie] duration], &interval);
+    NSTimeInterval interval = CMTimeGetSeconds([[[self movie] currentItem] duration]);
     
     AnnotationVisualizer *viz = [[AnnotationVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
     [[timelineView baseTimeline] setSegmentVisualizer:viz];
@@ -831,23 +761,13 @@ static AppController *currentApp = nil;
     
 	[mMovieWindow makeKeyAndOrderFront:self];
 	
-	if(saveInteractions)
-	{
-		[log release];
-		log = [[DataPrismLog alloc] init];
-		[(DataPrismLog*)log setDocumentDuration:interval];
-		[(DataPrismLog*)log setStateSource:self];
-		[(DataPrismLog*)log addStateData:[self currentState:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:DataPrismLogState]]];
-		[(DataPrismLog*)log setUserID:[[NSUserDefaults standardUserDefaults] stringForKey:AFUserIDKey]];
-		[(DataPrismLog*)log setDocumentID:[[annotationDoc annotationsDirectory] lastPathComponent]];
-	}
 	
     [[AppController currentApp] endDocumentLoading:self];
     
 	[self didChangeValueForKey:@"document"];
 }
 
-- (void)setMovie:(QTMovie *)movie;
+- (void)setMainVideo:(VideoProperties *)video;
 {
 	[self willChangeValueForKey:@"mMovie"];
 	
@@ -855,16 +775,26 @@ static AppController *currentApp = nil;
 	
 	[inspector setAnnotation:nil];
 	
+    [video retain];
+    [mainVideo release];
+    mainVideo = video;
+    
+    AVPlayer *movie = [mainVideo movie];
+    
 	[movie retain];
 	[mMovie release];
 	mMovie = movie;
 	
-	[mMovie setAttribute:0 forKey:QTMovieLoopsAttribute];
+    // Register notification for looping.
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[mMovie currentItem]];
+    
 	[mMovieView setMovie:mMovie];
 	
 	// Set up the timeline
-	NSTimeInterval interval;
-	QTGetTimeInterval([mMovie duration], &interval);
+    NSTimeInterval interval = CMTimeGetSeconds([[[mMovie currentItem] asset] duration]);
 	if(absoluteTime && (interval > (60*60*6)))
 	{
 		DateVisualizer *dateViz = [[DateVisualizer alloc] initWithTimelineView:[timelineView baseTimeline]];
@@ -902,11 +832,6 @@ static AppController *currentApp = nil;
 	
 	//[frameLoader loadAllFramesForMovie:mMovie];
 	
-	// Set up logging
-	[log setTimeScale:[mMovie duration].timeScale];
-	NSLog(@"Movie Duration: %qi / %ld",[mMovie duration].timeValue,[mMovie duration].timeScale);
-	[log reset];
-	
 	loadingMovie = NO;
 	
 	[self updateDisplay:nil];
@@ -922,8 +847,7 @@ static AppController *currentApp = nil;
 	NSMutableArray *filters = [NSMutableArray arrayWithCapacity:[annotationViews count]];
 	NSMutableArray *windowOrder = [NSMutableArray arrayWithCapacity:[annotationViews count]];
     
-	NSTimeInterval time;
-	QTGetTimeInterval([self currentTime], &time);
+    NSTimeInterval time = CMTimeGetSeconds([self currentTime]);
 	
     NSString *mainViewClass = NSStringFromClass([mainView class]);
     NSData *mainViewStateData = nil;
@@ -939,7 +863,7 @@ static AppController *currentApp = nil;
     NSMutableArray *movieIDs = [NSMutableArray array];
 	NSMutableArray *movieTitles = [NSMutableArray array];
     NSMutableArray *movieEnabledStates = [NSMutableArray array];
-	for(QTMovie *movie in [mMovieView movies])
+	for(AVPlayer *movie in [mMovieView movies])
 	{
         for(VideoProperties* video in [[AnnotationDocument currentDocument] allMediaProperties])
         {
@@ -962,7 +886,7 @@ static AppController *currentApp = nil;
     NSObject* storedRange = nil;
     if(visibleOverviewTimeline)
     {
-        storedRange = QTStringFromTimeRange([overviewTimelineView selection]);
+        storedRange = [NSValue valueWithCMTimeRange:[overviewTimelineView selection]];
     }
     else
     {
@@ -1096,7 +1020,7 @@ static AppController *currentApp = nil;
 			[mMovieWindow setFrame:NSRectFromString([rects objectAtIndex:i]) display:YES];
 			NSDictionary *mainStateDict = [NSKeyedUnarchiver unarchiveObjectWithData:state];
 			NSTimeInterval time = [[mainStateDict objectForKey:@"CurrentTime"] floatValue];
-			[self moveToTime:QTMakeTimeWithTimeInterval(time) fromSender:self];
+			[self moveToTime:CMTimeMakeWithSeconds(time, [[mMovie currentItem] duration].timescale) fromSender:self];
 			
             NSString* mainViewSavedClass = [mainStateDict objectForKey:@"MainViewClass"];
             NSData* mainViewStateData = [mainStateDict objectForKey:@"MainViewStateData"];
@@ -1117,7 +1041,7 @@ static AppController *currentApp = nil;
                 {
                     NSArray *movieEnabledStates = [mainStateDict objectForKey:@"MovieEnabledStates"];
                     NSArray *existingMovies = [mMovieView movies];
-                    for(QTMovie* movie in existingMovies)
+                    for(AVPlayer* movie in existingMovies)
                     {
                         [mMovieView removeMovie:movie];
                     }
@@ -1161,7 +1085,7 @@ static AppController *currentApp = nil;
             NSObject* timelineSelection = [mainStateDict objectForKey:@"TimelineSelectedRange"];
             if(timelineSelection && (timelineSelection != [NSNull null]))
             {
-                [self zoomToTimeRange:QTTimeRangeFromString((NSString*)timelineSelection)];
+                [self zoomToTimeRange:[(NSValue*)timelineSelection CMTimeRangeValue]];
             }
             else
             {
@@ -1194,26 +1118,6 @@ static AppController *currentApp = nil;
 			[self addAnnotationView:movieViewer];
 			[self addDataWindow:movieViewer];
 			[movieViewer release];
-		}
-		else if([class isEqualToString:@"EthnographerNotesView"])
-		{
-			NSLog(@"Set State: AnotoView");
-			EthnographerViewController *anotoViewController = [[EthnographerViewController alloc] init];
-			[[anotoViewController window] setFrame:NSRectFromString([rects objectAtIndex:i]) display:NO];
-			[(NSObject<DPStateRecording>*)[anotoViewController anotoView] setState:state];
-			[self addDataWindow:anotoViewController];
-			[self addAnnotationView:(NSObject<AnnotationView>*)[anotoViewController anotoView]];
-			[anotoViewController release];
-		}
-		else if([class isEqualToString:@"AnotoView"])
-		{
-			NSLog(@"Set State: AnotoView");
-			AnotoViewController *anotoViewController = [[AnotoViewController alloc] init];
-			[[anotoViewController window] setFrame:NSRectFromString([rects objectAtIndex:i]) display:NO];
-			[(NSObject<DPStateRecording>*)[anotoViewController anotoView] setState:state];
-			[self addDataWindow:anotoViewController];
-			[self addAnnotationView:(NSObject<AnnotationView>*)[anotoViewController anotoView]];
-			[anotoViewController release];
 		}
 		else if([class isEqualToString:@"TranscriptView"])
 		{
@@ -1314,9 +1218,13 @@ static AppController *currentApp = nil;
 {
 	NSOpenPanel *openPanel = [NSOpenPanel openPanel];
 	
-	[openPanel setDelegate:self];
+	//[openPanel setDelegate:self];
 	[openPanel setAllowsMultipleSelection:NO];
-	
+
+    NSArray *types = @[@"annotation",@"chronoviztemplate"];
+    types = [types arrayByAddingObjectsFromArray:[AVURLAsset audiovisualTypes]];
+    [openPanel setAllowedFileTypes:types];
+    
 	if ([openPanel runModalForTypes:nil] == NSOKButton) {
 		NSString* filename = [openPanel filename];
 		
@@ -1494,7 +1402,6 @@ static AppController *currentApp = nil;
 	}
 	else
 	{
-		//return ([[filename pathExtension] isEqualToString:@"annotation"] || [QTMovie canInitWithFile:filename]);
 		return ([[filename pathExtension] isEqualToString:@"annotation"]
                 || [[filename pathExtension] isEqualToString:@"chronoviztemplate"]
                 || [VideoDataSource validateFileName:filename]);
@@ -1851,8 +1758,6 @@ static AppController *currentApp = nil;
 		if([properties hasVideo])
 		{
 			MovieViewerController *movieViewer = [[MovieViewerController alloc] init];
-			//QTMovie *newMovie = [properties movie];
-			//NSSize contentSize = [[newMovie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
 			//[[movieViewer movieView] setMovie:[properties movie]];
 			[movieViewer setVideoProperties:properties];
 			//[[movieViewer window] setContentSize:contentSize];
@@ -1971,7 +1876,7 @@ static AppController *currentApp = nil;
 		paused = YES;
 	}
 	
-	Annotation *annotation = [[Annotation alloc] initWithQTTime:[mMovie currentTime]];
+	Annotation *annotation = [[Annotation alloc] initWithCMTime:[mainVideo.playerItem currentTime]];
 	[annotation setAnnotation:@"New Annotation…"];
 
 	[annotationDoc addAnnotation:annotation];
@@ -2066,7 +1971,7 @@ static AppController *currentApp = nil;
 {
 	if([annotation keyframeImage])
 	{
-		double timecode = [annotation startTimeSeconds]*[mMovie currentTime].timeScale;
+		double timecode = [annotation startTimeSeconds]*[mainVideo.playerItem currentTime].timescale;
 		NSString *imageName = [NSString stringWithFormat:@"%i.jpg",(int)round(timecode)];
 		
 		// If the file isn't changing, then we're done (unless we're forcing an update)
@@ -2076,17 +1981,17 @@ static AppController *currentApp = nil;
 		// Otherwise get delete the old file and create a new one
 		[self deleteKeyframeFile:annotation];
 		
-		NSImage *image = [mMovie frameImageAtTime:[annotation startTime]];
+        CGImageRef imageRef = [VideoFrameLoader generateImageAt:[annotation startTime] for:mMovie error:nil];
+        NSImage *image = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
 		[annotation setFrameRepresentation:image];
-		for(NSImageRep *imageRep in [image representations])
-		{
-			if([imageRep isKindOfClass:[NSBitmapImageRep class]])
-			{
-				NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
-				NSData *imageData = [(NSBitmapImageRep*)imageRep representationUsingType:NSJPEGFileType properties:imageProps];
-				[imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
-			}
-		}
+        
+        NSData *imageData = [image TIFFRepresentation];
+        NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:imageData];
+        NSDictionary *options = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
+        imageData = [imageRep representationUsingType:NSJPEGFileType properties:options];
+        [imageData writeToFile:[[annotationDoc annotationsImageDirectory] stringByAppendingPathComponent:imageName] atomically:NO];
+        
+        [image release];
 		[annotation setImage:[NSURL URLWithString:[NSString stringWithFormat:@"images/%@",imageName]]];
 	}
 }
@@ -2119,9 +2024,6 @@ static AppController *currentApp = nil;
 
 - (void)addAnnotation:(Annotation*)annotation
 {
-	[log addSegmentationPoint:[annotation startTime]];
-	
-	//[timelineView addAnnotation:annotation];
 	
 	for(id <AnnotationView> view in annotationViews)
 	{
@@ -2183,7 +2085,7 @@ static AppController *currentApp = nil;
 	
 	[quickEntry setEntryTarget:self];
 	[quickEntry setEntrySelector:@selector(resumePlaying)];
-	[quickEntry displayQuickEntryWindowAtTime:[mMovie currentTime]
+	[quickEntry displayQuickEntryWindowAtTime:[mainVideo.playerItem currentTime]
 								   inTimeline:[timelineView activeTimeline]
 								  forCategory:category];
 }
@@ -2531,7 +2433,7 @@ static AppController *currentApp = nil;
 	
 	float timelineHeight = [timelineView bounds].size.height;
 	float footer = [[mMovieWindow contentView] bounds].size.height - [splitView bounds].size.height;
-	NSSize contentSize = [[mMovie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+    NSSize contentSize = (NSSize)[[[[mainVideo.playerItem asset] tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 	contentSize.width = contentSize.width * zoomFactor;
 	contentSize.height = contentSize.height * zoomFactor;
 	contentSize.height += (footer + timelineHeight + [splitView dividerThickness]);
@@ -2708,9 +2610,7 @@ static AppController *currentApp = nil;
     else if ([menuName isEqualToString:@"Help"])
     {
         NSMenu *help = [[[NSApp mainMenu] itemWithTitle:@"Help"] submenu];
-        //NSInteger separatorIndex = [help indexOfItem:[NSMenuItem separatorItem]];
-        [help insertItem:menuItem atIndex:[[help itemArray] count] - 2];
-//        [help addItem:menuItem];
+        [help addItem:menuItem];
     }
 	
 }
@@ -2906,14 +2806,14 @@ static AppController *currentApp = nil;
 
 - (IBAction)zoomIn:(id)sender
 {
-	QTTimeRange selection = [overviewTimelineView selection];
-	selection.time.timeValue = selection.time.timeValue + selection.duration.timeValue/4;
-	selection.duration.timeValue = selection.duration.timeValue/2;
-	selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+	CMTimeRange selection = [overviewTimelineView selection];
+	selection.start = CMTimeAdd(selection.start, CMTimeMultiplyByRatio(selection.duration, 1, 4));
+	selection.duration = CMTimeMultiplyByRatio(selection.duration, 1, 2);
+	selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
-	
-	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+    
+	if(([overviewTimelineView frame].size.height < 10)
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
@@ -2921,54 +2821,52 @@ static AppController *currentApp = nil;
 
 - (IBAction)zoomOut:(id)sender
 {	
-	QTTimeRange selection = [overviewTimelineView selection];
+	CMTimeRange selection = [overviewTimelineView selection];
 	
-	if(QTTimeCompare(selection.duration, [mMovie duration]) == NSOrderedAscending)
+	if(CMTIME_COMPARE_INLINE(selection.duration, <, [[mMovie currentItem] duration]))
 	{
-		selection.duration.timeValue = selection.duration.timeValue * 2;
-		selection.time.timeValue = selection.time.timeValue - selection.duration.timeValue/4;
-		selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+		selection.duration.value = selection.duration.value * 2;
+		selection.start.value = selection.start.value - selection.duration.value/4;
+		selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 		[overviewTimelineView setSelection:selection animate:YES];
 		
 		if(([overviewTimelineView frame].size.height > 0)
-		   && QTEqualTimeRanges(selection, [overviewTimelineView range]))
+		   && CMTimeRangeEqual(selection, [overviewTimelineView range]))
 		{
 			[self setOverviewVisible:NO];
 		}
 	}
 }
 
-- (void)zoomInToTime:(QTTime)time
+- (void)zoomInToTime:(CMTime)time
 {		
-	QTTimeRange selection = [overviewTimelineView selection];
-	selection.duration.timeValue = selection.duration.timeValue/2;
-	QTTime halfduration = selection.duration;
-	halfduration.timeValue = halfduration.timeValue/2;
-	selection.time = QTTimeDecrement(time,halfduration);	
+	CMTimeRange selection = [overviewTimelineView selection];
+	selection.duration.value = selection.duration.value/2;
+	CMTime halfduration = selection.duration;
+	halfduration.value = halfduration.value/2;
+	selection.start = CMTimeSubtract(time,halfduration);
 		
-	selection = QTIntersectionTimeRange(selection, [overviewTimelineView range]);
+	selection = CMTimeRangeGetIntersection(selection, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
 	
 	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
-//	
-//	[[NSCursor closedHandCursor] set];
 }
 
-- (void)zoomToTimeRange:(QTTimeRange)timeRange
+- (void)zoomToTimeRange:(CMTimeRange)timeRange
 {
-	QTTimeRange selection = QTIntersectionTimeRange(timeRange, [overviewTimelineView range]);
+	CMTimeRange selection = CMTimeRangeGetIntersection(timeRange, [overviewTimelineView range]);
 	[overviewTimelineView setSelection:selection animate:YES];
 	
 	if(([overviewTimelineView frame].size.height < 10) 
-	   && !QTEqualTimeRanges(selection, [overviewTimelineView range]))
+	   && !CMTimeRangeEqual(selection, [overviewTimelineView range]))
 	{
 		[self setOverviewVisible:YES];
 	}
-    else if (QTEqualTimeRanges(selection, [overviewTimelineView range]))
+    else if (CMTimeRangeEqual(selection, [overviewTimelineView range]))
     {
         [self setOverviewVisible:NO];
     }
@@ -3109,11 +3007,6 @@ static AppController *currentApp = nil;
 	return annotationDoc;
 }
 
-- (DataPrismLog*)interactionLog
-{
-	return log;
-}
-
 - (Annotation*)selectedAnnotation
 {
 	return selectedAnnotation;
@@ -3134,12 +3027,12 @@ static AppController *currentApp = nil;
 //	return imageSequenceView;
 //}
 
-- (QTMovie *)movie
+- (AVPlayer *)movie
 {
 	return mMovie;
 }
 
-- (QTMovie *)mMovie
+- (AVPlayer *)mMovie
 {
 	return mMovie;
 }
@@ -3195,19 +3088,19 @@ static AppController *currentApp = nil;
 	return documentVariablesController;
 }
 
-- (QTTime)currentTime
+- (CMTime)currentTime
 {
-	return [mMovie currentTime];
+	return [mainVideo.playerItem currentTime];
 }
 
-- (QTTimeRange)currentSelection
+- (CMTimeRange)currentSelection
 {
 	return currentSelection;
 }
 
-- (QTTime)currentMovieTime
+- (CMTime)currentMovieTime
 {
-	return [mMovie currentTime];
+	return [self currentTime];
 }
 
 #pragma mark Time Control
@@ -3216,20 +3109,22 @@ static AppController *currentApp = nil;
 {
 	if([sender isKindOfClass:[NSSegmentedControl class]])
 	{
-		if([(NSSegmentedControl*)sender isSelectedForSegment:0])
-		{
-			loopPlayback = YES;
-			[mMovie setAttribute:[NSNumber numberWithBool:YES] forKey:QTMovieLoopsAttribute];
-		}
-		else
-		{
-			loopPlayback = NO;
-			[mMovie setAttribute:[NSNumber numberWithBool:NO] forKey:QTMovieLoopsAttribute];
-		}
-		
-		annotationPlayback = [(NSSegmentedControl*)sender isSelectedForSegment:1];
+        bool shouldLoop = [(NSSegmentedControl*)sender isSelectedForSegment:0];
+        loopPlayback = shouldLoop;
+        
+        bool shouldRestrictToAnnotation = [(NSSegmentedControl*)sender isSelectedForSegment:1];
+		annotationPlayback = shouldRestrictToAnnotation;
 
 	}
+}
+
+- (void)playerItemDidReachEnd:(NSNotification *)notification {
+    if (loopPlayback)
+    {
+        AVPlayerItem *p = [notification object];
+        [p seekToTime:kCMTimeZero];
+        [mMovie play];
+    }
 }
 
 - (IBAction)changeTimeFormat:(id)sender
@@ -3329,45 +3224,49 @@ static AppController *currentApp = nil;
 
 - (IBAction)stepForward:(id)sender
 {
-	QTTime newTime = QTTimeIncrement([mMovie currentTime], QTMakeTimeWithTimeInterval(stepSize));
-	if(QTTimeCompare([mMovie duration],newTime) == NSOrderedAscending)
+	CMTime newTime = CMTimeAdd([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
+	if(CMTIME_COMPARE_INLINE([[mMovie currentItem] duration], <, newTime))
 	{
-		newTime = [mMovie duration];
-	}	
-	
-//	currentTime.timeValue = currentTime.timeValue + currentTime.timeScale*stepSize;
-//	if(currentTime.timeValue > [mMovie duration].timeValue)
-//		currentTime.timeValue = [mMovie duration].timeValue;
+		newTime = [[mMovie currentItem] duration];
+	}
 	
 	[self moveToTime:newTime fromSender:sender];
 }
 
 - (IBAction)stepBack:(id)sender
 {
-	QTTime newTime = QTTimeDecrement([mMovie currentTime], QTMakeTimeWithTimeInterval(stepSize));
-	if(QTTimeCompare(QTZeroTime,newTime) == NSOrderedDescending)
+	CMTime newTime = CMTimeSubtract([mMovie currentTime], CMTimeMakeWithSeconds(stepSize,[mMovie currentTime].timescale));
+	if(CMTIME_COMPARE_INLINE(kCMTimeZero, >, newTime))
 	{
-		newTime = QTZeroTime;
+		newTime = kCMTimeZero;
 	}	
 	[self moveToTime:newTime fromSender:sender];
-	
-//	QTTime currentTime = [mMovie currentTime];
-//	currentTime.timeValue = currentTime.timeValue - currentTime.timeScale*stepSize;
-//	if(currentTime.timeValue < 0)
-//		currentTime.timeValue = 0;
-//	[self moveToTime:currentTime fromSender:sender];
 }
 
 - (IBAction)stepOneFrameForward:(id)sender
 {
-	[mMovie stepForward];
-	[self moveToTime:[mMovie currentTime] fromSender:sender];
+    [self step:sender byFrames:1];
 }
 
 - (IBAction)stepOneFrameBackward:(id)sender
 {
-	[mMovie stepBackward];
-	[self moveToTime:[mMovie currentTime] fromSender:sender];
+    [self step:sender byFrames:-1];
+}
+
+- (IBAction)step:(id)sender byFrames:(int)frames
+{
+    // Unfortunately, we cannot use `[[mMovie currentItem] stepByCount:frames]` because we need to trigger `self`
+    // to update the current time via `[self moveToTime:[mMovie currentTime] fromSender:sender]`.
+    // But `stepByCount` is not synchronous, so when we call `[self moveToTime]` we will get the old time from
+    // `[mMovie currentTime]` effectively reseting the frame we just tried to step forward/backward.
+    // `stepByCount` has *no* mechanism similar to the completionHandler of `seekToTime`.
+    // Instead we calculate how long a frame is and what the desired new time is.
+    AVAsset *asset = [[mMovie currentItem] asset];
+    float framerate = [[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] nominalFrameRate];
+    CMTime oneFrame = CMTimeMake(frames, framerate);
+    CMTime newTime = CMTimeAdd([mMovie currentTime], oneFrame);
+    [self moveToTime:newTime fromSender:sender];
+    
 }
 
 - (IBAction)fastForward:(id)sender
@@ -3387,13 +3286,13 @@ static AppController *currentApp = nil;
 	if(ignoreRateInput) 
 		return;
 	
-	QTTime currentTime = [mMovie currentTime];
+	CMTime currentTime = [mMovie currentTime];
 	
 	// This accounts for the dial moving back through the values, which would cause the movie to
 	// jump to the beginning or end
-	if((currentTime.timeValue == 0) && (rate < 0)) 
+	if((currentTime.value == 0) && (rate < 0)) 
 		return;
-	if((currentTime.timeValue == [mMovie duration].timeValue) && (rate > 0))
+	if((currentTime.value == [[mMovie currentItem] duration].value) && (rate > 0))
 		return;
 
 	if(rate == 0) {
@@ -3444,11 +3343,11 @@ static AppController *currentApp = nil;
 	{
 		if([mediaProperties enabled])
 		{
-			QTTime newTime = QTTimeIncrement(currentTime, [mediaProperties offset]);
-			if((newTime.timeValue > 0)
-			   && (QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+			CMTime newTime = CMTimeAdd(currentTime, [mediaProperties offset]);
+			if((newTime.value > 0)
+			   && CMTIME_COMPARE_INLINE(newTime, <, [[[mediaProperties movie] currentItem] duration]))
 			{
-				[[mediaProperties movie] setCurrentTime:newTime];
+				[[mediaProperties movie] seekToTime:newTime];
 				//[[mediaProperties movie] setRate:rate];
 				[activeMovies addObject:[mediaProperties movie]];
 			}
@@ -3459,7 +3358,7 @@ static AppController *currentApp = nil;
 		}
 	}
 	
-	for(QTMovie* movie in activeMovies)
+	for(AVPlayer* movie in activeMovies)
 	{
 		[movie setRate:rate];
 	}
@@ -3467,20 +3366,18 @@ static AppController *currentApp = nil;
 	mRate = rate;
 	[rateLock unlock];
 	
-	[[annotationDoc activityLog] addSpeedChange:rate atTime:currentTime];
-	InteractionSpeedChange* speedChange = [log addSpeedChange:rate atTime:currentTime];
-	[speedChange setSource:[self processInteractionSource:source]];
 }
 
 - (void)updateTimeDisplay:(NSTimer *)aTimer
 {
 	if(absoluteTime)
 	{
-		[movieTimeButton setTitle:[NSString stringWithQTTime:[mMovie currentTime] sinceDate:[annotationDoc startDate]]];
+		[movieTimeButton setTitle:[NSString stringWithCMTime:[mMovie currentTime] sinceDate:[annotationDoc startDate]]];
 	}
 	else
 	{
-		[movieTimeButton setTitle:[NSString stringWithQTTime:[mMovie currentTime]]];
+        NSString *timeString = [NSString stringWithCMTime:[mMovie currentTime]];
+        [movieTimeButton setTitle:timeString];
 	}
 }
 
@@ -3496,9 +3393,9 @@ static AppController *currentApp = nil;
         
 		if(annotationPlayback && selectedAnnotation && [selectedAnnotation isDuration])
 		{
-            QTTime currentTime = [mMovie currentTime];
-            QTTime normalizedStart = QTMakeTimeScaled([selectedAnnotation startTime], currentTime.timeScale);
-			if(QTTimeCompare(currentTime,[selectedAnnotation endTime]) == NSOrderedDescending)
+            CMTime currentTime = [mMovie currentTime];
+            CMTime normalizedStart = CMTimeConvertScale([selectedAnnotation startTime], currentTime.timescale, kCMTimeRoundingMethod_Default); // TODO: Check if QTMakeTimeScaled is correctly replacesd by CMTimeConvertScale
+			if(CMTIME_COMPARE_INLINE(currentTime, >, [selectedAnnotation endTime]))
 			{
 				if(loopPlayback)
 				{
@@ -3513,16 +3410,8 @@ static AppController *currentApp = nil;
 					[self moveToTime:[selectedAnnotation endTime] fromSender:self];
 				}
 			}
-			else if(QTTimeCompare(currentTime,normalizedStart) == NSOrderedAscending)
+			else if(CMTIME_COMPARE_INLINE(currentTime, <, normalizedStart))
 			{
-//                NSTimeInterval ti;
-//                QTGetTimeInterval(currentTime, &ti);
-//                NSLog(@"Current Time: %qi / %ld : %f",currentTime.timeValue,currentTime.timeScale,ti);
-//                QTGetTimeInterval([selectedAnnotation startTime], &ti);
-//                NSLog(@"Start Time: %qi / %ld : %f",[selectedAnnotation startTime].timeValue,[selectedAnnotation startTime].timeScale,ti);
-//
-//                QTGetTimeInterval(normalizedStart, &ti);
-//                NSLog(@"Normalized Start Time: %qi / %ld : %f",normalizedStart.timeValue,normalizedStart.timeScale,ti);
                 
 				if(playing)
 				{
@@ -3545,11 +3434,11 @@ static AppController *currentApp = nil;
 		{
 			if([mediaProperties enabled] && ([mMovie rate] != [[mediaProperties movie] rate]))
 			{
-				QTTime newTime = QTTimeIncrement([mMovie currentTime], [mediaProperties offset]);
-				if((newTime.timeValue > 0)
-				   && (QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedAscending))
+				CMTime newTime = CMTimeAdd([mMovie currentTime], [mediaProperties offset]);
+				if((newTime.value > 0)
+				   && (CMTIME_COMPARE_INLINE(newTime, <, [[[mediaProperties movie] currentItem] duration])))
 				{
-					[[mediaProperties movie] setCurrentTime:newTime];
+					[[mediaProperties movie] seekToTime:newTime];
 					[[mediaProperties movie] setRate:[mMovie rate]];
 				}
 				
@@ -3558,13 +3447,7 @@ static AppController *currentApp = nil;
 		
 		[self updateTimeDisplay:aTimer];
 	}
-	
-	// Deal with interaction log playback
-	if([log isPlaying])
-	{
-		double position = log.currentPlaybackTime/log.playbackDuration;
-		[timelineView setPlayheadPosition:position];
-	}
+
 	
 	// Update views
 	for(id<AnnotationView> view in annotationViews)
@@ -3585,36 +3468,36 @@ static AppController *currentApp = nil;
 //	}
 }
 
-- (void)moveToTime:(QTTime)time fromSender:(id)sender
+- (void)moveToTime:(CMTime)time fromSender:(id)sender
 {
-	if(time.timeValue < 0)
+	if(time.value < 0)
 	{
-		time.timeValue = 0;
+		time.value = 0;
 	}
-	[[annotationDoc activityLog] addJumpFrom:[mMovie currentTime] to:time];
-	InteractionJump *jump = [log addJumpFrom:[mMovie currentTime] to:time];
-	[jump setSource:[self processInteractionSource:sender]];
-	[mMovie setCurrentTime:time];
-	for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
-	{
-		if([mediaProperties enabled])
-		{
-			QTTime newTime = QTTimeIncrement(time, [mediaProperties offset]);
-			if(newTime.timeValue < 0)
-			{
-				newTime.timeValue = 0;
-			}
-			if(QTTimeCompare(newTime, [[mediaProperties movie] duration]) == NSOrderedDescending)
-			{
-				newTime = [[mediaProperties movie] duration];
-			}
-			[[mediaProperties movie] setCurrentTime:newTime];
-		}
-	}
-	[self updateDisplay:nil];
+    CMTime tolerance = kCMTimeZero;
+    for(VideoProperties* mediaProperties in [annotationDoc mediaProperties])
+    {
+        if([mediaProperties enabled])
+        {
+            CMTime newTime = CMTimeAdd(time, [mediaProperties offset]);
+            if(newTime.value < 0)
+            {
+                newTime.value = 0;
+            }
+            if(CMTIME_COMPARE_INLINE(newTime, >, [[[mediaProperties movie] currentItem] duration]))
+            {
+                newTime = [[[mediaProperties movie] currentItem] duration];
+            }
+            [[mediaProperties movie] seekToTime:newTime toleranceBefore:tolerance toleranceAfter:tolerance];
+        }
+    }
+    [mMovie seekToTime:time toleranceBefore:tolerance toleranceAfter:tolerance completionHandler:^(BOOL success) {
+            [self updateDisplay:nil];
+    }];
 }
 
-- (void)setTimeSelection:(QTTimeRange)range
+
+- (void)setTimeSelection:(CMTimeRange)range
 {
 	currentSelection = range;
 	[self updateDisplay:nil];
@@ -3640,34 +3523,6 @@ static AppController *currentApp = nil;
 	}
 }
 
-#pragma mark Activity Visualization
-
-- (IBAction)showVisualization:(id)sender
-{
-	if(!vizController) {
-		vizController = [[VisualizationController alloc] init];
-		[vizController setAppController:self];
-		[vizController setInteractionLog:log];
-	}
-	NSLog(@"Showing %@", vizController);
-	[vizController showWindow:self];
-	[[vizController window] makeKeyAndOrderFront:self];
-}
-
-- (IBAction)updateVisualization:(id)sender
-{
-	[vizController updateVisualization];
-}
-
-- (IBAction)exportVisualization:(id)sender
-{
-	NSSavePanel *savePanel = [NSSavePanel savePanel];
-	
-	if([savePanel runModal] == NSFileHandlingPanelOKButton) {
-		[vizController exportImageToFile:[savePanel filename]];
-	}
-}
-
 #pragma mark Logging
 
 - (IBAction)outputLog:(id)sender
@@ -3677,9 +3532,9 @@ static AppController *currentApp = nil;
 	[savePanel setTitle:@"Save Interaction Log"];
 	
 	// files are filtered through the panel:shouldShowFilename: method above
-	if ([savePanel runModal] == NSOKButton) {
-		[log saveToFile:[savePanel filename]];
-	}
+//    if ([savePanel runModal] == NSOKButton) {
+//        [log saveToFile:[savePanel filename]];
+//    }
 }
 
 

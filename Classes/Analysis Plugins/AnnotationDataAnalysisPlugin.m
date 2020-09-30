@@ -13,6 +13,7 @@
 #import "AnnotationCategory.h"
 #import "PluginParameter.h"
 #import "PluginDataSet.h"
+#import "PluginAnnotationSet.h"
 #import "PluginManager.h"
 #import "PluginDataSource.h"
 #import "AnnotationSet.h"
@@ -32,6 +33,7 @@
 		dataParameters = [[NSMutableArray alloc] init];
 		dataSets = [[NSMutableArray alloc] init];
 		inputParameters = [[NSMutableArray alloc] init];
+        annotationSets = [[NSMutableArray alloc] init];
 		requiredDocumentVariables = [[NSMutableArray alloc] init];
         dataVariableClass = [TimeSeriesData class];
 		[self setup];
@@ -46,6 +48,7 @@
 	[resultData release];
 	[dataParameters release];
 	[inputParameters release];
+    [annotationSets release];
 	[dataSets release];
 	[displayName release];
 	[super dealloc];
@@ -119,15 +122,24 @@
 	return param;
 }
 
+-(PluginAnnotationSet*)addAnnotationSet:(NSString*)name
+{
+    PluginAnnotationSet *set = [[PluginAnnotationSet alloc] init];
+    set.annotationSetName = name;
+    [annotationSets addObject:set];
+    [set release];
+    return set;
+}
+
 #pragma mark Results
 
--(Annotation*)newAnnotationAtTime:(QTTime)time
+-(Annotation*)newAnnotationAtTime:(CMTime)time
 {
 	if(!resultAnnotations)
 	{
 		resultAnnotations = [[NSMutableArray alloc] init];
 	}
-	Annotation* annotation = [[Annotation alloc] initWithQTTime:time];
+	Annotation* annotation = [[Annotation alloc] initWithCMTime:time];
     // Better to do this at the end of the run in PluginConfiguration
 	// [[AnnotationDocument currentDocument] addAnnotation:annotation];
 	[resultAnnotations addObject:annotation];
@@ -136,7 +148,7 @@
 
 -(Annotation*)newAnnotationAtSeconds:(float)seconds
 {
-	return [self newAnnotationAtTime:QTMakeTimeWithTimeInterval(seconds)];
+	return [self newAnnotationAtTime:CMTimeMakeWithSeconds(seconds, 600)];
 }
 
 -(TimeSeriesData*)newTimeSeries
@@ -214,6 +226,11 @@
 -(NSArray*)inputParameters
 {
 	return inputParameters;
+}
+
+-(NSArray*)annotationSets
+{
+    return annotationSets;
 }
 
 -(NSArray*)documentVariables

@@ -547,7 +547,7 @@ static NSMutableArray *possibleDataSources = nil;
 		else if([[tableColumn identifier] isEqualToString:@"StartTime"])
 		{
 			NSTimeInterval startTime;
-			QTGetTimeInterval([data range].time, &startTime);
+			startTime = CMTimeGetSeconds([data range].start);
 			return [NSString stringWithFormat:@"%.2f",startTime];
 		}
 	}
@@ -582,7 +582,7 @@ static NSMutableArray *possibleDataSources = nil;
 			else
 			{
 				NSTimeInterval startTime;
-				QTGetTimeInterval([data range].time, &startTime);
+				startTime = CMTimeGetSeconds([data range].start);
 				return [NSString stringWithFormat:@"%.2f",startTime];	
 			}
 		}
@@ -620,13 +620,13 @@ static NSMutableArray *possibleDataSources = nil;
 		if([item isKindOfClass:[VideoProperties class]])
 		{
 			VideoProperties *video = (VideoProperties*)item;
-			[video setOffset:QTMakeTimeWithTimeInterval(-[object floatValue])];
+			[video setOffset:CMTimeMakeWithSeconds(-[object floatValue], 600)];
 		}
 		else if([item isKindOfClass:[DataSource class]])
 		{
 			DataSource *data = (DataSource*)item;
-			QTTimeRange range = [data range];
-			range.time = QTMakeTimeWithTimeInterval([object floatValue]);
+			CMTimeRange range = [data range];
+			range.start = CMTimeMakeWithSeconds([object floatValue], 600);
 			[data setRange:range];
 		}
 	}

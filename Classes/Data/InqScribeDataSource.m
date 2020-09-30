@@ -75,7 +75,7 @@
 	if (self != nil) {
 		self.predefinedTimeCode = YES;
 		self.timeCoded = YES;
-		range = QTMakeTimeRange(QTZeroTime, QTZeroTime);
+		range = CMTimeRangeMake(kCMTimeZero, kCMTimeZero);
 		transcriptFPS = 29;
 		interpolate = YES;
 		transcriptStrings = nil;
@@ -113,18 +113,18 @@
 	[super dealloc];
 }
 
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
-	QTTime previousDiff = range.time;
-	QTTime diff = newRange.time;
+	CMTime previousDiff = range.start;
+	CMTime diff = newRange.start;
 	
 	//[super setRange:newRange];
 	range = newRange;
 	
 	for(Annotation *annotation in [annotationSet annotations])
 	{
-		[annotation setStartTime:QTTimeIncrement(QTTimeDecrement([annotation startTime],previousDiff), diff)];
-		[annotation setEndTime:QTTimeIncrement(QTTimeDecrement([annotation endTime],previousDiff), diff)];
+		[annotation setStartTime:CMTimeAdd(CMTimeSubtract([annotation startTime],previousDiff), diff)];
+		[annotation setEndTime:CMTimeAdd(CMTimeSubtract([annotation endTime],previousDiff), diff)];
 	}
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
@@ -299,7 +299,7 @@
 			Annotation *annotation = [[Annotation alloc] initWithQTTime:[line time]];
 			[annotation setAnnotation:[line string]];
 			[annotation setIsDuration:YES];
-			[annotation setEndTime:QTTimeIncrement([line time], [line duration])];
+			[annotation setEndTime:CMTimeAdd([line time], [line duration])];
 			
 			AnnotationCategory* speakerCategory = [category valueForName:[line source]];
 			[annotation setCategory:speakerCategory];
@@ -383,7 +383,7 @@
 	}
 	
 	NSTimeInterval startTime;
-	QTGetTimeInterval([[utterances objectAtIndex:0] time], &startTime);
+	startTime = CMTimeGetSeconds([[utterances objectAtIndex:0] time]);
 	
 	// First match up utterances
 	int index;
@@ -491,8 +491,8 @@
 		colIndex = 0;
 		for(id utterance in row)
 		{
-			QTTime columnStart = QTMakeTimeWithTimeInterval(currentTime);
-			QTTime columnDuration = QTMakeTimeWithTimeInterval((maxLengths[colIndex]/totalLength)*duration);
+			CMTime columnStart = CMTimeMakeWithSeconds(currentTime, 600);
+			CMTime columnDuration = CMTimeMakeWithSeconds((maxLengths[colIndex]/totalLength)*duration, 600);
 			if(utterance != [NSNull null])
 			{
 				TimeCodedSourcedString *original = [utterances objectAtIndex:rowIndex];
@@ -576,8 +576,8 @@
 					else
 					{
 						TimeCodedSourcedString *tcss = [[TimeCodedSourcedString alloc] init];
-						tcss.time = QTMakeTimeWithTimeInterval(currentStart);
-						tcss.duration = QTZeroTime;
+						tcss.time = CMTimeMakeWithSeconds(currentStart, 600);
+						tcss.duration = kCMTimeZero;
 						tcss.source = @"";
 						tcss.string = @"";
 						[transcriptStrings addObject:tcss];
@@ -611,7 +611,7 @@
 				if(currentSpeaker)
 				{
 					TimeCodedSourcedString* currentString = [[TimeCodedSourcedString alloc] init];
-					[currentString setTime:QTMakeTimeWithTimeInterval(currentStart)];
+					[currentString setTime:CMTimeMakeWithSeconds(currentStart, 600)];
 					[currentString setString:[NSString stringWithString:currentUtterance]];
 					[currentString setSource:currentSpeaker];
 					[currentUtterance setString:@""];
@@ -620,7 +620,7 @@
 					[currentString release];
 					currentSpeaker = nil;
 					
-					if(QTTimeCompare(range.duration, [currentString time]) == NSOrderedAscending)
+					if(CMTIME_COMPARE_INLINE(range.duration, <, [currentString time]))
 					{
 						range.duration = [currentString time];
 					}
@@ -655,7 +655,7 @@
 	if(currentSpeaker && ([currentUtterance length] > 0))
 	{
 		TimeCodedSourcedString* currentString = [[TimeCodedSourcedString alloc] init];
-		[currentString setTime:QTMakeTimeWithTimeInterval(currentStart)];
+		[currentString setTime:CMTimeMakeWithSeconds(currentStart, 600)];
 		[currentString setString:[currentUtterance copy]];
 		[currentString setSource:currentSpeaker];
 		[currentUtterance setString:@""];
@@ -676,8 +676,8 @@
 			else
 			{
 				TimeCodedSourcedString *tcss = [[TimeCodedSourcedString alloc] init];
-				tcss.time = QTMakeTimeWithTimeInterval(currentStart);
-				tcss.duration = QTZeroTime;
+				tcss.time = CMTimeMakeWithSeconds(currentStart, 600);
+				tcss.duration = kCMTimeZero;
 				tcss.source = @"";
 				tcss.string = @"";
 				[transcriptStrings addObject:tcss];

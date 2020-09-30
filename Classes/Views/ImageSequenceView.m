@@ -108,7 +108,7 @@
 
 -(void)update
 {
-	QTTime currentTime = [[[AppController currentApp] movie] currentTime];
+	CMTime currentTime = [[[AppController currentApp] movie] currentTime];
 	
 	TimeCodedString *nextPictureFile = [imageSequence objectAtIndex:0];
 	int index = 0;
@@ -117,7 +117,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(QTTimeCompare([pictureFile time], currentTime) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, currentTime))
 			{
 				break;
 			}
@@ -148,7 +148,7 @@
 	}										   
 }
 
--(NSImage*)imageAtTime:(QTTime)time
+-(NSImage*)imageAtTime:(CMTime)time
 {
 	TimeCodedString *nextPictureFile = [imageSequence objectAtIndex:0];
 	int index = 0;
@@ -157,7 +157,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(QTTimeCompare([pictureFile time], time) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, time))
 			{
 				break;
 			}
@@ -170,7 +170,7 @@
 		
 }
 
--(CGImageRef)cgImageAtTime:(QTTime)time
+-(CGImageRef)cgImageAtTime:(CMTime)time
 {
 	TimeCodedString *nextPictureFile = [imageSequence objectAtIndex:0];
 	int index = 0;
@@ -179,7 +179,7 @@
 		// First check to see if the image is flagged as bad
 		if([pictureFile value] > -1)
 		{
-			if(QTTimeCompare([pictureFile time], time) != NSOrderedAscending)
+			if(CMTIME_COMPARE_INLINE([pictureFile time], >=, time))
 			{
 				break;
 			}
@@ -222,8 +222,8 @@
 				pictureFile = [imageSequence objectAtIndex:index];
 			}
 		}
-		QTTime time = [pictureFile time];
-		time.timeValue = time.timeValue + (time.timeScale)/10;
+		CMTime time = [pictureFile time];
+		time.value = time.value + (time.timescale)/10;
 		[[AppController currentApp] moveToTime:time fromSender:self];
 		
 //		[currentImage release];

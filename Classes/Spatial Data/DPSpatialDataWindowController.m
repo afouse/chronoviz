@@ -272,11 +272,11 @@
 {
     NSTimeInterval interval = 10;
     NSTimeInterval duration = 0;
-    QTGetTimeInterval([[AnnotationDocument currentDocument] duration], &duration);
+    duration = CMTimeGetSeconds([[AnnotationDocument currentDocument] duration]);
     
     for(NSTimeInterval currentTime = 0; currentTime < duration; currentTime += interval)
     {
-        //CGImageRef image = [spatialDataView frameImageAtTime:QTMakeTimeWithTimeInterval(currentTime)];
+        //CGImageRef image = [spatialDataView frameImageAtTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         NSWindow *thewindow = [self window];
         
@@ -288,7 +288,7 @@
         origin = [thewindow convertBaseToScreen:origin];
         CGRect captureRect = CGRectMake(origin.x, origin.y, viewFrame.size.width, viewFrame.size.height);
         
-        [spatialDataView setCurrentTime:QTMakeTimeWithTimeInterval(currentTime)];
+        [spatialDataView setCurrentTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.3]];
         
@@ -296,7 +296,7 @@
         
         NSBitmapImageRep *bitmap = [[NSBitmapImageRep alloc] initWithCGImage:image];    
         
-        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:QTMakeTimeWithTimeInterval(currentTime)];
+        //NSBitmapImageRep *bitmap = [spatialDataView bitmapAtTime:CMTimeMakeWithSeconds(currentTime, 600)];
         
         //NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:0.9] forKey:NSImageCompressionFactor];
         NSData *imageData = [bitmap representationUsingType:NSPNGFileType properties:nil];
@@ -425,16 +425,6 @@
 {
     if(!selectionTimeline)
     {
-//        NSRect visible = [spatialDataView visibleRect];
-//        
-//        NSRect scrollFrame = [notesScrollView frame];
-//        scrollFrame.size.height = scrollFrame.size.height - 100;
-//        scrollFrame.origin.y = 100;
-//        [notesScrollView setFrame:scrollFrame];
-//        
-//        visible.size.height = visible.size.height - 100;
-//        
-//        [anotoView scrollRectToVisible:visible];
         
         NSRect dataFrame = [spatialDataView frame];
         

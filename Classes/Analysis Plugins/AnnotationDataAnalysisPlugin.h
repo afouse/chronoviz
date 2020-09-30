@@ -7,10 +7,11 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class Annotation;
 @class PluginParameter;
 @class PluginDataSet;
+@class PluginAnnotationSet;
 @class TimeSeriesData;
 @class AnnotationCategory;
 @class AnnotationDocument;
@@ -21,6 +22,7 @@
 	NSMutableArray* resultData;
 	NSMutableArray* dataParameters;
 	NSMutableArray* dataSets;
+    NSMutableArray* annotationSets;
 	NSMutableArray* inputParameters;
 	NSMutableArray* requiredDocumentVariables;
 	NSString* displayName;
@@ -36,7 +38,7 @@
 
 // Results methods
 // These create new things to add to the system as a result of running the plugin
--(Annotation*)newAnnotationAtTime:(QTTime)time;
+-(Annotation*)newAnnotationAtTime:(CMTime)time;
 -(Annotation*)newAnnotationAtSeconds:(float)seconds;
 -(TimeSeriesData*)newTimeSeries;
 
@@ -51,11 +53,13 @@
 -(void)setup;
 -(NSArray*)dataParameters;
 -(NSArray*)inputParameters;
+-(NSArray*)annotationSets;
 -(NSArray*)documentVariables;
 -(void)setDataVariableClass:(NSString*)className;
 -(Class)dataVariableClass;
 -(PluginDataSet*)addDataVariable:(NSString*)variable;
 -(PluginParameter*)addInputParameter:(NSString*)parameter;
+-(PluginAnnotationSet*)addAnnotationSet:(NSString*)name;
 -(void)setDisplayName:(NSString*)name;
 -(NSString*)displayName;
 

@@ -33,8 +33,9 @@ static int annotationCategoryColorIndex = 0;
 {
     if (! annotationCategoryColors)
 	{
-		NSString* colorListFile = [[NSBundle mainBundle] pathForResource:@"DataPrism" ofType:@"clr"];
-		annotationCategoryColors = [[NSColorList alloc] initWithName:@"DataPrism Colors" fromFile:colorListFile];
+//		NSString* colorListFile = [[NSBundle mainBundle] pathForResource:@"DataPrism" ofType:@"clr"];
+//		annotationCategoryColors = [[NSColorList alloc] initWithName:@"DataPrism Colors" fromFile:colorListFile];
+        annotationCategoryColors = [[NSColorList availableColorLists] firstObject];
 	}
         
 }

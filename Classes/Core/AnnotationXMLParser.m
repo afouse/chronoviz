@@ -397,7 +397,7 @@
 					if(msNode)
 					{
 						NSTimeInterval endInterval = [[msNode stringValue] doubleValue];
-						[annotation setEndTime:QTMakeTimeWithTimeInterval(endInterval)];
+						[annotation setEndTime:CMTimeMakeWithSeconds(endInterval, 600)];
 						//end = [[[NSDate alloc] initWithTimeInterval:endInterval sinceDate:[annotation referenceDate]] autorelease];
 					}
 					else
@@ -407,7 +407,7 @@
 						if(!end)
 							end = [altDateFormatter dateFromString:endString];
                         NSTimeInterval endTimeInterval = [end timeIntervalSinceDate:[annotationDoc startDate]];
-                        [annotation setEndTime:QTMakeTimeWithTimeInterval(endTimeInterval)];
+                        [annotation setEndTime:CMTimeMakeWithSeconds(endTimeInterval, 600)];
 					}
 					[annotation setIsDuration:YES];
 				}

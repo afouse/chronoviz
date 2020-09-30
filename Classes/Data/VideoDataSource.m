@@ -31,23 +31,10 @@ static NSArray *DPQuicktimeFileTypes = nil;
 
 +(BOOL)validateFileName:(NSString*)fileName
 {
-	if(!DPQuicktimeFileTypes)
-	{
-		DPQuicktimeFileTypes = [[QTMovie movieFileTypes:QTIncludeCommonTypes] retain];
-	}
-	//return [DPQuicktimeFileTypes containsObject:[fileName pathExtension]];
-	//return [QTMovie canInitWithFile:fileName];
+    CFStringRef pathExtension = (CFStringRef)[fileName pathExtension];
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
     
-    NSString *fileExt = [fileName pathExtension];
-    for(NSString *ext in DPQuicktimeFileTypes)
-    {
-        if([fileExt caseInsensitiveCompare:ext] == NSOrderedSame)
-        {
-            return YES;
-        }
-    }
-    
-    return NO;
+    return [[AVURLAsset audiovisualTypes] containsObject:(NSString*)type];
 }
 
 -(id)initWithVideoProperties:(VideoProperties*)props
@@ -69,9 +56,9 @@ static NSArray *DPQuicktimeFileTypes = nil;
 			[self setPredefinedTimeCode:YES];
 			[self setTimeCoded:YES];
 			videoProperties = [props retain];
-			range.time = [videoProperties offset];
-			range.time.timeValue = -range.time.timeValue;
-			range.duration = [[videoProperties movie] duration];
+			range.start = [videoProperties offset];
+			range.start.value = -range.start.value;
+			range.duration = [[[videoProperties movie] currentItem] duration];
 			[videoProperties addObserver:self
 							  forKeyPath:@"offset"
 								 options:0
@@ -84,7 +71,7 @@ static NSArray *DPQuicktimeFileTypes = nil;
 -(id)initWithPath:(NSString*)theFile
 {
 	VideoProperties *props = nil;
-	if([QTMovie canInitWithFile:theFile])
+	if([VideoDataSource validateFileName:theFile])
 	{
 		props = [[[VideoProperties alloc] initWithVideoFile:theFile] autorelease];
 		[props setTitle:[[theFile lastPathComponent] stringByDeletingPathExtension]];
@@ -129,18 +116,18 @@ static NSArray *DPQuicktimeFileTypes = nil;
 {
     if ([keyPath isEqual:@"offset"])
 	{
-		range.time = [videoProperties offset];
-		range.time.timeValue = -range.time.timeValue;
+		range.start = [videoProperties offset];
+		range.start.value = -range.start.value;
     }
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
 }
 
--(void)setRange:(QTTimeRange)newRange
+-(void)setRange:(CMTimeRange)newRange
 {
 	range = newRange;
-	QTTime offset = range.time;
-	offset.timeValue = -offset.timeValue;
+	CMTime offset = range.start;
+	offset.value = -offset.value;
 	[videoProperties setOffset:offset];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPDataSetRangeChangeNotification object:self];
 	[[NSNotificationCenter defaultCenter] postNotificationName:DataSourceUpdatedNotification object:self];
@@ -156,9 +143,9 @@ static NSArray *DPQuicktimeFileTypes = nil;
 	return [NSArray array];
 }
 
--(QTTime)timeForRowArray:(NSArray*)row;
+-(CMTime)timeForRowArray:(NSArray*)row;
 {
-	return QTZeroTime;
+	return kCMTimeZero;
 }
 
 -(NSArray*)dataArray

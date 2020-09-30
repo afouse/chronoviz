@@ -88,7 +88,7 @@
 	else if([identifier isEqualToString:@"offset"])
 	{
 		NSTimeInterval interval;
-		QTGetTimeInterval([video offset], &interval);
+		interval = CMTimeGetSeconds([video offset]);
 		return [NSNumber numberWithDouble:interval];
 	}
 	else if([identifier isEqualToString:@"title"])
@@ -122,10 +122,10 @@
     }
 	else if([[aTableColumn identifier] isEqualToString:@"offset"])
     {
-		QTTime offset = QTMakeTimeWithTimeInterval([val floatValue]);
-		if(offset.timeValue == 0)
+		CMTime offset = CMTimeMakeWithSeconds([val floatValue], 600);
+		if(offset.value == 0)
 		{
-			offset = QTZeroTime;
+			offset = kCMTimeZero;
 		}
 		
 		VideoProperties *video = [[[AppController currentDoc] mediaProperties] objectAtIndex:rowIndex];

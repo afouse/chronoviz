@@ -50,18 +50,18 @@
     {
         [annotation setSource:[[self source] uuid]];
     }
-	range = QTUnionTimeRange([annotation range], range);
+	range = CMTimeRangeGetUnion([annotation range], range);
 }
 
 - (void)removeAnnotation:(Annotation*)annotation
 {
 	[annotations removeObject:annotation];
 	
-	range.time.timeValue = 0;
-	range.duration.timeValue = 0;
+	range.start.value = 0;
+	range.duration.value = 0;
 	for(Annotation* remaining in annotations)
 	{
-		range = QTUnionTimeRange([remaining range], range);
+		range = CMTimeRangeGetUnion([remaining range], range);
 	}
 	
 }

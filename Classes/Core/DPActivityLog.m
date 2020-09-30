@@ -23,7 +23,7 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 	self = [super init];
 	if (self != nil) {
 		self.numberOfBins = 30;
-		QTGetTimeInterval([doc duration], &documentDuration);
+		documentDuration = CMTimeGetSeconds([doc duration]);
 		binSize = documentDuration/numberOfBins;
 		
 		currentActivity = [[NSMutableArray alloc] initWithCapacity:self.numberOfBins];
@@ -51,7 +51,7 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 	[coder encodeInt:numberOfBins forKey:@"DPActivityLogNumberOfBins"];
 	[coder encodeFloat:binSize forKey:@"DPActivityLogBinSize"];
     [coder encodeDouble:documentDuration forKey:@"DPActivityLogDocumentDuration"];
-    [coder encodeQTTime:lastTimePoint forKey:@"DPActivityLogLastTimePoint"];
+    [coder encodeCMTime:lastTimePoint forKey:@"DPActivityLogLastTimePoint"];
 }
 
 - (id)initWithCoder:(NSCoder *)coder {
@@ -66,7 +66,7 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
         
         currentActivity = [[coder decodeObjectForKey:@"DPActivityLogCurrentActivity"] retain];
         
-        lastTimePoint = [coder decodeQTTimeForKey:@"DPActivityLogLastTimePoint"];
+        lastTimePoint = [coder decodeCMTimeForKey:@"DPActivityLogLastTimePoint"];
         
         self.lastRealTime = [NSDate date];
 		
@@ -84,14 +84,14 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 }
 
 
-- (void)addSpeedChange:(float)speed atTime:(QTTime)time
+- (void)addSpeedChange:(float)speed atTime:(CMTime)time
 {
 	NSDate *now = [NSDate date];
 	NSTimeInterval startTime;
 	NSTimeInterval endTime;
 	
-	QTGetTimeInterval(lastTimePoint, &startTime);
-	QTGetTimeInterval(time,&endTime);
+	startTime = CMTimeGetSeconds(lastTimePoint);
+	endTime = CMTimeGetSeconds(time);
 	
 	NSTimeInterval docDuration = endTime - startTime;
 	NSTimeInterval realDuration = [now timeIntervalSinceDate:lastRealTime];
@@ -113,10 +113,10 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 	[[NSNotificationCenter defaultCenter] postNotificationName:DPActivityLogUpdateNotification object:self];
 }
 
-- (void)addJumpFrom:(QTTime)fromTime to:(QTTime)toTime
+- (void)addJumpFrom:(CMTime)fromTime to:(CMTime)toTime
 {
 	NSTimeInterval jumpSize;
-	QTGetTimeInterval(QTTimeDecrement(toTime, fromTime),&jumpSize);
+	jumpSize = CMTimeGetSeconds(CMTimeSubtract(toTime, fromTime));
 	if(abs(jumpSize) < binSize)
 	{
 		[self addSpeedChange:0 atTime:toTime];
@@ -128,10 +128,10 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 	}
 }
 
-- (NSTimeInterval)activityForTimePoint:(QTTime)time
+- (NSTimeInterval)activityForTimePoint:(CMTime)time
 {
 	NSTimeInterval timeInterval;
-	QTGetTimeInterval(time,&timeInterval);
+	timeInterval = CMTimeGetSeconds(time);
 	return [self activityForSeconds:timeInterval];
 }
 
@@ -149,7 +149,7 @@ NSString * const DPActivityLogUpdateNotification = @"DPActivityLogUpdate";
 	//return [[currentActivity objectAtIndex:bin] floatValue];
 }
 
-- (CGFloat)scoreForTimePoint:(QTTime)time
+- (CGFloat)scoreForTimePoint:(CMTime)time
 {
 	return 0;
 }

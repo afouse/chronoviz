@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <CoreMedia/CoreMedia.h>
 
 enum {
 	DPTimeCodeAutomaticMask = 1 << 8,
@@ -29,9 +29,9 @@ enum {
 + (NSString*)stringWithTimeInterval:(NSTimeInterval)interval;
 + (NSString*)stringWithTimeInterval:(NSTimeInterval)interval sinceDate:(NSDate*)date;
 + (NSString*)stringWithTimeInterval:(NSTimeInterval)interval sinceDate:(NSDate*)date withOptions:(NSUInteger)optionsMask;
-+ (NSString*)stringWithQTTime:(QTTime)time;
-+ (NSString*)stringWithQTTime:(QTTime)time sinceDate:(NSDate*)date;
-+ (NSString*)stringWithQTTime:(QTTime)time sinceDate:(NSDate*)date withOptions:(NSUInteger)optionsMask;
++ (NSString*)stringWithCMTime:(CMTime)time;
++ (NSString*)stringWithCMTime:(CMTime)time sinceDate:(NSDate*)date;
++ (NSString*)stringWithCMTime:(CMTime)time sinceDate:(NSDate*)date withOptions:(NSUInteger)optionsMask;
 
 - (NSTimeInterval)timeInterval;
 

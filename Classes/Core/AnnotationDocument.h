@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class VideoProperties;
 @class AnnotationXMLParser;
 @class TimeSeriesData;
@@ -72,9 +72,10 @@ extern int const DPCurrentDocumentFormatVersion;
 - (NSData*)stateForName:(NSString*)stateName;
 - (void)removeStateNamed:(NSString*)stateName;
 
-- (QTMovie*)setVideoFile:(NSString*)videoFile;
-- (BOOL)setDuration:(QTTime)duration;
-- (QTTime)duration;
+- (AVPlayer*)setVideoFile:(NSString*)videoFile;
+- (BOOL)setDuration:(CMTime)duration;
+- (CMTime)duration;
+- (int32_t)defaultTimebase;
 
 - (void)addAnnotation:(Annotation*)annotation;
 - (void)addAnnotations:(NSArray*)annotations;
@@ -117,7 +118,7 @@ extern int const DPCurrentDocumentFormatVersion;
 - (NSArray*)categories;
 - (NSArray*)keywords;
 - (NSArray*)dataSources;
-- (QTMovie*)movie;
+- (AVPlayer*)movie;
 - (NSArray*)media;
 - (NSArray*)mediaProperties;
 - (NSArray*)allMediaProperties;

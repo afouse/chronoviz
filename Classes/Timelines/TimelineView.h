@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "TimelineMarker.h"
 #import "AnnotationView.h"
 #import "DPStateRecording.h"
@@ -19,8 +19,8 @@
 @class TimeSeriesData;
 @class AnnotationFilter;
 
-@interface TimelineView : NSView <AnnotationView,DPStateRecording,NSMenuDelegate> {
-	QTMovie* movie;
+@interface TimelineView : NSView <AnnotationView,DPStateRecording,NSMenuDelegate,CALayerDelegate> {
+	AVPlayer* movie;
 	BOOL setup;
 	BOOL resizing;
 	
@@ -29,7 +29,7 @@
 	TimelineView *superTimelineView;
 	TimelineView *subTimelineView;
 	
-	QTTimeRange range;
+	CMTimeRange range;
 	NSString *label;
 	
 	// For timelines that are tied to a particular annotation
@@ -111,8 +111,8 @@
 	float snapThreshold;
 	NSTimeInterval originalStartTime;
 	NSTimeInterval originalEndTime;
-	QTTime originalStartQTTime;
-	QTTime originalEndQTTime;
+	CMTime originalStartCMTime;
+	CMTime originalEndCMTime;
 	
 	NSCursor *magnifyCursor;
 	
@@ -130,7 +130,7 @@
 @property BOOL visualizeMultipleTimeSeries;
 @property BOOL whiteBackground;
 @property double playheadPosition;
-@property QTTimeRange range;
+@property CMTimeRange range;
 @property(assign) TimelineMarker *highlightedMarker;
 @property(assign) TimelineView *superTimelineView;
 @property(assign) TimelineView *subTimelineView;
@@ -146,9 +146,9 @@
 -(void)removeFromSuperTimeline;
 -(void)resetTrackingAreas;
 
--(void)setMovie:(QTMovie *)mov;
+-(void)setMovie:(AVPlayer *)mov;
 -(void)setSegmentVisualizer:(SegmentVisualizer *)visualizer;
--(BOOL)setRangeFromBeginTime:(QTTime)begin andEndTime:(QTTime)end;
+-(BOOL)setRangeFromBeginTime:(CMTime)begin andEndTime:(CMTime)end;
 -(void)setBasisMarker:(TimelineMarker*)marker;
 -(void)updateRange;
 -(BOOL)shouldHighlightMarker:(TimelineMarker*)marker;
@@ -179,7 +179,7 @@
 -(IBAction)alignToPlayhead:(id)sender;
 -(IBAction)resetAlignment:(id)sender;
 
--(QTMovie*)movie;
+-(AVPlayer*)movie;
 -(Annotation*)basisAnnotation;
 -(SegmentVisualizer*)segmentVisualizer;
 -(NSArray*)segments;
@@ -194,8 +194,8 @@
 -(void)redrawSegments;
 -(void)redrawAllSegments;
 
--(NSPoint)pointFromTime:(QTTime)time;
--(QTTime)timeFromPoint:(NSPoint)point;
+-(NSPoint)pointFromTime:(CMTime)time;
+-(CMTime)timeFromPoint:(NSPoint)point;
 
 // Core Animation
 - (void)updatePlayheadPosition;

@@ -25,7 +25,6 @@
 #import "TimeSeriesVisualizer.h"
 #import "AnnotationVisualizer.h"
 #import "FilmstripVisualizer.h"
-#import "AudioVisualizer.h"
 #import "AnnotationSet.h"
 #import "AnnotationCategoryFilter.h"
 #import "TranscriptData.h"
@@ -180,16 +179,6 @@ NSString * const DPTapestryTimelineMenuTitle = @"Annotation Tapestry";
 			option.visualizer = [FilmstripVisualizer class];
 			option.data = video;
 			[keyframes addObject:option];
-			[option release];
-		}
-		
-		if([video hasAudio])
-		{
-			option = [[DPTimelineOption alloc] init];
-			option.title = [video title];
-			option.visualizer = [AudioVisualizer class];
-			option.data = video;
-			[waveforms addObject:option];
 			[option release];
 		}
 	}		
@@ -960,7 +949,7 @@ NSString * const DPTapestryTimelineMenuTitle = @"Annotation Tapestry";
 	NSView *mainView = [controller mainView];
 	if([mainView isKindOfClass:[AFMovieView class]])
 	{
-		for(QTMovie* movie in [(AFMovieView*)mainView movies])
+		for(AVPlayer* movie in [(AFMovieView*)mainView movies])
 		{
 			if([video movie] == movie)
 			{
@@ -1022,25 +1011,6 @@ NSString * const DPTapestryTimelineMenuTitle = @"Annotation Tapestry";
 //            [timeline setSegmentVisualizer:viz];
 //			[[controller timelineView] addTimelines:[NSArray arrayWithObject:timeline]];
         }
-    }
-}
-
-- (void)createAudioTimeline:(VideoProperties*)movie
-{
-    if([movie hasAudio])
-    {
-        TimelineView *timeline = [[TimelineView alloc] initWithFrame:[[[controller timelineView] baseTimeline] frame]];
-        [timeline setMovie:[controller movie]];
-        
-        AudioVisualizer *viz = [[AudioVisualizer alloc] initWithTimelineView:timeline];
-        [viz setVideoProperties:movie];
-        [timeline setSegmentVisualizer:viz];
-        [timeline addAnnotations:[[AnnotationDocument currentDocument] annotations]];
-        
-        [[controller timelineView] addTimeline:timeline];
-        
-        [viz release];
-        [timeline release];
     }
 }
 

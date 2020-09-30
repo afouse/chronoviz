@@ -9,7 +9,6 @@
 #import "AnnotationInspector.h"
 #import "Annotation.h"
 #import "AppController.h"
-#import "DataPrismLog.h"
 #import "AnnotationDocument.h"
 #import "TimelineView.h"
 #import "VideoProperties.h"
@@ -573,10 +572,10 @@
 		[endTimeField setHidden:NO];
 		[useAsCategoryButton setHidden:NO];
 		[annotation setIsDuration:YES];
-		QTTime qttime = [annotation startTime];
+		CMTime qttime = [annotation startTime];
 		NSTimeInterval duration;
-		QTGetTimeInterval([[[AppController currentDoc] movie] duration],&duration);
-		qttime.timeValue += qttime.timeScale * (duration * .1);
+		duration = CMTimeGetSeconds([[[[AppController currentDoc] movie] currentItem] duration]);
+		qttime.value += qttime.timescale * (duration * .1);
 		[annotation setEndTime:qttime];
 		[endTimeField setStringValue:[annotation endTimeString]];
 		if([colorButton indexOfSelectedItem] > 0)
@@ -588,10 +587,6 @@
 		NSUndoManager* undoManager = [[AppController currentApp] undoManager];
 		[[undoManager prepareWithInvocationTarget:annotation] setIsDuration:NO];
 		[undoManager setActionName:@"Change Annotation Type"];
-		
-		[[[AppController currentApp] interactionLog] addEditOfAnnotation:annotation
-															forAttribute:@"Type" 
-															   withValue:@"Duration"];
 		
 	} else {
 		[startTimeLabel setStringValue:@"Time:"];
@@ -610,9 +605,6 @@
 		[[undoManager prepareWithInvocationTarget:annotation] setIsDuration:YES];
 		[undoManager setActionName:@"Change Annotation Type"];
 		
-		[[[AppController currentApp] interactionLog] addEditOfAnnotation:annotation
-															forAttribute:@"Type" 
-															   withValue:@"Point"];
 	}
 	[annotation setUpdated];
 }
@@ -621,7 +613,7 @@
 // Sets the start time to the current movie time
 - (IBAction)setStartTime:(id)sender
 {
-	QTTime time = [[[AppController currentApp] movie] currentTime];
+	CMTime time = [[[AppController currentApp] movie] currentTime];
 	[annotation setStartTime:time];
 
 }
@@ -629,7 +621,7 @@
 // Sets the end time to the current movie time
 - (IBAction)setEndTime:(id)sender
 {	
-	QTTime time = [[[AppController currentApp] movie] currentTime];
+	CMTime time = [[[AppController currentApp] movie] currentTime];
 	[annotation setEndTime:time];
 }
 

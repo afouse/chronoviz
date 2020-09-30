@@ -16,7 +16,7 @@
 	
 	NSImage *backgroundImage;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	
 	NSMutableArray* annotations;
 	NSMutableArray* annotationLayers;

@@ -7,20 +7,20 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class OverviewTimelineView;
 
 @interface TimelineZoomAnimation : NSAnimation {
 
-	QTTimeRange startRange;
-	QTTimeRange endRange;
+	CMTimeRange startRange;
+	CMTimeRange endRange;
 	
 	OverviewTimelineView *overviewTimeline;
 	
 }
 
-@property QTTimeRange startRange;
-@property QTTimeRange endRange;
+@property CMTimeRange startRange;
+@property CMTimeRange endRange;
 @property(retain) OverviewTimelineView* overviewTimeline;
 
 

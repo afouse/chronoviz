@@ -9,7 +9,7 @@
 #import "DPSpatialDataMovieBase.h"
 #import "VideoProperties.h"
 #import "AnnotationDocument.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @interface DPSpatialDataMovieBase (Internal)
 
@@ -50,17 +50,17 @@
             self.xCenterOffset = 0;
             self.yCenterOffset = 0;
             
-            QTMovie *movie = [video movie];
-            
-            NSSize contentSize = [[movie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+            AVPlayer *movie = [video movie];
+            AVAsset *asset = [[movie currentItem] asset];
+            NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
             self.aspectRatio = contentSize.width/contentSize.height;
             self.coordinateSpace = CGRectMake(0, 0, contentSize.width, contentSize.height);
             
-            backgroundLayer = [[QTMovieLayer layer] retain];
+            backgroundLayer = [[AVPlayerLayer layer] retain];
             [backgroundLayer setFrame:self.coordinateSpace];
             backgroundLayer.contentsGravity = kCAGravityResizeAspect;//  kCAGravityTopLeft;
             backgroundLayer.autoresizingMask = (kCALayerWidthSizable | kCALayerHeightSizable);
-            ((QTMovieLayer*)backgroundLayer).movie = movie;
+            ((AVPlayerLayer*)backgroundLayer).player = movie;
         }
     }
     return backgroundLayer;

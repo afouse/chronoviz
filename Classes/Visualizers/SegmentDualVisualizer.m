@@ -171,23 +171,23 @@
 			[[timeline layer] insertSublayer:tempLayer above:[timeline visualizationLayer]];
 			[tempLayer setAnchorPoint:CGPointMake(0,0)];
 			[tempLayer setPosition:CGPointMake(0,0)];
-			[tempLayer setValue:[NSValue valueWithQTTimeRange:[timeline range]] forKey:@"DPTempLayerRange"];
+			[tempLayer setValue:[NSValue valueWithCMTimeRange:[timeline range]] forKey:@"DPTempLayerRange"];
 		}
 
 		CALayer *tempLayer = [[timeline visualizationLayer] valueForKey:@"DPTempLayer"];
 		//[tempLayer setBounds:[[timeline layer] bounds]];
 		
-		QTTimeRange imageRange = [[tempLayer valueForKey:@"DPTempLayerRange"] QTTimeRangeValue];
+		CMTimeRange imageRange = [[tempLayer valueForKey:@"DPTempLayerRange"] CMTimeRangeValue];
 		NSTimeInterval imageStart;
 		NSTimeInterval imageDuration;
-		QTGetTimeInterval(imageRange.duration, &imageDuration);
-		QTGetTimeInterval(imageRange.time, &imageStart);
+		imageDuration = CMTimeGetSeconds(imageRange.duration);
+		imageStart = CMTimeGetSeconds(imageRange.start);
 
-		QTTimeRange range = [timeline range];
+		CMTimeRange range = [timeline range];
 		NSTimeInterval rangeDuration;
 		NSTimeInterval rangeStart;
-		QTGetTimeInterval(range.duration, &rangeDuration);
-		QTGetTimeInterval(range.time, &rangeStart);
+		rangeDuration = CMTimeGetSeconds(range.duration);
+		rangeStart = CMTimeGetSeconds(range.start);
 		
 		float scale = imageDuration/rangeDuration;
 		float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
@@ -228,19 +228,19 @@
 {
 	SegmentBoundary *segment = [marker boundary];
 	
-	QTTimeRange range = [timeline range];
+	CMTimeRange range = [timeline range];
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.start);
 	float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 	
 	NSRect rect;
 	NSBezierPath *path = nil;
 	if([marker isDuration])
 	{
-		float start = (float)[segment time].timeValue * movieTimeToPixel;
-		float end = (float)[[marker annotation] endTime].timeValue * movieTimeToPixel;
+		float start = (float)[segment time].value * movieTimeToPixel;
+		float end = (float)[[marker annotation] endTime].value * movieTimeToPixel;
 		if(end < start)
 		{
 			float starttemp = start;
@@ -256,7 +256,7 @@
 	}
 	else
 	{
-		rect = NSMakeRect(((float)[segment time].timeValue * movieTimeToPixel) - annotationRadius, 
+		rect = NSMakeRect(((float)[segment time].value * movieTimeToPixel) - annotationRadius,
 						  0,
 						  annotationRadius * 2,
 						  [timeline bounds].size.height);

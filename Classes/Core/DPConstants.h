@@ -8,12 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-typedef enum {
-	DPSubsetMethodSample	 = 0,
-	DPSubsetMethodMax  = 10,
-	DPSubsetMethodAverage	 = 20,
-    DPSubsetMethodRMS = 30
-} DPSubsetMethod;
+typedef NS_ENUM(NSInteger, DPSubsetMethod)  {
+	DPSubsetMethodSample,
+	DPSubsetMethodMax,
+	DPSubsetMethodAverage,
+    DPSubsetMethodRMS
+};
 
 extern int const DataPrismSelectTool;
 extern int const DataPrismZoomTool;
@@ -24,8 +24,6 @@ extern int const DPRotation180;
 extern int const DPRotation270;
 
 extern CGFloat const MIN_TIMELINE_HEIGHT;
-
-extern NSString * const DataPrismLogState;
 
 extern NSString * const DataSetsChangedNotification;
 extern NSString * const DPDataSetRangeChangeNotification;
@@ -65,6 +63,7 @@ extern NSString * const AFUseQuickTimeXKey;
 extern NSString * const AFUseStaticMapKey;
 extern NSString * const AFEnableChronoVizRemoteKey;
 extern NSString * const AFTrackActivityKey;
+extern NSString * const AFTimebaseKey;
 
 extern NSInteger const AFCategoryShortcutInsert;
 extern NSInteger const AFCategoryShortcutEditor;

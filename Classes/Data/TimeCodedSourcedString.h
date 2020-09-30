@@ -13,12 +13,12 @@
 
 	NSString* source;
 	BOOL interpolated;
-	QTTime duration;
+	CMTime duration;
 
 }
 
 @property(retain) NSString* source;
 @property BOOL interpolated;
-@property QTTime duration;
+@property CMTime duration;
 
 @end

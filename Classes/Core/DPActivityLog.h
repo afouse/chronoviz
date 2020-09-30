@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class AnnotationDocument;
 
 extern NSString * const DPActivityLogUpdateNotification;
@@ -32,7 +32,7 @@ typedef enum {
 	NSTimeInterval pastTime;
 	NSDate* currentStartTime;
 	
-	QTTime lastTimePoint;
+	CMTime lastTimePoint;
 	NSDate *lastRealTime;
 	
 }
@@ -44,12 +44,12 @@ typedef enum {
 
 - (id)initForDocument:(AnnotationDocument*)doc;
 
-- (void)addSpeedChange:(float)speed atTime:(QTTime)time;
-- (void)addJumpFrom:(QTTime)time to:(QTTime)time;
+- (void)addSpeedChange:(float)speed atTime:(CMTime)time;
+- (void)addJumpFrom:(CMTime)time to:(CMTime)time;
 
-- (NSTimeInterval)activityForTimePoint:(QTTime)time;
+- (NSTimeInterval)activityForTimePoint:(CMTime)time;
 - (NSTimeInterval)activityForSeconds:(NSTimeInterval)seconds;
-- (CGFloat)scoreForTimePoint:(QTTime)time;
+- (CGFloat)scoreForTimePoint:(CMTime)time;
 - (CGFloat)scoreForSeconds:(NSTimeInterval)seconds;
 
 - (CGFloat)scoreForSeconds:(NSTimeInterval)seconds withMethod:(DPActivityCalculationMethod)calculationMethod;

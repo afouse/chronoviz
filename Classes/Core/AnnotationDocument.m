@@ -26,7 +26,8 @@
 #import "AnnotationSet.h"
 #import "VideoDataSource.h"
 #import "CompoundDataSource.h"
-#import "Sparkle.framework/Headers/SUUpdater.h"
+#import "AFAVAssetCreator.h"
+#import <Sparkle/SUUpdater.h>
 #import <CoreServices/CoreServices.h>
 
 NSString * const MediaChangedNotification = @"MediaChangedNotification";
@@ -34,12 +35,17 @@ NSString * const DPMediaAddedKey = @"MediaAdded";
 NSString * const DPMediaRemovedKey = @"MediaRemoved";
 NSString * const CategoriesChangedNotification = @"CategoriesChangedNotification";;
 
+NSString * const DPUserVariablesKey = @"DPUserVariables";
+NSString * const DPDocuemtFormatVersionKey = @"DocumentFormatVersion";
+NSString * const DPSavedLayoutsKey = @"DPSavedLayouts";
+NSString * const DPKeywordsKey = @"DPKeywords";
+NSString * const DPCategoriesKey = @"DPCategories";
+
 int const DPCurrentDocumentFormatVersion = 1;
 
 @interface AnnotationDocument (Internal)
 
 - (void)processCategoryChange:(id)sender;
-//- (QTMovie*)loadMovieFile:(NSString*)movieFile;
 - (BOOL)loadVideoProperties:(VideoProperties*)properties;
 - (BOOL)loadDataSource:(DataSource*)dataSource;
 - (void)updateMediaFile:(VideoProperties*)props;
@@ -49,8 +55,6 @@ int const DPCurrentDocumentFormatVersion = 1;
 - (BOOL)dataFile:(NSString*)file inSources:(NSArray*)sourcesArray;
 
 + (NSArray*)defaultCategories;
-
-- (void)handleLoadStateChanged:(QTMovie *)movie;
 
 - (void)saveAnnotationsNow;
 
@@ -230,164 +234,55 @@ int const DPCurrentDocumentFormatVersion = 1;
         
         
 		NSString *propertiesFile = [annotationsDirectory stringByAppendingPathComponent:@"properties.plist"];
-		if(![[NSFileManager defaultManager] fileExistsAtPath:propertiesFile])
-		{
-			documentProperties = [[NSMutableDictionary alloc] init];
-		}
-		else
-		{
-			NSString *errorDesc = nil;
-			NSPropertyListFormat format;
-			NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:propertiesFile];
-			documentProperties = [(NSDictionary *)[NSPropertyListSerialization
-												  propertyListFromData:plistXML
-												  mutabilityOption:0
-												  format:&format errorDescription:&errorDesc] mutableCopy];
-			
-			NSDictionary *userVariables = [documentProperties objectForKey:@"DPUserVariables"];
-			if(userVariables)
-			{
-				[documentProperties setObject:[userVariables mutableCopy] forKey:@"DPUserVariables"];
-			}
-            
-		}
-		
-		documentFormatVersion = [[documentProperties valueForKey:@"DPDocumentFormatVersion"] intValue];
-        if(documentFormatVersion > DPCurrentDocumentFormatVersion)
-        {
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:@"This document can't be opened because it was created with a newer version of ChronoViz."];
-            [alert setInformativeText:@"Please update ChronoViz to open this file."];
-            
-            [alert addButtonWithTitle:@"OK"];
-            [alert addButtonWithTitle:@"Update Now"];
-            
-            NSInteger result = [alert runModal];
-            [alert release];
-            if(result == NSAlertSecondButtonReturn)
-            {
-                [[SUUpdater sharedUpdater] checkForUpdates:nil];
-            }
-            
-            
+        
+        NSMutableDictionary *newDocumentProperties = loadDocumentProperties(propertiesFile);
+        if (!isCurrentVersion(newDocumentProperties)) {
+            showInvalidDocumentVersionAlert();
             [self release];
             return nil;
         }
         
-        savedLayouts = [[documentProperties valueForKey:@"DPSavedLayouts"] mutableCopy];
-		if(!savedLayouts)
-		{
-			savedLayouts = [[NSMutableDictionary alloc] init];
-		}
-        [documentProperties setValue:savedLayouts
-                              forKey:@"DPSavedLayouts"];
+        documentProperties = newDocumentProperties;
         
-		keywords = [[documentProperties valueForKey:@"DPKeywords"] mutableCopy];
-		if(!keywords)
-		{
-			keywords = [[NSMutableArray alloc] init];
-		}
-        [documentProperties setValue:keywords
-                              forKey:@"DPKeywords"];
+        savedLayouts = [[documentProperties valueForKey:DPSavedLayoutsKey] mutableCopy];
+		keywords = [[documentProperties valueForKey:DPKeywordsKey] mutableCopy];
 		
 		categories = [[NSMutableArray alloc] init];
 		
 		NSData *categoriesData = [documentProperties valueForKey:@"DPCategories"];
-		
-		if(categoriesData)
+		if (categoriesData)
 		{
 			NSArray *storedCategories = [NSKeyedUnarchiver unarchiveObjectWithData:categoriesData];
 			for(AnnotationCategory* category in storedCategories)
 			{
 				[self addCategory:category];
 			}
-		}
+        } else {
+            NSArray *defaultCategories = [AnnotationDocument defaultCategories];
+            for(AnnotationCategory* category in defaultCategories)
+            {
+                [self addCategory:category];
+            }
+        }
 		
 		///////////////////////////
 		// Load the video info file
 		///////////////////////////
         NSLog(@"Loading video info");
 		
-		// If the video info file doesn't exist, create one.
-		if(![[NSFileManager defaultManager] fileExistsAtPath:videoInfoFile])
-		{
-			VideoProperties *properties = [[VideoProperties alloc] init];
-			[properties saveToFile:videoInfoFile];
-			[properties release];
-		}
+        ensureVideoPropertiesFileExistsAt(videoInfoFile);
 		
 		// If we created one successfully, load it.
 		if([[NSFileManager defaultManager] fileExistsAtPath:videoInfoFile])
 		{
-			videoProperties = [[VideoProperties alloc] initFromFile:videoInfoFile];
-						
-			if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
-			{
-				// Find if a video exists (support for older file format)
-				if([filename rangeOfString:@"-Annotations"].location != NSNotFound)
-				{
-					NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[filename stringByDeletingLastPathComponent] error:&err];
-					for(NSString* file in files)
-					{
-						if ([QTMovie canInitWithFile:file]) {
-							[videoProperties setVideoFile:file];
-							[videoProperties saveToFile:videoInfoFile];
-							break;
-						}
-					}
-				}
-				
-				// If there's still no video file, create a placeholder video.
-				if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
-				{
-					NSError *error;
-					NSString *movieFile = [annotationsDirectory stringByAppendingPathComponent:@"video.mov"];
-					QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:movieFile error:&error];
-					NSString* imageName = [[NSBundle mainBundle] pathForResource:@"black" ofType:@"gif"];
-					NSImage* imageObj = [[NSImage alloc] initWithContentsOfFile:imageName];
-					
-					//QTTime duration = QTMakeTime(6000, 600);
-					
-					long long durationtime = [[AppController currentApp] newDocumentDuration];
-					long scale = 600;
-					
-					QTTime duration = QTMakeTime(durationtime * scale,scale);
-									
-					[newMovie addImage:imageObj 
-						   forDuration:duration
-						withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"jpeg", QTAddImageCodecType, [NSNumber numberWithLong:scale],QTTrackTimeScaleAttribute,nil]];
-					
-					[newMovie updateMovieFile];
-					
-					NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
-																	 forKey:QTMovieFlatten];
-					
-					[newMovie writeToFile:movieFile withAttributes:dict];
-					
-					[newMovie release];
-					[imageObj release];
-					
-					[videoProperties setVideoFile:movieFile];
-					[videoProperties saveToFile:videoInfoFile];
-					
-					if([categories count] == 0)
-					{
-						NSArray *defaultCategories = [AnnotationDocument defaultCategories];
-						for(AnnotationCategory* category in defaultCategories)
-						{
-							[self addCategory:category];
-						}
-					}
-				}
-				
-			}
+            videoProperties = initVideoPropertiesFromFile(videoInfoFile, annotationsDirectory);
 			
 			[self updateMediaFile:videoProperties];
             
-			QTMovie *movie = [videoProperties loadMovie];
+			AVPlayer *movie = [videoProperties loadMovie];
 			if(movie)
 			{
-				[[AppController currentApp] setMovie:movie];
+                [[AppController currentApp] setMainVideo:videoProperties];
 				if([[videoProperties videoFile] rangeOfString:annotationsDirectory].location != NSNotFound)
 				{
 					[videoProperties setLocalVideo:YES];
@@ -586,6 +481,94 @@ int const DPCurrentDocumentFormatVersion = 1;
 	return self;
 }
 
+static NSMutableDictionary* loadDocumentProperties(NSString *propertiesFile) {
+    NSMutableDictionary *documentProperties;
+    if(![[NSFileManager defaultManager] fileExistsAtPath:propertiesFile])
+    {
+        documentProperties = [[NSMutableDictionary alloc] init];
+    }
+    else
+    {
+        NSString *errorDesc = nil;
+        NSPropertyListFormat format;
+        NSData *plistXML = [[NSFileManager defaultManager] contentsAtPath:propertiesFile];
+        documentProperties = [(NSDictionary *)[NSPropertyListSerialization
+                                              propertyListFromData:plistXML
+                                              mutabilityOption:0
+                                              format:&format errorDescription:&errorDesc] mutableCopy];
+        
+        NSDictionary *userVariables = [documentProperties objectForKey:DPUserVariablesKey];
+        if(userVariables)
+        {
+            [documentProperties setObject:[userVariables mutableCopy] forKey:DPUserVariablesKey];
+        }
+    }
+    
+    // Ensure certain keys are initialized.
+    
+    setIfNotPresent(documentProperties, DPSavedLayoutsKey, ^{return [[NSMutableDictionary alloc] init];});
+    setIfNotPresent(documentProperties, DPKeywordsKey, ^{return [[NSMutableDictionary alloc] init];});
+            
+    return documentProperties;
+}
+
+static void setIfNotPresent(NSMutableDictionary *dict, NSString *key, id (^defaultGenerator)(void)) {
+    if (![dict valueForKey:key]) {
+        [dict setValue:defaultGenerator()
+                              forKey:key];
+    }
+}
+            
+static bool isCurrentVersion(NSMutableDictionary *documentProperties) {
+    int documentFormatVersion = [[documentProperties valueForKey:DPDocuemtFormatVersionKey] intValue];
+    return documentFormatVersion <= DPCurrentDocumentFormatVersion;
+}
+
+static void showInvalidDocumentVersionAlert() {
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"This document can't be opened because it was created with a newer version of ChronoViz."];
+    [alert setInformativeText:@"Please update ChronoViz to open this file."];
+    
+    [alert addButtonWithTitle:@"OK"];
+    [alert addButtonWithTitle:@"Update Now"];
+    
+    NSInteger result = [alert runModal];
+    [alert release];
+    if(result == NSAlertSecondButtonReturn)
+    {
+        [[SUUpdater sharedUpdater] checkForUpdates:nil];
+    }
+}
+
+static void ensureVideoPropertiesFileExistsAt(NSString *videoPropertiesFile) {
+    if (![[NSFileManager defaultManager] fileExistsAtPath:videoPropertiesFile])
+    {
+        VideoProperties *properties = [[VideoProperties alloc] init];
+        [properties saveToFile:videoPropertiesFile];
+        [properties release];
+    }
+}
+
+static VideoProperties* initVideoPropertiesFromFile(NSString *videoPropertiesFile, NSString *annotationsDirectory) {
+    VideoProperties *videoProperties = [[VideoProperties alloc] initFromFile:videoPropertiesFile];
+                
+    if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
+    {
+        // If there's still no video file, create a placeholder video.
+        if([videoProperties videoFile] == nil || ([[videoProperties videoFile] length] == 0))
+        {
+            CMTime duration = CMTimeMakeWithSeconds([[AppController currentApp] newDocumentDuration], 600);
+                            
+            NSString* movieFile = createVideoFileWithDuration(duration, annotationsDirectory);
+            
+            [videoProperties setVideoFile:movieFile];
+            [videoProperties saveToFile:videoPropertiesFile];
+        }
+    }
+    
+    return videoProperties;
+}
+
 
 //
 // Takes a VideoProperties object that has been loaded from a file on disk
@@ -594,7 +577,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 - (BOOL)loadVideoProperties:(VideoProperties*)properties
 {
 	[self updateMediaFile:properties];
-	QTMovie *mediaObject = [properties loadMovie];
+	AVPlayer *mediaObject = [properties loadMovie];
 	if(!mediaObject)
 	{
 		return NO;
@@ -602,7 +585,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 	}
 	else
 	{
-		[mediaObject setAttribute:0 forKey:QTMovieLoopsAttribute];
+		//[mediaObject setAttribute:0 forKey:QTMovieLoopsAttribute];
 		[media addObject:mediaObject];
 		[mediaProperties addObject:properties];
 		[properties setMovie:mediaObject];
@@ -666,80 +649,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 			
 }
 
-//- (QTMovie*)loadMovieFile:(NSString*)movieFile
-//{
-//	BOOL useQuickTimeX = [[NSUserDefaults standardUserDefaults] boolForKey:AFUseQuickTimeXKey];
-//	
-//	if ([QTMovie canInitWithFile:movieFile])
-//	{
-//		QTMovie *theMovie = nil;
-//		NSError *err = nil;
-//		
-//		if(useQuickTimeX)
-//		{
-//			loaded = NO;
-//			SInt32 major = 0;
-//			SInt32 minor = 0;   
-//			Gestalt(gestaltSystemVersionMajor, &major);
-//			Gestalt(gestaltSystemVersionMinor, &minor);
-//			if ((major == 10 && minor >= 6) || major >= 11) {
-//				// For 10.6 or greater
-//				NSError *error = nil;
-//				NSNumber *loops = [NSNumber numberWithBool:NO];
-//				NSNumber *playback = [NSNumber numberWithBool:YES];
-//				NSDictionary *attributes =
-//				[NSDictionary dictionaryWithObjectsAndKeys:
-//				 movieFile, QTMovieFileNameAttribute,
-//				 loops, QTMovieLoopsAttribute,
-//				 playback, @"QTMovieOpenForPlaybackAttribute",
-//				 nil];
-//				
-//				NSLog(@"Opening with QuickTime X");
-//				
-//				theMovie = [[QTMovie alloc] initWithAttributes:attributes
-//													  error:&error];
-//				
-//			}
-//		}
-//		
-//		// This will be used in 10.5 or if the 10.6 initialization failed
-//		if(!theMovie)
-//		{
-//			NSLog(@"Opening with QuickTime 7");
-//			
-//			theMovie = [[QTMovie movieWithFile:movieFile error:&err] retain];
-//			
-//		}
-//		
-//		[self handleLoadStateChanged:theMovie];
-//		
-//		[[NSNotificationCenter defaultCenter]
-//		 addObserver:self
-//		 selector:@selector(movieLoadStateChanged:)
-//		 name:QTMovieLoadStateDidChangeNotification
-//		 object:theMovie];
-//		
-//		
-//		
-//		while(!loaded)
-//		{
-//			[[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-//		}
-//		
-//		
-//		if(theMovie == nil)
-//		{
-//			NSLog(@"Error loading movie: %@",[err localizedDescription]);
-//		}
-//		
-//		return theMovie;
-//	}
-//	else 
-//	{
-//		NSLog(@"Can't load movie %@",movieFile);
-//		return nil;
-//	}
-//}
+
 
 - (void) dealloc
 {
@@ -763,88 +673,65 @@ int const DPCurrentDocumentFormatVersion = 1;
 	[super dealloc];
 }
 
-- (QTMovie*)setVideoFile:(NSString*)videoFile
+- (AVPlayer*)setVideoFile:(NSString*)videoFile
 {
-    QTMovie *movie = nil;
-	if ([QTMovie canInitWithFile:videoFile])
-	{
-        [videoProperties setMovie:nil];
-        [videoProperties setVideoFile:videoFile];
-        movie = [videoProperties loadMovie];
-        if(!movie)
-        {
-            NSLog(@"Error loading movie: %@",videoFile);
-        }
-        else
-        {
-            [[AppController currentApp] setMovie:movie];
-        }
-        
-//		NSError *err;
-//		movie = [[QTMovie movieWithFile:videoFile error:&err] retain];
-//		BOOL success = (movie != nil);
-//		if(!success)
-//		{
-//			NSLog(@"Error loading movie: %@",[err localizedDescription]);
-//		}
-//		else
-//		{
-//			if([videoFile rangeOfString:annotationsDirectory].location != NSNotFound)
-//			{
-//				
-//			}
-//			[videoProperties setVideoFile:videoFile];
-//			[[AppController currentApp] setMovie:movie];
-//		}
-	}
+    AVPlayer *movie = nil;
+    
+    [videoProperties setMovie:nil];
+    [videoProperties setVideoFile:videoFile];
+    movie = [videoProperties loadMovie];
+    if(!movie)
+    {
+        NSLog(@"Error loading movie: %@",videoFile);
+    }
+    else
+    {
+        // [[AppController currentApp] setMovie:movie];
+        // TODO: Since we mutated videoProperties, we do not need to set them again, right?
+    }
+
 	return movie;
 }
 
-- (BOOL)setDuration:(QTTime)duration
+static NSString* createVideoFileWithDuration(CMTime duration, NSString *directory)
+{
+    NSString *movieFile = [directory stringByAppendingPathComponent:@"video.mov"];
+    NSString *altMovieFile = [directory stringByAppendingPathComponent:@"video1.mov"];
+    NSString* imageName = [[NSBundle mainBundle] pathForResource:@"black" ofType:@"gif"];
+    NSImage* imageObj = [[NSImage alloc] initWithContentsOfFile:imageName];
+    
+    NSString *deleteFile = nil;
+    if([movieFile fileExists])
+    {
+        deleteFile = movieFile;
+        movieFile = altMovieFile;
+    }
+    else if([altMovieFile fileExists])
+    {
+        deleteFile = altMovieFile;
+    }
+
+    [AFAVAssetCreator createNewMovieAtPath:[NSURL fileURLWithPath:movieFile]
+                                 fromImage:imageObj
+                              withDuration:CMTimeGetSeconds(duration)];
+    
+    [imageObj release];
+    
+    if(deleteFile)
+    {
+        [deleteFile deleteFile];
+    }
+    
+    return movieFile;
+}
+
+- (BOOL)setDuration:(CMTime)duration
 {
 	if([videoProperties localVideo])
 	{
-		NSError *error;
-		NSString *movieFile = [annotationsDirectory stringByAppendingPathComponent:@"video.mov"];
-		NSString *altMovieFile = [annotationsDirectory stringByAppendingPathComponent:@"video1.mov"];
-		NSString* imageName = [[NSBundle mainBundle] pathForResource:@"black" ofType:@"gif"];
-		NSImage* imageObj = [[NSImage alloc] initWithContentsOfFile:imageName];
+        NSString *videoFile = createVideoFileWithDuration(duration, annotationsDirectory);
 		
-		NSString *deleteFile = nil;
-		if([movieFile fileExists])
-		{
-			deleteFile = movieFile;
-			movieFile = altMovieFile;
-		}
-		else if([altMovieFile fileExists])
-		{
-			deleteFile = altMovieFile;
-		}
-		
-		QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:movieFile error:&error];
-		
-		duration = QTMakeTimeScaled(duration, 600);
-		
-		[newMovie addImage:imageObj 
-			   forDuration:duration
-			withAttributes:[NSDictionary dictionaryWithObjectsAndKeys:@"jpeg", QTAddImageCodecType, nil]];
-		
-		[newMovie updateMovieFile];
-		
-		NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
-														 forKey:QTMovieFlatten];
-		
-		[newMovie writeToFile:movieFile withAttributes:dict];
-		
-		[newMovie release];
-		[imageObj release];
-		
-		[self setVideoFile:movieFile];
-		
-		if(deleteFile)
-		{
-			[deleteFile deleteFile];
-		}
+		[self setVideoFile:videoFile];
 		
 		return YES;
 	}
@@ -854,9 +741,14 @@ int const DPCurrentDocumentFormatVersion = 1;
 	}
 }
 
-- (QTTime)duration
+- (CMTime)duration
 {
-	return [[self movie] duration];
+	return [[[self movie] currentItem] duration];
+}
+
+- (int32_t)defaultTimebase
+{
+    return (int32_t)[[NSUserDefaults standardUserDefaults] integerForKey:AFTimebaseKey];
 }
 
 #pragma mark Annotations
@@ -1047,7 +939,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 	
 	if(category)
 	{
-		Annotation* annotation = [[Annotation alloc] initWithQTTime:[[AppController currentApp] currentTime]];
+		Annotation* annotation = [[Annotation alloc] initWithCMTime:[[AppController currentApp] currentTime]];
 		[annotation setCategory:category];
 		[annotation setAnnotation:@""];
 		[self addAnnotation:annotation];
@@ -1184,7 +1076,7 @@ int const DPCurrentDocumentFormatVersion = 1;
                 [properties loadMovie];
                 if(![properties hasVideo])
                 {
-                    [self setDuration:[[properties movie] duration]];
+                    [self setDuration:[[[properties movie] currentItem] duration]];
                     [media addObject:[properties loadMovie]];
                     [mediaProperties addObject:properties];
                     [self saveVideoProperties:properties];
@@ -1200,7 +1092,8 @@ int const DPCurrentDocumentFormatVersion = 1;
                     [properties retain];
                     [videoProperties release];
                     videoProperties = properties;
-                    [[AppController currentApp] setMovie:[videoProperties loadMovie]];
+                    // [[AppController currentApp] setMovie:[videoProperties loadMovie]];
+                    // TODO: Since we mutated videoProperties, we do not need to set them again, right?
                     [self saveVideoProperties:videoProperties];
                     
                     [[NSNotificationCenter defaultCenter]
@@ -1736,7 +1629,7 @@ int const DPCurrentDocumentFormatVersion = 1;
 	return dataSources;
 }
 
-- (QTMovie*)movie
+- (AVPlayer*)movie
 {
 	return [videoProperties loadMovie];
 }
@@ -1791,37 +1684,6 @@ int const DPCurrentDocumentFormatVersion = 1;
 	}
 }
 
-#pragma mark Movie Loading
 
--(void)handleLoadStateChanged:(QTMovie *)theMovie
-{
-    NSInteger loadState = [[theMovie attributeForKey:QTMovieLoadStateAttribute] longValue];
-	
-    if (loadState == QTMovieLoadStateError) {
-		 /* NSError *err = [movie attributeForKey:QTMovieLoadStateErrorAttribute]; */
-		NSLog(@"Load state error");
-    }
-	
-    if (loadState >= QTMovieLoadStateLoaded) {
-        /* can query properties here */
-        /* for instance, if you need to size a QTMovieView based on the movie's natural size, you can do so now */
-        /* you can also put the movie into a view now, even though no media data might yet be available and hence
-		 nothing will be drawn into the view */
-		loaded = YES;
-    }
-	
-    if (loadState >= QTMovieLoadStatePlayable) {
-        /* can start movie playing here */
-    }
-}
-
--(void)movieLoadStateChanged:(NSNotification *)notification
-{
-    QTMovie *theMovie = (QTMovie *)[notification object];
-	
-    if (theMovie) {
-        [self handleLoadStateChanged:theMovie];
-    }
-}
 
 @end

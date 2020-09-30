@@ -106,15 +106,15 @@
 	return self;
 }
 
--(id)initWithXarray:(NSArray*)xArray andYarray:(NSArray*)yArray overRange:(QTTimeRange)timeRange
+-(id)initWithXarray:(NSArray*)xArray andYarray:(NSArray*)yArray overRange:(CMTimeRange)timeRange
 {
-	int numPoints = [xArray count];
+	NSUInteger numPoints = [xArray count];
 	if([yArray count] != numPoints)
 	{
 		return nil;
 	}
 	
-	double interval = (double)(timeRange.duration.timeValue)/(numPoints - 1);
+	double interval = (double)(timeRange.duration.value)/(numPoints - 1);
 	
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:numPoints];
 	int i;
@@ -123,7 +123,7 @@
 		TimeCodedSpatialPoint *dataPoint = [[TimeCodedSpatialPoint alloc] init];
 		[dataPoint setX:[[xArray objectAtIndex:i] floatValue]];
 		[dataPoint setY:[[yArray objectAtIndex:i] floatValue]];
-		[dataPoint setTime:QTMakeTime(i*interval,timeRange.duration.timeScale)];
+		[dataPoint setTime:CMTimeMake(i*interval,timeRange.duration.timescale)];
 		[array addObject:dataPoint];
 		[dataPoint release];
 	}
@@ -138,7 +138,7 @@
 	{
 		TimeCodedSpatialPoint *dataPoint = [[TimeCodedSpatialPoint alloc] init];
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
-		[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+		[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		[dataPoint setY:[[row objectAtIndex:2] floatValue]];
 		[dataPoint setX:[[row objectAtIndex:3] floatValue]];
 		[dataPointArray addObject:dataPoint];

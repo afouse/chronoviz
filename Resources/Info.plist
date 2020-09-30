@@ -65,7 +65,7 @@
 	<key>CFBundleIconFile</key>
 	<string>prism.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>edu.ucsd.DataPrism</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -73,7 +73,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.3</string>
+	<string>3.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -96,15 +96,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3.5.0</string>
+	<string>6.0.1</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.6.0</string>
+	<string>10.9.0</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>SUFeedURL</key>
-	<string>http://chronoviz.com/ChronoVizAppcast.xml</string>
+	<string>https://chronoviz.com/ChronoVizAppcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>
 	<string>dsa_pub.pem</string>
 	<key>UTExportedTypeDeclarations</key>

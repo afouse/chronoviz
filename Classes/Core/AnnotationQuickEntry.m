@@ -13,7 +13,6 @@
 #import "AnnotationCategory.h"
 #import "TimelineView.h"
 #import "ColorCell.h"
-#import "AFHUDOutlineView.h"
 
 @interface AnnotationQuickEntry (AnnotationQuickEntryPrivateMethods)
 
@@ -46,12 +45,12 @@
 }
 
 
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline
 {
 	[self displayQuickEntryWindowAtTime:time inTimeline:timeline forCategory:nil];
 }
 
-- (void)displayQuickEntryWindowAtTime:(QTTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category
+- (void)displayQuickEntryWindowAtTime:(CMTime)time inTimeline:(TimelineView*)timeline forCategory:(AnnotationCategory*)category
 {	
 	NSWindow  *mMovieWindow = [timeline window];
 	
@@ -115,13 +114,13 @@
 												  atDistance:0];
 		[hoverWindow setViewMargin:5.0];
 		[hoverWindow setReleasedWhenClosed:NO];
+        [hoverWindow setDelegate:self];
 		
 		[annotationTextField setDelegate:self];
 		[annotationTextField setString:@""];
 		[annotationTextField setTextColor:[NSColor whiteColor]];
 		
 		[categoriesView setAllowsTypeSelect:YES];
-		[(AFHUDOutlineView*)categoriesView setNextView:annotationTextField];
         [categoriesView reloadData];
         
         [[NSNotificationCenter defaultCenter] addObserver:categoriesView
@@ -149,6 +148,12 @@
 	currentTime = time;
 }
 
+- (void)windowDidResignKey:(NSNotification *)aNotification {
+    if (hoverWindow && [aNotification object] == hoverWindow) {
+        [hoverWindow close];
+    }
+}
+
 - (void)cancelQuickEntry
 {
 	[[hoverWindow parentWindow] removeChildWindow:hoverWindow];
@@ -159,7 +164,7 @@
 {
 	if([hoverWindow isVisible])
 	{
-		Annotation* annotation = [[Annotation alloc] initWithQTTime:currentTime];
+		Annotation* annotation = [[Annotation alloc] initWithCMTime:currentTime];
 		AnnotationCategory *category = (AnnotationCategory*)[categoriesView itemAtRow:[categoriesView selectedRow]];
 		[annotation setCategory:category];
 		

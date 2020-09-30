@@ -14,7 +14,7 @@
 #import "AppController.h"
 #import "ImageSequenceView.h"
 #import "VideoProperties.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 // =================================
 // = Interface for hidden methods
@@ -53,12 +53,14 @@
 	{
 		BOOL exact = NO;
 		
-		QTMovie *playbackMovie = [[marker visualizer] movie];
-		NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
+		AVPlayer *playbackMovie = [[marker visualizer] movie];
+        AVAsset *asset = [[playbackMovie currentItem] asset];
+        NSAssert([asset isKindOfClass:[AVURLAsset class]], @"Asset does not have URL.");
+        NSURL *url = [asset URL];
 		
-		QTTime time = [[marker boundary] time];
+		CMTime time = [[marker boundary] time];
 		NSTimeInterval timeInterval;
-		QTGetTimeInterval(time, &timeInterval);
+		timeInterval = CMTimeGetSeconds(time);
 		
 		NSString *identifier;
 		if(exact)
@@ -83,45 +85,39 @@
 			}
 			else
 			{
-				QTMovie *frameVideo = video;
-				NSDictionary *frameDict = CIImageDict;
+				AVPlayer *frameVideo = video;
 				if(!frameVideo)
 				{
 					
 					frameVideo = [frameMovies objectForKey:url];
-					frameDict = [frameSettings objectForKey:url];
 					
 					if(!frameVideo)
 					{
-						NSError *error = nil;
-						frameVideo = [QTMovie movieWithURL:url error:&error];
+						frameVideo = [AVPlayer playerWithURL:url];
 						[frameMovies setObject:frameVideo forKey:url];
 						
 						NSTimeInterval duration;
-						QTGetTimeInterval([frameVideo duration], &duration);
-						float interval = duration/targetFrameCount;
+						duration = CMTimeGetSeconds([[frameVideo currentItem] duration]);
+						float interval = duration/targetFrameCount || 0;
 						
 						[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
-						
-						NSSize contentSize = [[frameVideo attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+
+                        AVAsset *asset = [[frameVideo currentItem] asset];
+                        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 						float ratio = contentSize.width/contentSize.height;
 						contentSize.width = (targetHeight *  ratio);
 						contentSize.height = targetHeight;
 						
-						frameDict = [NSDictionary
-									 dictionaryWithObjectsAndKeys:
-									 QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-									 [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
-									 nil];
-						[frameSettings setObject:frameDict forKey:url];
-						
 					}
 				}
 				
-				QTTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : QTMakeTimeWithTimeInterval(0);
-				//NSLog(@"Offset: %i",(int)offset.timeValue);
-				theImage = (CGImageRef)[frameVideo frameImageAtTime:QTTimeIncrement([[marker boundary] time],offset)
-																			   withAttributes:frameDict error:NULL];
+				CMTime offset = ([[marker visualizer] videoProperties]) ? [[[marker visualizer] videoProperties] offset] : CMTimeMake(0, 1);
+				//NSLog(@"Offset: %i",(int)offset.value);
+                
+                CMTime frameTime = CMTimeAdd([[marker boundary] time], offset);
+                NSError *imageError;
+                theImage = [VideoFrameLoader generateImageAt:frameTime for:frameVideo error:&imageError];
+                
 			}
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
 			[imagecache setObject:imageWrap forKey:identifier];
@@ -161,10 +157,7 @@
 		targetFrameCount = 200;
 		targetHeight = 200;
 		
-		CIImageDict = [[NSDictionary
-								   dictionaryWithObjectsAndKeys:
-								   QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-								   nil] retain];
+        CIImageDict = [[NSDictionary dictionary] retain];
 		
 
 	}
@@ -210,58 +203,39 @@
 	}
 }
 
-- (void)setVideo:(QTMovie*)theVideo
+- (void)setVideo:(AVPlayer*)theVideo
 {
 	[theVideo retain];
 	[video release];
 	video = theVideo;
 }
 
-- (void)loadAllFramesForMovie:(QTMovie*)movie
+- (void)loadAllFramesForMovie:(AVPlayer*)movie
 {
-	QTMovie *playbackMovie = movie;
-	NSURL *url = [[playbackMovie movieAttributes] objectForKey:QTMovieURLAttribute];
+	AVPlayer *playbackMovie = movie;
+    AVAsset *asset = [[playbackMovie currentItem] asset];
+    NSAssert([asset isKindOfClass:[AVURLAsset class]], @"Asset does not have URL.");
+    NSURL *url = [asset URL];
 	
-	QTMovie *frameVideo = [frameMovies objectForKey:url];
-	NSDictionary *frameDict = [frameSettings objectForKey:url];
+	AVPlayer *frameVideo = [frameMovies objectForKey:url];
 
 	NSTimeInterval duration;
-	QTGetTimeInterval([movie duration], &duration);
+	duration = CMTimeGetSeconds([[movie currentItem] duration]);
 	
 	if(!frameVideo)
 	{
-		NSError *error = nil;
-		frameVideo = [QTMovie movieWithURL:url error:&error];
+		frameVideo = [AVPlayer playerWithURL:url];
 		[frameMovies setObject:frameVideo forKey:url];
 
 		float interval = duration/targetFrameCount;
 		
 		[movieIntervals setObject:[NSNumber numberWithFloat:interval] forKey:url];
-		
-		NSSize contentSize = [[frameVideo attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+
+        AVAsset *asset = [[frameVideo currentItem] asset];
+        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		contentSize.width = (targetHeight *  ratio);
 		contentSize.height = targetHeight;
-		
-		frameDict = [NSDictionary
-					 dictionaryWithObjectsAndKeys:
-					 QTMovieFrameImageTypeCGImageRef,QTMovieFrameImageType,
-					 [NSValue valueWithSize:contentSize],QTMovieFrameImageSize,
-					 nil];
-		[frameSettings setObject:frameDict forKey:url];
-		
-	}
-	
-	NSMutableDictionary *betterFrameDict = [NSMutableDictionary dictionaryWithDictionary:frameDict];
-	
-	SInt32 major = 0;
-	SInt32 minor = 0;   
-	Gestalt(gestaltSystemVersionMajor, &major);
-	Gestalt(gestaltSystemVersionMinor, &minor);
-	BOOL tensix = NO;
-	if ((major == 10 && minor >= 6) || major >= 11) {
-		tensix = YES;
-		[betterFrameDict setObject:[NSNumber numberWithBool:YES] forKey:@"QTMovieFrameImageSessionMode"];
 	}
 	
 	float interval = [[movieIntervals objectForKey:url] floatValue];
@@ -278,24 +252,29 @@
 		CGImageWrapper *imageWrap = [imagecache objectForKey:identifier];
 		if(!imageWrap)
 		{
-			CGImageRef theImage = (CGImageRef)[frameVideo frameImageAtTime:QTMakeTimeWithTimeInterval(time)
-													 withAttributes:betterFrameDict error:NULL];
+            CMTime frameTime = CMTimeMakeWithSeconds(time, 600);
+            NSError *imageError;
+            CGImageRef theImage = [VideoFrameLoader generateImageAt:frameTime for:frameVideo error:&imageError];
 
 			imageWrap = [[CGImageWrapper alloc] initWithImage:theImage];
 			[imagecache setObject:imageWrap forKey:identifier];
 			[imageWrap release];
 		}	
 	}
-	
-	if(tensix)
-	{
-		[betterFrameDict setObject:[NSNumber numberWithBool:NO] forKey:@"QTMovieFrameImageSessionMode"];
-		[frameVideo frameImageAtTime:QTMakeTimeWithTimeInterval(time) withAttributes:betterFrameDict error:NULL];
-		//CGImageRelease(theImage);
-	}
-	
-
 }
 
+
+
++ (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVPlayer*)player error:(NSError * _Nullable *)error {
+    AVAsset *asset = [[player currentItem] asset];
+    return [VideoFrameLoader generateImageAt:requestedTime forAsset:asset error:error];
+}
+
++ (CGImageRef)generateImageAt:(CMTime)requestedTime forAsset:(AVAsset*)asset error:(NSError * _Nullable *)error {
+    AVAssetImageGenerator *imageGenerator = [AVAssetImageGenerator assetImageGeneratorWithAsset:asset];
+    imageGenerator.requestedTimeToleranceBefore = CMTimeMakeWithSeconds(1, 600);
+    imageGenerator.requestedTimeToleranceAfter = CMTimeMakeWithSeconds(1, 600);
+    return [imageGenerator copyCGImageAtTime:requestedTime actualTime:nil error:error];
+}
 
 @end

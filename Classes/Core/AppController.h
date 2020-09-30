@@ -8,12 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 #import <QuartzCore/CoreAnimation.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 #import "DPConstants.h"
 #import "DPStateRecording.h"
 #import "AnnotationView.h"
 @class PreferenceController;
-@class VisualizationController;
 @class MultiTimelineView;
 @class TimelineView;
 @class TimelineMarker;
@@ -43,7 +42,6 @@
 @class AFMovieView;
 @class DPViewManager;
 @class DPConsoleWindowController;
-@class DataPrismLog;
 @class FeedbackController;
 @class DPURLHandler;
 @class DPDocumentVariablesController;
@@ -96,7 +94,7 @@
 	NSString *backupAnnotationFile;
 	AnnotationDocument *annotationDoc;
 	Annotation *selectedAnnotation;
-	QTTimeRange currentSelection;
+	CMTimeRange currentSelection;
 	
 	IBOutlet NSMenu *fileMenu;
 	IBOutlet NSMenu *exportMenu;
@@ -104,7 +102,8 @@
 	IBOutlet NSMenu *viewMenu;
     IBOutlet NSMenu *savedStatesMenu;
 	
-	QTMovie *mMovie;
+	AVPlayer *mMovie;
+    VideoProperties *mainVideo;
 	NSString *movieFileName;
 	BOOL loadingMovie;
 	
@@ -133,8 +132,6 @@
 	
 	NSTimer *timer;
 	NSTimer *timeDisplayTimer;
-	DataPrismLog *log;
-	BOOL saveInteractions;
 	BOOL uploadInteractions;
 	
 	NSUndoManager *undoManager;
@@ -146,9 +143,7 @@
     DPPluginManager *appPluginManager;
 	
 	DPURLHandler *urlHandler;
-	
-	VisualizationController *vizController;
-	
+		
 	VideoPropertiesController *videoPropertiesController;
 	
 	VideoFrameLoader *frameLoader;
@@ -177,7 +172,8 @@
 }
 
 @property(readonly) AnnotationDocument *document; 
-@property(readonly) QTMovie* mMovie;
+@property(readonly) AVPlayer* mMovie;
+@property(readonly) AVPlayerItem* playerItem;
 @property(readonly) VideoFrameLoader *frameLoader;
 @property(readonly) NSUndoManager *undoManager;
 @property(readonly) LinkedFilesController *linkedFilesController;
@@ -205,11 +201,11 @@
 - (void)bringVideoToFront;
 - (void)continueTermination;
 
-- (void)setMovie:(QTMovie *)movie;
-- (QTMovie *)movie;
-- (QTMovie *)mMovie;
-- (QTTime)currentTime;
-- (QTTimeRange)currentSelection;
+- (void)setMainVideo:(VideoProperties *)video;
+- (AVPlayer *)movie;
+- (AVPlayer *)mMovie;
+- (CMTime)currentTime;
+- (CMTimeRange)currentSelection;
 //- (ImageSequenceView *)imageSequenceView;
 - (NSWindow *)window;
 - (AnnotationDocument *)document;
@@ -218,7 +214,6 @@
 - (NSArray*) annotationViews;
 - (NSArray*) dataWindowControllers;
 - (NSView*)mainView;
-- (DataPrismLog*)interactionLog;
 - (void)addAnnotation:(Annotation*)annotation;
 
 - (MultiTimelineView *)timelineView;
@@ -254,7 +249,7 @@
 - (void)showDocumentLoading:(id)sender;
 - (void)endDocumentLoading:(id)sender;
 
-- (void)moveToTime:(QTTime)time fromSender:(id)sender;
+- (void)moveToTime:(CMTime)time fromSender:(id)sender;
 - (void)setRate:(float)rate fromSender:(id)source;
 - (void)resumePlaying;
 
@@ -322,8 +317,8 @@
 - (IBAction)zoomButtonClicked:(id)sender;
 - (IBAction)zoomIn:(id)sender;
 - (IBAction)zoomOut:(id)sender;
-- (void)zoomToTimeRange:(QTTimeRange)timeRange;
-- (void)zoomInToTime:(QTTime)time;
+- (void)zoomToTimeRange:(CMTimeRange)timeRange;
+- (void)zoomInToTime:(CMTime)time;
 - (void)setOverviewVisible:(BOOL)isVisible;
 
 - (IBAction)outputLog:(id)sender;

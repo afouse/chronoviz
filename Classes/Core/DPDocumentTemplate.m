@@ -70,7 +70,6 @@
                                        DataTypeAnnotationTitle,@"DataTypeAnnotationTitle",
                                        DataTypeAnnotationCategory,@"DataTypeAnnotationCategory",
                                        DataTypeAnnotation,@"DataTypeAnnotation",
-                                       DataTypeAnotoTraces,@"DataTypeAnotoTraces",
                                        DataTypeAudio,@"DataTypeAudio",
                                        DataTypeTranscript,@"DataTypeTranscript",
                                        DataTypeSpatialX,@"DataTypeSpatialX",
@@ -230,8 +229,8 @@
                 
                 NSArray *importedDataSets = [source importVariables:variables asTypes:types];
                 
-                QTTimeRange range = [source range];
-                range.time = QTMakeTimeWithTimeInterval(starttime);
+                CMTimeRange range = [source range];
+                range.start = CMTimeMakeWithSeconds(starttime, 600);
                 [source setRange:range];
                 
                 BOOL setMovie = NO;
@@ -239,8 +238,8 @@
                 NSTimeInterval oldTI;
                 NSTimeInterval newTI;
                 
-                QTGetTimeInterval([[document movie] duration], &oldTI);
-                QTGetTimeInterval([source range].duration, &newTI);
+                oldTI = CMTimeGetSeconds([[[document movie] currentItem] duration]);
+                newTI = CMTimeGetSeconds([source range].duration);
                 
                 if([[document videoProperties] localVideo] && ((newTI - oldTI) > 1))
                 {

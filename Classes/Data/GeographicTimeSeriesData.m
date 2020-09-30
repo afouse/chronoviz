@@ -15,7 +15,7 @@
 @synthesize lonVariableName;
 
 // Initialize with an array of values evenly distributed over a range
--(id)initWithDataPoints:(NSArray*)values overRange:(QTTimeRange)timeRange
+-(id)initWithDataPoints:(NSArray*)values overRange:(CMTimeRange)timeRange
 {
 	return nil;
 }
@@ -50,9 +50,9 @@
 	return self;
 }
 
--(id)initWithLatitudes:(NSArray*)latitudes andLongitudes:(NSArray*)longitudes overRange:(QTTimeRange)timeRange
+-(id)initWithLatitudes:(NSArray*)latitudes andLongitudes:(NSArray*)longitudes overRange:(CMTimeRange)timeRange
 {
-	int numPoints = [latitudes count];
+	NSUInteger numPoints = [latitudes count];
 	if([longitudes count] != numPoints)
 	{
 		return nil;
@@ -63,7 +63,7 @@
 	minLat = FLT_MAX;
 	minLon = FLT_MAX;
 	
-	float interval = (float)(timeRange.duration.timeValue)/(numPoints - 1);
+	float interval = (float)(timeRange.duration.value)/(numPoints - 1);
 	
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:numPoints];
 	int i;
@@ -73,7 +73,7 @@
 		[dataPoint setLat:[[latitudes objectAtIndex:i] floatValue]];
 		[dataPoint setLon:[[longitudes objectAtIndex:i] floatValue]];
 		//NSLog(@"Lat: %f Lon: %f",[dataPoint lat],[dataPoint lon]);
-		[dataPoint setTime:QTMakeTime(i*interval,timeRange.duration.timeScale)];
+		[dataPoint setTime:CMTimeMake(i*interval,timeRange.duration.timescale)];
 		
 		maxLat = fmax(maxLat,[dataPoint lat]);
 		maxLon = fmax(maxLon,[dataPoint lon]);
@@ -140,7 +140,7 @@
 - (NSMutableArray*)dataPointsFromCSVArray:(NSArray*)dataArray
 {
 	NSMutableArray *dataPointArray = [NSMutableArray arrayWithCapacity:[dataArray count]];
-	long timeScale = range.time.timeScale;	
+	int timeScale = range.start.timescale;
 	BOOL timeIntervals = ([(NSString*)[[dataArray objectAtIndex:0] objectAtIndex:0] rangeOfString:@"."].location != NSNotFound);	
 	for(NSArray* row in dataArray)
 	{
@@ -148,11 +148,11 @@
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
 		if(timeIntervals)
 		{
-			[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+			[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		}
 		else
 		{
-			[dataPoint setTime:QTMakeTime([[row objectAtIndex:0] longLongValue],timeScale)];
+			[dataPoint setTime:CMTimeMake([[row objectAtIndex:0] longLongValue],timeScale)];
 		}
 		[dataPoint setLat:[[row objectAtIndex:2] floatValue]];
 		[dataPoint setLon:[[row objectAtIndex:3] floatValue]];

@@ -10,9 +10,7 @@
 #import "AppController.h"
 #import "AnnotationDocument.h"
 #import "NSString+URIQuery.h"
-#import "AnotoViewController.h"
-#import "AnotoView.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @implementation DPURLHandler
 
@@ -104,20 +102,20 @@
 					if(([seconds characterAtIndex:0] == '+') && ([seconds length] > 1))
 					{
 						NSTimeInterval current;
-						QTGetTimeInterval([app currentTime],&current);
+						current = CMTimeGetSeconds([app currentTime]);
 						current += [[seconds substringFromIndex:1] floatValue];
-						[app moveToTime:QTMakeTimeWithTimeInterval(current) fromSender:urlString];
+						[app moveToTime:CMTimeMakeWithSeconds(current, 600) fromSender:urlString];
 					}
 					else if(([seconds characterAtIndex:0] == '-') && ([seconds length] > 1))
 					{
 						NSTimeInterval current;
-						QTGetTimeInterval([app currentTime],&current);
+						current = CMTimeGetSeconds([app currentTime]);
 						current -= [[seconds substringFromIndex:1] floatValue];
-						[app moveToTime:QTMakeTimeWithTimeInterval(current) fromSender:urlString];
+						[app moveToTime:CMTimeMakeWithSeconds(current, 600) fromSender:urlString];
 					}
 					else
 					{
-						[app moveToTime:QTMakeTimeWithTimeInterval([seconds floatValue]) fromSender:urlString];
+						[app moveToTime:CMTimeMakeWithSeconds([seconds floatValue], 600) fromSender:urlString];
 					}
 					return;
 				}
@@ -171,8 +169,8 @@
 	}
 	
 	//	NSArray* components = [url componentsSeparatedByString:@"//"];
-	//	QTTime time = [self currentTime];
-	//	time.timeValue = [[components objectAtIndex:1] floatValue] * time.timeScale;
+	//	CMTime time = [self currentTime];
+	//	time.value = [[components objectAtIndex:1] floatValue] * time.timescale;
 	//	[self moveToTime:time];
     //NSLog(@"%@", [url absoluteString]);
 }

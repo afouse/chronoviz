@@ -172,7 +172,7 @@
 	NSTimeInterval theTime = 0;
 	if(annotation)
 	{
-		QTGetTimeInterval([annotation startTime], &theTime);
+		theTime = CMTimeGetSeconds([annotation startTime]);
 	}
 	return theTime;
 }

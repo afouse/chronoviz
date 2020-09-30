@@ -9,8 +9,10 @@
 #import "PluginConfigurationView.h"
 #import "PluginConfiguration.h"
 #import "PluginParameter.h"
+#import "PluginAnnotationSet.h"
 #import "PluginDataSet.h"
 #import "AnnotationDataAnalysisPlugin.h"
+#import "AnnotationCategoryFilter.h"
 #import "TimeCodedData.h"
 #import "AppController.h"
 #import "AnnotationDocument.h"
@@ -32,7 +34,8 @@
 	
 	CGFloat totalWidth = 300;
 	CGFloat totalHeight = 
-	([[plugin dataParameters] count] * dataHeight) 
+	([[plugin dataParameters] count] * dataHeight)
+    + ([[plugin annotationSets] count] * dataHeight)
 	+ ([[plugin inputParameters] count] * inputHeight) 
 	+ (border * 3)
 	+ (buttonHeight)
@@ -44,6 +47,7 @@
 		
 		NSArray *dataParameters = [plugin dataParameters];
 		NSArray *inputParameters = [plugin inputParameters];
+        NSArray *annotationSetParameters = [plugin annotationSets];
 		
 		CGFloat currentHeight = totalHeight - dataHeight;
 		
@@ -64,6 +68,14 @@
 			if(size.height > hmax)
 				hmax = size.height;
 		}
+        for(PluginAnnotationSet* parameter in annotationSetParameters)
+        {
+            NSSize size = [[parameter annotationSetName] sizeWithAttributes:nil];
+            if(size.width > wmax)
+                wmax = size.width;
+            if(size.height > hmax)
+                hmax = size.height;
+        }
 		wmax += 12;
         if(hmax == 0) hmax = 15;
 		CGFloat buttonWidth = totalWidth - wmax - (border * 2);
@@ -185,6 +197,47 @@
 			index++;
 		}
 		
+        
+        if([annotationSetParameters count]) {
+            NSBox *line = [[NSBox alloc] initWithFrame:NSMakeRect(border,currentHeight,totalWidth - (border * 2), 1)];
+            [line setBoxType:NSBoxSeparator];
+            [self addSubview:line];
+            [line release];
+            currentHeight -= 23;
+        }
+        
+        index = 0;
+        for(PluginAnnotationSet* param in annotationSetParameters)
+        {
+            label = [[NSTextField alloc] initWithFrame:NSMakeRect(border,currentHeight,wmax,hmax)];
+            [label setStringValue:[param.annotationSetName stringByAppendingString:@":"]];
+            [label setEditable:NO];
+            [label setDrawsBackground:NO];
+            [label setBordered:NO];
+            [label setAlignment:NSRightTextAlignment];
+            [self addSubview:label];
+            [label release];
+            
+            NSPopUpButton *selection = [[NSPopUpButton alloc] initWithFrame:NSMakeRect(border + wmax + separation,currentHeight - 6,buttonWidth,26)];
+            for(AnnotationCategory* category in [[AppController currentDoc] categories])
+            {
+                [selection addItemWithTitle:[category name]];
+                [[selection lastItem] setRepresentedObject:category];
+                if([[(AnnotationCategoryFilter*)[[configuration annotationSetForIndex:index] annotationFilter] visibleCategories] containsObject:category])
+                {
+                    [selection selectItem:[selection lastItem]];
+                }
+            }
+            [selection setAction:@selector(changeAnnotationSet:)];
+            [selection setTarget:self];
+            [selection setTag:index];
+            [self addSubview:selection];
+            [selection release];
+            index++;
+            currentHeight -= dataHeight;
+        }
+        
+        
 		okayButton = [[NSButton alloc] initWithFrame:NSMakeRect(totalWidth - border - 121,border,121,32)];
 		[okayButton setBezelStyle:NSRoundedBezelStyle];
 		[okayButton setTitle:@"Run Analysis"];
@@ -243,6 +296,15 @@
 {
 	NSInteger index = [sender tag];
 	[configuration setDataSet:[[sender selectedItem] representedObject] forIndex:index];	
+}
+
+- (IBAction)changeAnnotationSet:(id)sender
+{
+    NSInteger index = [sender tag];
+    AnnotationCategory *category = (AnnotationCategory*)[[sender selectedItem] representedObject];
+    AnnotationCategoryFilter *filter = [[AnnotationCategoryFilter alloc] initForCategories:@[category]];
+    [configuration setAnnotationFilter:filter forIndex:index];
+    [filter release];
 }
 
 @end

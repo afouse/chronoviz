@@ -10,8 +10,6 @@
 
 #import "SegmentVisualizer.h"
 #import "SegmentDualVisualizer.h"
-#import "DataPrismLog.h"
-#import "DPLogFileUploader.h"
 
 int const AFBlankSegmentViz = 0;
 int const AFGradientViz = 1;
@@ -24,10 +22,6 @@ int const AFEvenAreaViz = 9;
 int const AFEvenKeyframeViz = 10;
 int const AFDualViz = 12;
 
-int const AFSaveInteractionsNo = 0;
-int const AFSaveInteractionsYes = 1;
-int const AFSaveInteractionsXML = 2;
-int const AFSaveInteractionsUndefined = -1;
 
 @implementation PreferenceController
 
@@ -53,18 +47,10 @@ int const AFSaveInteractionsUndefined = -1;
 	
 	
 	[pauseWhileAnnotatingButton setState:[app pauseWhileAnnotating]];
+    [showPopUpAnnotationsButton setState:[app popUpAnnotations]];
 	
 	[automaticFileButton setState:[defaults boolForKey:AFAutomaticAnnotationFileKey]];
 	[openVideosHalfSizeButton setState:[app openVideosHalfSize]];
-	
-	[saveInteractionsButton setState:[app saveInteractions]];
-	
-	[saveTimePositionButton setState:[[app interactionLog] recordTimePosition]];
-	[saveAnnotationEditsButton setState:[[app interactionLog] recordAnnotationEdits]];
-	[saveVizConfigButton setState:[[app interactionLog] recordState]];
-	
-	[uploadInteractionsButton setEnabled:[app saveInteractions]];
-	[uploadInteractionsButton setState:[app uploadInteractions]];
 	
 	NSString* stepKey = AFStepValueKey;
 	[[NSUserDefaults standardUserDefaults] addObserver:self
@@ -92,77 +78,6 @@ int const AFSaveInteractionsUndefined = -1;
 	[defaults setBool:state forKey:AFOpenVideosHalfSizeKey];
 }
 
-#pragma mark Logging
-
--(IBAction)toggleSaveInteractions:(id)sender
-{
-	BOOL state = [saveInteractionsButton state];
-	[uploadInteractionsButton setEnabled:state];	
-	[saveTimePositionButton setEnabled:state];
-	[saveAnnotationEditsButton setEnabled:state];
-	[saveVizConfigButton setEnabled:state];
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	if(state)
-	{
-		[defaults setInteger:AFSaveInteractionsYes forKey:AFSaveInteractionsKey];
-	}
-	else
-	{
-		[defaults setInteger:AFSaveInteractionsNo forKey:AFSaveInteractionsKey];
-	}
-}
-
--(IBAction)toggleSaveTimePosition:(id)sender
-{
-	BOOL state = [saveTimePositionButton state];
-	
-	[[[AppController currentApp] interactionLog] setRecordTimePosition:state];
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults setBool:state forKey:AFSaveTimePositionKey];
-	
-}
-
--(IBAction)toggleSaveAnnotationEdits:(id)sender
-{
-	BOOL state = [saveAnnotationEditsButton state];
-	
-	[[[AppController currentApp] interactionLog] setRecordAnnotationEdits:state];
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults setBool:state forKey:AFSaveAnnotationEditsKey];	
-}
-
--(IBAction)toggleSaveState:(id)sender
-{
-	BOOL state = [saveVizConfigButton state];
-	
-	[[[AppController currentApp] interactionLog] setRecordState:state];
-	
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults setBool:state forKey:AFSaveVizConfigKey];
-}
-
--(IBAction)toggleSaveScreenCaptures:(id)sender
-{
-	
-}
-
--(IBAction)toggleUploadInteractions:(id)sender
-{
-	BOOL state = [uploadInteractionsButton state];
-	
-	[app setUploadInteractions:state];
-	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	[defaults setBool:state forKey:AFUploadInteractionsKey];	
-}
-
--(IBAction)uploadNow:(id)sender
-{
-	[[DPLogFileUploader defaultLogFileUploader] uploadLogFiles:self];
-	//[app uploadLogFiles:self];
-}
 
 #pragma mark Visualization
 

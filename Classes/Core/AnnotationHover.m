@@ -73,8 +73,10 @@
 		{
 			NSRect frame = [annotationHoverImage frame];
 			frame.origin.x = 0;
-			
-			NSSize contentSize = [[[[AnnotationDocument currentDocument] movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+            
+            AVAsset *asset = [[[[AnnotationDocument currentDocument] movie] currentItem] asset];
+            NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
+            
 			
 			frame.size.width = (contentSize.width/contentSize.height)*frame.size.height*2;
 			
@@ -186,7 +188,7 @@
 	if([annotation isDuration])
 	{
 		NSTimeInterval duration;
-		QTGetTimeInterval(QTTimeDecrement([annotation endTime], [annotation startTime]),&duration);
+		duration = CMTimeGetSeconds(CMTimeSubtract([annotation endTime], [annotation startTime]));
 		timeString = [NSString stringWithFormat:@"%@, %.1f seconds",[annotation startTimeString],duration];
 	}
 	else

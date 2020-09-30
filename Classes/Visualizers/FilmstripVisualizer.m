@@ -57,18 +57,19 @@
 		
 		float timelineWidth = [timeline bounds].size.width;
 		
-		QTTimeRange range = [timeline range];
+		CMTimeRange range = [timeline range];
 		NSTimeInterval rangeDuration;
 		NSTimeInterval rangeStart;
-		QTGetTimeInterval(range.duration, &rangeDuration);
-		QTGetTimeInterval(range.time, &rangeStart);
+		rangeDuration = CMTimeGetSeconds(range.duration);
+		rangeStart = CMTimeGetSeconds(range.start);
 		float pixelToMovieTime = rangeDuration/timelineWidth;
 		float movieTimeToPixel = [timeline bounds].size.width/rangeDuration;
 		
 		int width;
 		int numberOfSegments;
 
-		NSSize contentSize = [[[self movie] attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
+        AVAsset *asset = [[[self movie] currentItem] asset];
+        NSSize contentSize = (NSSize)[[[asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
 		float ratio = contentSize.width/contentSize.height;
 		width = ([timeline bounds].size.height *  ratio) + autoSegmentPadding;
 		numberOfSegments = ceil((float)timelineWidth / width);
@@ -76,7 +77,7 @@
 		int x = width;
 		int i;
 		
-		SegmentBoundary *initial = [[SegmentBoundary alloc] initFromApp:[AppController currentApp] atTime:range.time];
+		SegmentBoundary *initial = [[SegmentBoundary alloc] initFromApp:[AppController currentApp] atTime:range.start];
 		SegmentBoundary *previous = initial;
 		
 		NSTimeInterval previousStart;
@@ -85,15 +86,15 @@
 		for(i = 0; i < numberOfSegments; i++)
 		{
 			NSTimeInterval time = ((float)x)*pixelToMovieTime + rangeStart;
-			QTTime qttime = QTMakeTimeWithTimeInterval(time);
+			CMTime qttime = CMTimeMakeWithSeconds(time, 600);
 			SegmentBoundary *boundary = [[SegmentBoundary alloc] initFromApp:[AppController currentApp] atTime:qttime];
 			
 			TimelineMarker *marker = [super addKeyframe:previous];
 			[markers addObject:marker];
 			[marker setEnd:boundary];
 			
-			QTGetTimeInterval([previous time], &previousStart);
-			QTGetTimeInterval([boundary time], &boundaryStart);
+			previousStart = CMTimeGetSeconds([previous time]);
+			boundaryStart = CMTimeGetSeconds([boundary time]);
 			
 			float beginX = (float)(previousStart - rangeStart) * movieTimeToPixel;
 			float endX = (float)(boundaryStart - rangeStart) * movieTimeToPixel;

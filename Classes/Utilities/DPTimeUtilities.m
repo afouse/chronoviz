@@ -7,12 +7,12 @@
 //
 
 #import "DPTimeUtilities.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
-int dpQTTimeValueSort( id obj1, id obj2, void *context ) {
+int dpCMTimeValueSort( id obj1, id obj2, void *context ) {
 	
-	QTTime time1 = [(NSValue*)obj1 QTTimeValue];
-	QTTime time2 = [(NSValue*)obj2 QTTimeValue];
+	CMTime time1 = [(NSValue*)obj1 CMTimeValue];
+	CMTime time2 = [(NSValue*)obj2 CMTimeValue];
 	
-	return QTTimeCompare(time1,time2);
+	return CMTimeCompare(time1,time2);
 }

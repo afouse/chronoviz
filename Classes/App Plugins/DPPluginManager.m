@@ -11,9 +11,7 @@
 #import "DPAppProxy.h"
 #import "AppController.h"
 #import "DPConstants.h"
-#import "EthnographerPlugin.h"
 #import "DPSpatialDataPlugin.h"
-#import "DPRemoteServerPlugin.h"
 #import "DPApplicationSupport.h"
 
 @interface DPPluginManager (Interal)
@@ -44,19 +42,6 @@
     AppController *currentApp = [AppController currentApp];
     
     [currentApp addMenuItem:[NSMenuItem separatorItem] toMenuNamed:@"File"];
-    
-    if([[NSUserDefaults standardUserDefaults] boolForKey:AFEnableChronoVizRemoteKey])
-    {
-        DPRemoteServerPlugin *remotePlugin = [[DPRemoteServerPlugin alloc] initWithAppProxy:appProxy];
-        [plugins addObject:remotePlugin];
-        [remotePlugin release];
-        
-        [currentApp addMenuItem:[NSMenuItem separatorItem] toMenuNamed:@"File"];
-    }
-    
-    EthnographerPlugin *ethno = [[EthnographerPlugin alloc] initWithAppProxy:appProxy];
-	[plugins addObject:ethno];
-	[ethno release];
     
     DPSpatialDataPlugin *spatialPlugin = [[DPSpatialDataPlugin alloc] initWithAppProxy:appProxy];
     [plugins addObject:spatialPlugin];

@@ -13,13 +13,14 @@
 #import "MovieViewerController.h"
 #import "Annotation.h"
 #import "DPConstants.h"
+#import "VideoFrameLoader.h"
 #import <QuartzCore/CoreAnimation.h>
 
 @interface AFMovieView (LayerManagement)
 
 - (void)setup;
-- (QTMovieLayer*)createLayerForMovie:(QTMovie*)movie;
-- (CALayer*)createControlLayerForMovieLayer:(QTMovieLayer*)movieLayer;
+- (AVPlayerLayer*)createLayerForMovie:(AVPlayer*)movie;
+- (CALayer*)createControlLayerForMovieLayer:(AVPlayerLayer*)movieLayer;
 - (void)updateEnabledStatusForVideoProperties:(VideoProperties*)properties;
 - (void)frameDidChange;
 - (void)sizeMovieLayers;
@@ -74,6 +75,8 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		[self setWantsLayer:YES];
 		[[self layer] setBackgroundColor:CGColorCreateGenericGray(0.05, 1.0)];
 		
+        self.layerUsesCoreImageFilters = true;
+        
 		controlBackground = CGColorCreateGenericGray(0.8, 0.5);
 		controlBackgroundActive = CGColorCreateGenericGray(0.8, 1.0);
 		
@@ -91,7 +94,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 {
     
     NSArray *moviesTemp = [movies copy];
-    for(QTMovie *movie in moviesTemp)
+    for(AVPlayer *movie in moviesTemp)
     {
         [self removeMovie:movie];
     }
@@ -120,9 +123,9 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	localController = controller;
 }
 
-- (void)setMovie:(QTMovie*)movie
+- (void)setMovie:(AVPlayer*)movie
 {	
-	for(QTMovieLayer *layer in movieLayers)
+	for(AVPlayerLayer *layer in movieLayers)
 	{
 		[layer removeFromSuperlayer];
 	}
@@ -134,13 +137,13 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 }
 
 
-- (void)addMovie:(QTMovie*)movie
+- (void)addMovie:(AVPlayer*)movie
 {
     if(![movies containsObject:movie])
     {
         [self setup];
         [movies addObject:movie];
-        QTMovieLayer *layer = [self createLayerForMovie:movie];
+        AVPlayerLayer *layer = [self createLayerForMovie:movie];
         
         float newPercentage = (float)[movieLayers count]/(float)([movieLayers count] + 1);
         for(CALayer *movieLayer in movieLayers)
@@ -161,7 +164,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
     }
 }
 
-- (void)removeMovie:(QTMovie*)movie
+- (void)removeMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)
@@ -184,14 +187,14 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 
 - (void)toggleMute:(id)sender
 {
-	QTMovie *movie = [sender representedObject];
+	AVPlayer *movie = [sender representedObject];
 	if(movie)
 	{
-		[movie setMuted:![movie muted]];
+		[movie setMuted:![movie isMuted]];
 	}
 }
 
-- (QTMovie*)movie
+- (AVPlayer*)movie
 {
 	if([movies count] > 0)
 	{
@@ -208,7 +211,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	return [[movies copy] autorelease];
 }
 
-- (void)zoomInMovie:(QTMovie*)movie
+- (void)zoomInMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)
@@ -220,7 +223,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 }
 
-- (void)zoomInMovie:(QTMovie*)movie toPoint:(CGPoint)pt
+- (void)zoomInMovie:(AVPlayer*)movie toPoint:(CGPoint)pt
 {	
 	BOOL toPoint = YES;
 	if(toPoint)
@@ -251,7 +254,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 }
 
-- (void)zoomOutMovie:(QTMovie*)movie
+- (void)zoomOutMovie:(AVPlayer*)movie
 {
 	NSUInteger index = [movies indexOfObject:movie];
 	if(index != NSNotFound)
@@ -263,7 +266,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 }
 
-- (void)zoomOutMovie:(QTMovie*)movie toPoint:(CGPoint)pt
+- (void)zoomOutMovie:(AVPlayer*)movie toPoint:(CGPoint)pt
 {	
 	BOOL toPoint = YES;
 	if(toPoint)
@@ -296,18 +299,18 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 
 - (IBAction)zoomIn:(id)sender
 {
-	if([[sender representedObject] isKindOfClass:[QTMovie class]])
+	if([[sender representedObject] isKindOfClass:[AVPlayer class]])
 	{
-		[self zoomInMovie:(QTMovie*)[sender representedObject]];
+		[self zoomInMovie:(AVPlayer*)[sender representedObject]];
 	}
 
 }
 
 - (IBAction)zoomOut:(id)sender
 {
-	if([[sender representedObject] isKindOfClass:[QTMovie class]])
+	if([[sender representedObject] isKindOfClass:[AVPlayer class]])
 	{
-		[self zoomOutMovie:(QTMovie*)[sender representedObject]];
+		[self zoomOutMovie:(AVPlayer*)[sender representedObject]];
 	}
 }
 
@@ -336,28 +339,6 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	{
 		[self sizeMovieLayersWithAnimation:NO];
 	}	
-}
-
-- (QTTrack *)firstVideoTrack:(QTMovie*)theMovie
-{
-    QTTrack *track = nil;
-    NSEnumerator *enumerator = [[theMovie tracks] objectEnumerator];
-    while ((track = [enumerator nextObject]) != nil)
-    {
-        if ([track isEnabled])
-        {
-            QTMedia *media = [track media];
-            NSString *mediaType;
-            mediaType = [media attributeForKey:QTMediaTypeAttribute];
-            if ([mediaType isEqualToString:QTMediaTypeVideo] || [mediaType isEqualToString:QTMediaTypeMPEG])
-            {
-                if ([media hasCharacteristic:QTMediaCharacteristicHasVideoFrameRate])
-                    break; // found first video track
-            }
-        }
-    }
-    
-    return track;
 }
 
 - (void)sizeMovieLayersWithAnimation:(BOOL)animate
@@ -413,27 +394,15 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	
 	int index = 0;
 	CGFloat x = 0;
-	for(QTMovieLayer *layer in movieLayers)
+	for(AVPlayerLayer *layer in movieLayers)
 	{
 		CALayer *maskLayer = [layer superlayer];
-		QTMovie *movie = [movies objectAtIndex:index];
+		AVPlayer *movie = [movies objectAtIndex:index];
+        AVAsset *asset = [[movie currentItem] asset];
 		CALayer *controlLayer = (CALayer*)[layer valueForKey:@"DPControlLayer"];
 		
 		CGFloat width = boundsRect.size.width * [[layer valueForKey:DPVideoWidthPercentage] floatValue];
-		NSSize contentSize = [[movie attributeForKey:QTMovieNaturalSizeAttribute] sizeValue];
-        
-//        CGFloat aspect = 1;
-//        BOOL aperture = [[movie attributeForKey:QTMovieHasApertureModeDimensionsAttribute] boolValue];
-//        if(aperture)
-//        {
-//            QTTrack *videoTrack = [self firstVideoTrack:movie];
-//            NSSize apertureDimensions = [videoTrack apertureModeDimensionsForMode:[movie attributeForKey:QTMovieApertureModeAttribute]];
-//            aspect = apertureDimensions.width/apertureDimensions.height;
-//        }
-//        else
-//        {
-//            aspect = (contentSize.width/contentSize.height);
-//        }
+        NSSize contentSize = (NSSize)[[[ asset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0] naturalSize];
         
         CGFloat aspect = contentSize.width/contentSize.height;
 		float sizeRatio = width/height;
@@ -467,14 +436,14 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	[CATransaction commit];	
 }
 
-- (QTMovieLayer*)createLayerForMovie:(QTMovie*)movie    
+- (AVPlayerLayer*)createLayerForMovie:(AVPlayer*)movie
 {
-	QTMovieLayer *layer = [[QTMovieLayer alloc] initWithMovie:movie];
+	AVPlayerLayer *layer = [AVPlayerLayer playerLayerWithPlayer:movie];
 	
 	CALayer *maskLayer = [[CALayer alloc] init];
 	[maskLayer setMasksToBounds:YES];
 	[maskLayer addSublayer:layer];
-	[layer release];
+	//[layer release];
 	[maskLayer autorelease];
 	
 	for(VideoProperties* video in [[AnnotationDocument currentDocument] mediaProperties])
@@ -499,12 +468,12 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	return layer;
 }
 
-- (CALayer*)createControlLayerForMovieLayer:(QTMovieLayer*)movieLayer
+- (CALayer*)createControlLayerForMovieLayer:(AVPlayerLayer*)movieLayer
 {
 	if(([movies count] > 1) || [[[self window] windowController] isKindOfClass:[MovieViewerController class]])
 	{
 		CGFloat controlWidth = 130;
-		CGFloat controlHeight = 21;
+		CGFloat controlHeight = 23;
 		
 		CGColorRef darkgrey = CGColorCreateGenericGray(0.1, 1.0);
 		
@@ -518,7 +487,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		
 		CATextLayer *controlTextLayer = [CATextLayer layer];
 		controlTextLayer.font = @"Helvetica Bold";
-		controlTextLayer.fontSize = 16.0;
+		controlTextLayer.fontSize = 14.0;
 		controlTextLayer.alignmentMode = kCAAlignmentCenter;
 		controlTextLayer.autoresizingMask = (kCALayerMaxYMargin | kCALayerMinXMargin);
 		controlTextLayer.bounds = CGRectMake(0.0, 0.0, controlWidth, 14);
@@ -700,7 +669,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	
 	CGPoint layerPt = NSPointToCGPoint(pt);
 	
-	for(QTMovieLayer* layer in movieLayers)
+	for(AVPlayerLayer* layer in movieLayers)
 	{
 		CALayer *controlLayer = [layer valueForKey:@"DPControlLayer"];
 		if([controlLayer containsPoint:[controlLayer convertPoint:layerPt fromLayer:[self layer]]])
@@ -740,18 +709,18 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 	else if([[AppController currentApp] currentTool] == DataPrismZoomTool)
 	{
-		QTMovieLayer *layer = (QTMovieLayer*)[[self layer] hitTest:NSPointToCGPoint(pt)];
+		AVPlayerLayer *layer = (AVPlayerLayer*)[[self layer] hitTest:NSPointToCGPoint(pt)];
 		
 		CGPoint layerpoint = NSPointToCGPoint(pt);
 		layerpoint = [layer convertPoint:layerpoint fromLayer:[self layer]];
 		
 		if([theEvent modifierFlags] & NSAlternateKeyMask)
 		{
-			[self zoomOutMovie:[layer movie] toPoint:layerpoint];
+			[self zoomOutMovie:[layer player] toPoint:layerpoint];
 		}
 		else
 		{
-			[self zoomInMovie:[layer movie] toPoint:layerpoint];
+			[self zoomInMovie:[layer player] toPoint:layerpoint];
 		}
 		
 //		CALayer *layer = [[self layer] hitTest:NSPointToCGPoint(pt)];
@@ -820,16 +789,16 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	}
 	else
 	{	
-		QTMovie *theDragMovie = nil;
+		AVPlayer *theDragMovie = nil;
 		
-		QTMovieLayer *theLayer = nil;
+		AVPlayerLayer *theLayer = nil;
 		
 		CGPoint basePoint = NSPointToCGPoint([self convertPoint:[theEvent locationInWindow] fromView:nil]);
-		for(QTMovieLayer* layer in movieLayers)
+		for(AVPlayerLayer* layer in movieLayers)
 		{
 			if([layer containsPoint:[layer convertPoint:basePoint fromLayer:[self layer]]])
 			{
-				theDragMovie = [layer movie];
+				theDragMovie = [layer player];
 				theLayer = layer;
 			}
 		}
@@ -860,11 +829,16 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 			NSSize imageSize = NSMakeSize(contentSize.width/1.5,  contentSize.height/1.5);
 			NSImage* image = [[NSImage alloc] initWithSize:imageSize];
 			[image lockFocus];
-			
-			[[theDragMovie currentFrameImage] drawInRect:NSMakeRect(0,0,imageSize.width,imageSize.height)
+			// TODO: Fix the following.
+            
+            CGImageRef imageRef = [VideoFrameLoader generateImageAt:[theDragMovie currentTime] for:theDragMovie error:nil];
+            NSImage *frameimage = [[NSImage alloc] initWithCGImage:imageRef size:NSZeroSize];
+                        
+			[frameimage drawInRect:NSMakeRect(0,0,imageSize.width,imageSize.height)
 												fromRect:NSZeroRect 
 											   operation:NSCompositeCopy
 												fraction:0.75];
+            [frameimage release];
 			
 			[image unlockFocus];
 			
@@ -986,7 +960,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
     if ( [[pboard types] containsObject:DPVideoPropertiesPasteboardType]	
 		&& (sourceDragMask & NSDragOperationMove))
 	{
-		QTMovie* testMovie = nil;
+		AVPlayer* testMovie = nil;
 		if(!dragMovie)
 		{
 			NSString *videoTitle = [pboard stringForType:DPVideoPropertiesPasteboardType];
@@ -1020,7 +994,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 			dragMovie = testMovie;
 			
 			[movies addObject:dragMovie];
-			QTMovieLayer *layer = [self createLayerForMovie:dragMovie];
+			AVPlayerLayer *layer = [self createLayerForMovie:dragMovie];
 			[self createControlLayerForMovieLayer:layer];
 			
 			float newPercentage = (float)[movieLayers count]/(float)([movieLayers count] + 1);
@@ -1061,11 +1035,11 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		
 		int index = floor(imageCenterX / width);
 	
-		int currentIndex = [movies indexOfObject:dragMovie];
+		NSUInteger currentIndex = [movies indexOfObject:dragMovie];
 		
 		if((currentIndex != NSNotFound) && (index != currentIndex))
 		{
-			QTMovieLayer *layer = [movieLayers objectAtIndex:currentIndex];
+			AVPlayerLayer *layer = [movieLayers objectAtIndex:currentIndex];
 			
 			[movies removeObjectAtIndex:currentIndex];
 			[movieLayers removeObjectAtIndex:currentIndex];
@@ -1101,7 +1075,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		
 		if(index != NSNotFound)
 		{
-			QTMovieLayer *layer = [movieLayers objectAtIndex:index];
+			AVPlayerLayer *layer = [movieLayers objectAtIndex:index];
 			[layer setOpacity:1.0];
 		}
 		
@@ -1253,14 +1227,14 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 	NSMenu *theMenu = [[[NSMenu alloc] initWithTitle:@"Contextual Menu"] autorelease];
 	[theMenu setAutoenablesItems:NO];
 	
-	QTMovie *theMovie = nil;
+	AVPlayer *theMovie = nil;
 	
 	CGPoint basePoint = NSPointToCGPoint([self convertPoint:[theEvent locationInWindow] fromView:nil]);
-	for(QTMovieLayer* layer in movieLayers)
+	for(AVPlayerLayer* layer in movieLayers)
 	{
 		if([layer containsPoint:[layer convertPoint:basePoint fromLayer:[self layer]]])
 		{
-			theMovie = [layer movie];
+			theMovie = [layer player];
 		}
 	}
 	
@@ -1270,7 +1244,7 @@ NSString * const DPVideoWidthPercentage = @"DPVideoWidthPercentage";
 		[item setRepresentedObject:theMovie];
 		[item setTarget:self];
 		
-		if([theMovie muted])
+		if([theMovie isMuted])
 		{
 			[item setState:NSOnState];
 		}

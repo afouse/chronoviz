@@ -7,10 +7,10 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <CoreMedia/CoreMedia.h>
 
 @interface SegmentBoundary : NSObject {
-	QTTime mTime;
+	CMTime mTime;
 	
 	BOOL autoCreated;
 	BOOL highlighted;
@@ -19,10 +19,10 @@
 @property BOOL autoCreated;
 @property BOOL highlighted;
 
--(id)initFromApp:(id)theApp atTime:(QTTime)time;
--(id)initAtTime:(QTTime)time;
+-(id)initFromApp:(id)theApp atTime:(CMTime)time;
+-(id)initAtTime:(CMTime)time;
 
--(QTTime)time;
+-(CMTime)time;
 
 
 @end

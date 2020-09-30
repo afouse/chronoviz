@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVFoundation/AVFoundation.h>
 @class AnnotationCategory;
 
 extern NSString * const DPVideoPropertiesPasteboardType;
@@ -17,22 +17,26 @@ extern NSString * const DPVideoPropertiesPasteboardType;
     NSString *uuid;
     
 	NSString *videoFile;
-	QTMovie* movie;
+	AVPlayer* movie;
+    AVPlayerItem *playerItem;
+    AVPlayer *player;
 	BOOL loaded;
 	NSArray* audioSubset;
 	
 	BOOL enabled;
-	BOOL muted;
 	BOOL localVideo;
 	
 	NSString *title;
 	NSString *description;
 	NSDate *startDate;
-	QTTime offset;
+	CMTime offset;
 	NSTimeInterval startTime;
     
 	NSArray *categories;
-
+    
+    BOOL isSeekInProgress;
+    CMTime chaseTime;
+    AVPlayerItemStatus playerItemStatus;
 }
 
 @property(readonly) NSString *uuid;
@@ -41,26 +45,31 @@ extern NSString * const DPVideoPropertiesPasteboardType;
 @property(retain) NSString *title;
 @property(retain) NSString *description;
 @property(retain) NSDate *startDate;
-@property(retain) QTMovie *movie;
+@property(retain) AVPlayer *movie;
+@property(retain) AVPlayerItem *playerItem;
+@property(retain) AVPlayer *player;
 @property BOOL enabled;
 @property BOOL muted;
 @property BOOL localVideo;
-@property QTTime offset;
+@property CMTime offset;
 @property NSTimeInterval startTime;
 
 - (id)initWithVideoFile:(NSString*)videoFile;
 - (id)initFromFile:(NSString*)file;
 - (void)saveToFile:(NSString*)file;
 
-- (QTMovie*)loadMovie;
+- (AVPlayer*)loadMovie;
 - (BOOL)hasVideo;
 - (BOOL)hasAudio;
+
+// Video Playback Control
+
+- (void)seekToTime:(CMTime)seektime;
+- (CMTime)currentTime;
 
 // Legacy File Support
 
 - (NSArray*)categories;
 - (void)setCategories:(NSArray*)array;
-
-- (NSTimeInterval)computeAlignment:(VideoProperties*)otherProps;
 
 @end

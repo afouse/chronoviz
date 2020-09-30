@@ -12,7 +12,7 @@
 #import "AnnotationDocument.h"
 #import "Annotation.h"
 #import "AppController.h"
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 
 @implementation OverviewTimelineView
 
@@ -78,18 +78,18 @@
 	//[self setup];
 }
 
--(void)setRange:(QTTimeRange)theRange
+-(void)setRange:(CMTimeRange)theRange
 {
 	range = theRange;
 	[self setSelection:range];
 }
 
--(QTTimeRange)selection
+-(CMTimeRange)selection
 {
 	return selection;
 }
 
--(void)setSelection:(QTTimeRange)theSelection animate:(BOOL)animateChange
+-(void)setSelection:(CMTimeRange)theSelection animate:(BOOL)animateChange
 {
 	if(animateChange)
 	{
@@ -119,24 +119,24 @@
 	[detailTimeline redrawSegments];
 }
 
--(void)setSelection:(QTTimeRange)theSelection
+-(void)setSelection:(CMTimeRange)theSelection
 {	
 	selection = theSelection;
 	
-	selection = QTIntersectionTimeRange(theSelection, range);
+	selection = CMTimeRangeGetIntersection(theSelection, range);
 	
-	BOOL full = QTEqualTimeRanges(selection, range);
+	BOOL full = CMTimeRangeEqual(selection, range);
 	
 	NSTimeInterval rangeDuration;
 	NSTimeInterval rangeStart;
-	QTGetTimeInterval(range.duration, &rangeDuration);
-	QTGetTimeInterval(range.time, &rangeStart);
+	rangeDuration = CMTimeGetSeconds(range.duration);
+	rangeStart = CMTimeGetSeconds(range.start);
 	float movieTimeToPixel = [self bounds].size.width/rangeDuration;
 	
 	NSTimeInterval startTime;
-	QTGetTimeInterval(selection.time, &startTime);
+	startTime = CMTimeGetSeconds(selection.start);
 	NSTimeInterval endTime;
-	QTGetTimeInterval(QTTimeRangeEnd(selection), &endTime);
+	endTime = CMTimeGetSeconds(CMTimeRangeGetEnd(selection));
 	selectionStartX = (startTime - rangeStart) * movieTimeToPixel;
 	selectionEndX = (endTime - rangeStart) * movieTimeToPixel;
 	
@@ -265,54 +265,56 @@
 - (void)mouseDragged:(NSEvent *)theEvent
 {
 	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-	QTTime current = QTMakeTime(timeValue, [self range].duration.timeScale);
+	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].start.value;
+	CMTime current = CMTimeMake(timeValue, [self range].duration.timescale);
 	
 	if(overSelection)
 	{
-		QTTime newtime = QTTimeDecrement(current,offset);
-		if(newtime.timeValue < 0)
-			newtime.timeValue = 0;
+		CMTime newtime = CMTimeSubtract(current,offset);
+        if(newtime.value < 0) {
+			newtime.value = 0;
+        }
 		
-		if(QTTimeCompare(QTTimeRangeEnd(range), QTTimeIncrement(newtime, selection.duration)) == NSOrderedAscending)
-			newtime = QTTimeDecrement(QTTimeRangeEnd(range), selection.duration);
+        if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, CMTimeAdd(newtime, selection.duration))) {
+			newtime = CMTimeSubtract(CMTimeRangeGetEnd(range), selection.duration);
+        }
 		
-		selection.time = newtime;
+		selection.start = newtime;
 		[self setSelection:selection];
 	}
 	else if ((resizeSelectionLeft) && ((selectionEndX - curPoint.x) > minSelectionWidth))
 	{
-		QTTime newStart = QTTimeDecrement(current,offset);
-		if(newStart.timeValue < 0)
-			newStart.timeValue = 0;
+		CMTime newStart = CMTimeSubtract(current,offset);
+		if(newStart.value < 0)
+			newStart.value = 0;
 		
-		QTTime end = QTTimeRangeEnd(selection);
-		selection.time = newStart;
-		selection.duration = QTTimeDecrement(end, newStart);
+		CMTime end = CMTimeRangeGetEnd(selection);
+		selection.start = newStart;
+		selection.duration = CMTimeSubtract(end, newStart);
 		[self setSelection:selection];
 	}
 	else if ((resizeSelectionRight) && ((curPoint.x - selectionStartX) > minSelectionWidth))
 	{
-		QTTime newEnd = QTTimeDecrement(current,offset);
-		if(QTTimeCompare(QTTimeRangeEnd(range), newEnd) == NSOrderedAscending)
-			newEnd = QTTimeRangeEnd(range);
+		CMTime newEnd = CMTimeSubtract(current,offset);
+		if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, newEnd))
+			newEnd = CMTimeRangeGetEnd(range);
 		
-		selection.duration = QTTimeDecrement(newEnd, selection.time);
+		selection.duration = CMTimeSubtract(newEnd, selection.start);
 		[self setSelection:selection];
 	}
 	else if(makingSelection)
 	{
 
-		QTTime duration = QTTimeDecrement(current, clickTime);
+		CMTime duration = CMTimeSubtract(current, clickTime);
 		
-		if(duration.timeValue > 0)
+		if(duration.value > 0)
 		{
-			[self setSelection:QTMakeTimeRange(clickTime, duration)];
+			[self setSelection:CMTimeRangeMake(clickTime, duration)];
 		}
 		else
 		{
-			duration.timeValue = -duration.timeValue;
-			[self setSelection:QTMakeTimeRange(current, duration)];
+			duration.value = -duration.value;
+			[self setSelection:CMTimeRangeMake(current, duration)];
 		}		
 		
 	}
@@ -341,7 +343,7 @@
 	}
 	[self setSelection:selection];
 	
-	if(QTEqualTimeRanges(selection, range))
+	if(CMTimeRangeEqual(selection, range))
 	{
 		[[AppController currentApp] setOverviewVisible:NO];
 	}
@@ -352,23 +354,23 @@
 	dragging = YES;
 	[detailTimeline setResizing:YES];
 	NSPoint curPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-	long long timeValue = ([self range].duration.timeValue * (curPoint.x / [self bounds].size.width)) + [self range].time.timeValue;
-	long timeScale = [self range].duration.timeScale;
-	clickTime = QTMakeTime(timeValue,timeScale);
+	long long timeValue = ([self range].duration.value * (curPoint.x / [self bounds].size.width)) + [self range].start.value;
+	int timeScale = [self range].duration.timescale;
+	clickTime = CMTimeMake(timeValue,timeScale);
 	
 	if(overSelection)
 	{
 		[[NSCursor closedHandCursor] push];
 		[[self window] disableCursorRects];
-		offset = QTTimeDecrement(clickTime,selection.time);
+		offset = CMTimeSubtract(clickTime,selection.start);
 	}
 	else if (resizeSelectionLeft)
 	{
-		offset = QTTimeDecrement(clickTime,selection.time);
+		offset = CMTimeSubtract(clickTime,selection.start);
 	}
 	else if (resizeSelectionRight)
 	{
-		offset = QTTimeDecrement(clickTime,QTTimeRangeEnd(selection));
+		offset = CMTimeSubtract(clickTime,CMTimeRangeGetEnd(selection));
 	}
 	else
 	{
@@ -448,24 +450,24 @@
 
 -(void)update
 {
-	QTTime currentTime = [[[AppController currentDoc] movie] currentTime];
-	if(!QTTimeInTimeRange(currentTime, selection))
+    CMTime currentTime = [[[AppController currentDoc] movie] currentTime];
+	if(!CMTimeRangeContainsTime(selection, currentTime))
 	{
-		QTTimeRange newSelection = selection;
-		if(QTTimeCompare(currentTime, selection.time) == NSOrderedAscending)
+		CMTimeRange newSelection = selection;
+		if(CMTIME_COMPARE_INLINE(currentTime, <, selection.start))
 		{
-			newSelection.time = QTTimeDecrement(selection.time, selection.duration);
-			if(newSelection.time.timeValue < 0)
+			newSelection.start = CMTimeSubtract(selection.start, selection.duration);
+			if(newSelection.start.value < 0)
 			{
-				newSelection.time.timeValue = 0;
+				newSelection.start.value = 0;
 			}	
 		}
 		else
 		{
-			newSelection.time = QTTimeRangeEnd(selection);
-			if(QTTimeCompare(QTTimeRangeEnd(range),QTTimeRangeEnd(newSelection)) == NSOrderedAscending)
+			newSelection.start = CMTimeRangeGetEnd(selection);
+			if(CMTIME_COMPARE_INLINE(CMTimeRangeGetEnd(range), <, CMTimeRangeGetEnd(newSelection)))
 			{
-				newSelection.time = QTTimeDecrement(QTTimeRangeEnd(range),selection.duration);
+				newSelection.start = CMTimeSubtract(CMTimeRangeGetEnd(range),selection.duration);
 			}
 		}
 		[self setSelection:newSelection animate:NO];
@@ -476,7 +478,7 @@
 {	
 	NSMutableData *data = [NSMutableData data];
 	NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-	[archiver encodeQTTimeRange:selection forKey:@"OverviewTimeSelection"];
+	[archiver encodeCMTimeRange:selection forKey:@"OverviewTimeSelection"];
 	[archiver finishEncoding];
 	[archiver release];
 	
@@ -487,7 +489,7 @@
 {
 	
 	NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:stateData];
-	QTTimeRange storedRange = [unarchiver decodeQTTimeRangeForKey:@"OverviewTimeSelection"];
+	CMTimeRange storedRange = [unarchiver decodeCMTimeRangeForKey:@"OverviewTimeSelection"];
 	[unarchiver finishDecoding];
 	[unarchiver release];
 	

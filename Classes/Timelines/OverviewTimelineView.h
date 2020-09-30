@@ -11,7 +11,7 @@
 
 @interface OverviewTimelineView : TimelineView <NSAnimationDelegate> {
 
-	QTTimeRange selection;
+	CMTimeRange selection;
 	
 	IBOutlet TimelineView *detailTimeline;
 	
@@ -29,8 +29,8 @@
 	
 	BOOL dragging;
 	
-	QTTime clickTime;
-	QTTime offset;
+	CMTime clickTime;
+	CMTime offset;
 	
 	CGFloat resizeMargin;
 	
@@ -40,9 +40,9 @@
 	
 }
 
--(QTTimeRange)selection;
--(void)setSelection:(QTTimeRange)theSelection;
--(void)setSelection:(QTTimeRange)theSelection animate:(BOOL)animateChange;
+-(CMTimeRange)selection;
+-(void)setSelection:(CMTimeRange)theSelection;
+-(void)setSelection:(CMTimeRange)theSelection animate:(BOOL)animateChange;
 
 -(void)updateSelectionCursor:(NSEvent*)theEvent;
 

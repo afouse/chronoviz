@@ -32,15 +32,15 @@
 	return self;
 }
 
--(id)initWithXarray:(NSArray*)xArray andYarray:(NSArray*)yArray overRange:(QTTimeRange)timeRange
+-(id)initWithXarray:(NSArray*)xArray andYarray:(NSArray*)yArray overRange:(CMTimeRange)timeRange
 {
-	int numPoints = [xArray count];
+	NSUInteger numPoints = [xArray count];
 	if([yArray count] != numPoints)
 	{
 		return nil;
 	}
 	
-	double interval = (double)(timeRange.duration.timeValue)/(numPoints - 1);
+	double interval = (double)(timeRange.duration.value)/(numPoints - 1);
 	
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:numPoints];
 	int i;
@@ -50,7 +50,7 @@
 		[dataPoint setX:[[xArray objectAtIndex:i] floatValue]];
 		[dataPoint setY:[[yArray objectAtIndex:i] floatValue]];
         [dataPoint setOrientation:0];
-		[dataPoint setTime:QTMakeTime(i*interval,timeRange.duration.timeScale)];
+		[dataPoint setTime:CMTimeMake(i*interval,timeRange.duration.timescale)];
 		[array addObject:dataPoint];
 		[dataPoint release];
 	}
@@ -66,7 +66,7 @@
 	{
 		TimeCodedOrientationPoint *dataPoint = [[TimeCodedOrientationPoint alloc] init];
 		[dataPoint setValue:[[row objectAtIndex:1] doubleValue]];
-		[dataPoint setTime:QTMakeTimeWithTimeInterval([[row objectAtIndex:0] floatValue])];
+		[dataPoint setTime:CMTimeMakeWithSeconds([[row objectAtIndex:0] floatValue], 600)];
 		[dataPoint setY:[[row objectAtIndex:2] floatValue]];
 		[dataPoint setX:[[row objectAtIndex:3] floatValue]];
         [dataPoint setOrientation:[[row objectAtIndex:4] floatValue]];

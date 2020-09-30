@@ -129,7 +129,7 @@
 	return markers;
 }
 
--(QTMovie *)movie
+-(AVPlayer *)movie
 {
 	if(videoProperties)
 	{

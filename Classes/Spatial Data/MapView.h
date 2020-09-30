@@ -29,7 +29,7 @@ extern NSString * const AFMapTypeTerrain;
 	BOOL rotated;
     BOOL jsLoaded;
 	
-	QTTime currentTime;
+	CMTime currentTime;
 	
 	NSPoint dragOffset;
 	

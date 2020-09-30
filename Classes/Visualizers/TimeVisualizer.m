@@ -129,9 +129,9 @@
 -(void)createLines
 {	
 	NSTimeInterval start;
-	QTGetTimeInterval([timeline range].time,&start);
+	start = CMTimeGetSeconds([timeline range].start);
 	NSTimeInterval duration;
-	QTGetTimeInterval([timeline range].duration,&duration); 
+	duration = CMTimeGetSeconds([timeline range].duration); 
 	NSTimeInterval end = start + duration;
 	
 	if(duration == 0)
@@ -151,7 +151,7 @@
 	}
 	
 //	NSTimeInterval durationInterval;
-//	QTGetTimeInterval([timeline range].duration, &durationInterval);
+//	durationInterval = CMTimeGetSeconds([timeline range].duration);
 //	
 //	if(durationInterval > (60*60))
 //	{
@@ -237,7 +237,7 @@
 	}
 	
 	NSTimeInterval durationInterval;
-	QTGetTimeInterval([timeline range].duration, &durationInterval);
+	durationInterval = CMTimeGetSeconds([timeline range].duration);
 	
 	if(durationInterval > (60*60))//minutes > 60)
 	{
@@ -272,9 +272,9 @@
 	if (layer == timesLayer)
 	{
 		NSTimeInterval start;
-		QTGetTimeInterval([timeline range].time,&start);
+		start = CMTimeGetSeconds([timeline range].start);
 		NSTimeInterval duration;
-		QTGetTimeInterval([timeline range].duration,&duration);
+		duration = CMTimeGetSeconds([timeline range].duration);
 		CGFloat timeToPixel = [timeline bounds].size.width/duration;
 		
 		//[[NSColor colorWithDeviceRed:(89.0/255.0) green:(66.0/255.0) blue:(10.0/255.0) alpha:1.0] setFill];

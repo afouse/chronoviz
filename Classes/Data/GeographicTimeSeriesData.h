@@ -23,7 +23,7 @@
 @property(retain) NSString* lonVariableName;
 
 // Initialize with an array of values evenly distributed over a range
--(id)initWithLatitudes:(NSArray*)latitudes andLongitudes:(NSArray*)longitudes overRange:(QTTimeRange)range;
+-(id)initWithLatitudes:(NSArray*)latitudes andLongitudes:(NSArray*)longitudes overRange:(CMTimeRange)range;
 
 - (float) maxLat;
 - (float) maxLon;

@@ -122,8 +122,9 @@
     VideoProperties *mainProperties = [annotationDoc videoProperties];
     if(videoProperties != mainProperties)
     {
-        NSTimeInterval startTime = [[annotationDoc videoProperties] computeAlignment:videoProperties];
-        [videoProperties setOffset:QTMakeTimeWithTimeInterval(-startTime)];
+        // NSTimeInterval startTime = [[annotationDoc videoProperties] computeAlignment:videoProperties];
+        NSTimeInterval startTime = 0; // TODO: Check why the previous line does not compile. Can't find computeAlignment method.
+        [videoProperties setOffset:CMTimeMakeWithSeconds(-startTime, 600)];
     }
 }
 

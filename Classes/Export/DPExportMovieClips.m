@@ -12,12 +12,11 @@
 #import "AnnotationDocument.h"
 #import "VideoProperties.h"
 #import "NSStringTimeCodes.h"
-#import <QuickTime/QuickTime.h>
 
 @interface DPExportMovieClips (Private) 
 
 -(void) exportClip:(Annotation*)clip fromVideo:(VideoProperties*)props toFile:(NSString*)filepath;
--(void) addMovieInfoMetaData:(QTMovie *)aQTMovie infoString:(NSString *)aNameStr;
+-(void) addMovieInfoMetaData:(AVPlayer *)aMovie infoString:(NSString *)aNameStr;
 -(const char *)langCode;
 
 @end
@@ -167,12 +166,6 @@
 		NSString *directory = [openPanel filename];	
 		AnnotationCategory *selectedCategory = [[button selectedItem] representedObject];
 		
-		//QTMovie *newMovie = [QTMovie movie];
-		NSError *err;
-
-		NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
-														 forKey:QTMovieFlatten];
-		
 		NSMutableArray *sourceVideos = [NSMutableArray array];
 		if(chooseMovie)
 		{
@@ -200,7 +193,7 @@
 			{
 				for(VideoProperties *props in sourceVideos)
 				{
-					QTMovie *sourceMovie = [props movie];
+					AVPlayer *sourceMovie = [props movie];
 					NSString *filename = nil;
 					if([[clip title] length] > 0)
 					{
@@ -220,23 +213,24 @@
 					
 					filename = [filename stringByAppendingPathExtension:@"mov"];
 					
-					QTTimeRange sourceMovieRange = QTMakeTimeRange(QTZeroTime, [sourceMovie duration]);
-					QTTime startTime = QTTimeIncrement([clip startTime], [props offset]);
-					QTTime endTime = QTTimeIncrement([clip endTime], [props offset]);
+					CMTimeRange sourceMovieRange = CMTimeRangeMake(kCMTimeZero, [[sourceMovie currentItem] duration]);
+					CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
+					CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 					
 					// Make sure the selected time actually exists in the movie
-					QTTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime)));
-					startTime = selectionRange.time;
-					endTime = QTTimeIncrement(selectionRange.time, selectionRange.duration);
+					CMTimeRange selectionRange = CMTimeRangeGetIntersection(sourceMovieRange, CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime)));
+					startTime = selectionRange.start;
+					endTime = CMTimeAdd(selectionRange.start, selectionRange.duration);
 					
-					QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filename error:&err];
-					[sourceMovie setSelection:QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime))];
+                    /*
+					AVPlayer *newMovie = [[QTMovie alloc] initToWritableFile:filename error:&err];
+					[sourceMovie setSelection:CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime))];
 					[newMovie appendSelectionFromMovie:sourceMovie];
 					
 					NSTimeInterval startTimeInterval;
 					NSTimeInterval endTimeInterval;
-					QTGetTimeInterval(startTime,&startTimeInterval);
-					QTGetTimeInterval(endTime,&endTimeInterval);
+					startTimeInterval = CMTimeGetSeconds(startTime);
+					endTimeInterval = CMTimeGetSeconds(endTime);
 					NSString *infoString = [NSString stringWithFormat:@"Original Source: %@\nOriginal Time: %@ - %@",
 											[props videoFile],
 											[NSString stringWithTimeInterval:startTimeInterval],
@@ -245,7 +239,9 @@
 					[self addMovieInfoMetaData:newMovie infoString:infoString];
 					
 					[newMovie updateMovieFile];
-					[newMovie writeToFile:filename withAttributes:dict];	
+					[newMovie writeToFile:filename withAttributes:dict];
+                    */
+                    // TODO: Fix export. Note that dict contained the QTMovieFlatte:YES.
 				}
 			}
 		}
@@ -260,26 +256,27 @@
 
 -(void) exportClip:(Annotation*)clip fromVideo:(VideoProperties*)props toFile:(NSString*)filepath
 {
-	QTMovie *sourceMovie = [props movie];
+	AVPlayer *sourceMovie = [props movie];
 	
-	QTTimeRange sourceMovieRange = QTMakeTimeRange(QTZeroTime, [sourceMovie duration]);
-	QTTime startTime = QTTimeIncrement([clip startTime], [props offset]);
-	QTTime endTime = QTTimeIncrement([clip endTime], [props offset]);
+	CMTimeRange sourceMovieRange = CMTimeRangeMake(kCMTimeZero, [[sourceMovie currentItem] duration]);
+	CMTime startTime = CMTimeAdd([clip startTime], [props offset]);
+	CMTime endTime = CMTimeAdd([clip endTime], [props offset]);
 	
 	// Make sure the selected time actually exists in the movie
-	QTTimeRange selectionRange = QTIntersectionTimeRange(sourceMovieRange, QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime)));
-	startTime = selectionRange.time;
-	endTime = QTTimeIncrement(selectionRange.time, selectionRange.duration);
+	CMTimeRange selectionRange = CMTimeRangeGetIntersection(sourceMovieRange, CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime)));
+	startTime = selectionRange.start;
+	endTime = CMTimeAdd(selectionRange.start, selectionRange.duration);
 	
+    /*
 	NSError* err = nil;
 	QTMovie *newMovie = [[QTMovie alloc] initToWritableFile:filepath error:&err];
-	[sourceMovie setSelection:QTMakeTimeRange(startTime, QTTimeDecrement(endTime, startTime))];
+	[sourceMovie setSelection:CMTimeRangeMake(startTime, CMTimeSubtract(endTime, startTime))];
 	[newMovie appendSelectionFromMovie:sourceMovie];
 	
 	NSTimeInterval startTimeInterval;
 	NSTimeInterval endTimeInterval;
-	QTGetTimeInterval(startTime,&startTimeInterval);
-	QTGetTimeInterval(endTime,&endTimeInterval);
+	startTimeInterval = CMTimeGetSeconds(startTime);
+	endTimeInterval = CMTimeGetSeconds(endTime);
 	NSString *infoString = [NSString stringWithFormat:@"Original Source: %@\nOriginal Time: %@ - %@",
 							[props videoFile],
 							[NSString stringWithTimeInterval:startTimeInterval],
@@ -290,12 +287,16 @@
 	NSDictionary *dict = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] 
 													 forKey:QTMovieFlatten];
 	[newMovie updateMovieFile];
-	[newMovie writeToFile:filepath withAttributes:dict];	
+	[newMovie writeToFile:filepath withAttributes:dict];
+    */
+    // TODO: Fix export.
 }
 
 // Add the artist name metadata item to a movie file
--(void) addMovieInfoMetaData:(QTMovie *)aQTMovie infoString:(NSString *)aNameStr
+-(void) addMovieInfoMetaData:(AVPlayer *)aMovie infoString:(NSString *)aNameStr
 {
+    NSLog(@"Metadata export needs to be updated for AV Foundation!");
+    /*
 	NSLog(@"Write meta data: %@",aNameStr);
 	
     QTMetaDataRef   metaDataRef;
@@ -348,6 +349,7 @@
 		
         QTMetaDataRelease(metaDataRef);
     }
+     */
 }
 
 // Return the default language set by the user 

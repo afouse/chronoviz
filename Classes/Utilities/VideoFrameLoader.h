@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <QTKit/QTKit.h>
+#import <AVKit/AVKit.h>
 @class TimelineMarker;
 
 
@@ -27,13 +27,16 @@
 	NSTimer *timer;
 	NSMutableArray *array;
 	
-	QTMovie* video;
+	AVPlayer* video;
 }
 
 - (void)loadCIImage:(TimelineMarker*)marker immediately:(BOOL)now;
 
-- (void)setVideo:(QTMovie*)video;
+- (void)setVideo:(AVPlayer*)video;
 
-- (void)loadAllFramesForMovie:(QTMovie*)movie;
+- (void)loadAllFramesForMovie:(AVPlayer*)movie;
+
+
++ (CGImageRef)generateImageAt:(CMTime)requestedTime for:(AVPlayer*)player error:(NSError**)error;
 
 @end
