@@ -8,7 +8,6 @@
 
 #import "NSColorUniqueColors.h"
 
-
 @implementation NSColor (UniqueColors)
 
 +(NSArray*)basicColors
@@ -185,12 +184,16 @@
 //    CGFloat range[4] = {-127, 127, -127, 127};
 //    CGColorSpaceRef labSpace = CGColorSpaceCreateLab(whitePoint, blackPoint, range);
     
-    CMGetDefaultProfileBySpace (cmLabData, &labProfile);
-    
-    NSColorSpace *labColorSpace = [[[NSColorSpace alloc]
-                                    initWithColorSyncProfile:labProfile] autorelease];
-    CMCloseProfile (labProfile);
+//    CMGetDefaultProfileBySpace (cmLabData, &labProfile);
+//
+//
+//
+//    NSColorSpace *labColorSpace = [[[NSColorSpace alloc]
+//                                    initWithColorSyncProfile:labProfile] autorelease];
+//    CMCloseProfile (labProfile);
 
+    NSColorSpace *labColorSpace = [[NSColorSpace availableColorSpacesWithModel:NSColorSpaceModelLAB] firstObject];
+    
     NSColor *myLabColor = [self colorUsingColorSpace:labColorSpace];
     unsigned myComponentCount = [myLabColor numberOfComponents];
     CGFloat myComponents[myComponentCount];

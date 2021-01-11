@@ -614,7 +614,7 @@ NSString * const DPMaskedSelectionAreaRemovedNotification = @"MaskedSelectionAre
     
     for(TimeCodedSpatialPoint* point in [data dataPoints])
     {
-        if(!current || QTTimeInTimeRange([point time],currentRange))
+        if(!current || CMTimeRangeContainsTime(currentRange,[point time]))
         {
             for(DPMaskedSelectionArea* selection in maskedAreas)
             {

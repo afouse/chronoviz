@@ -56,7 +56,7 @@
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>edu.ucsd.ChronoVizTemplate</string>
+				<string>com.chronoviz.ChronoVizTemplate</string>
 			</array>
 		</dict>
 	</array>
@@ -79,8 +79,10 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>edu.ucsd.ChronoViz</string>
+			<string>com.chronoviz.chronoviz</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>chronoviz</string>
@@ -96,7 +98,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>6.0.1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.9.0</string>
 	<key>NSMainNibFile</key>
@@ -119,7 +121,7 @@
 			<key>UTTypeIconFile</key>
 			<string>ChronoVizTemplateIcon</string>
 			<key>UTTypeIdentifier</key>
-			<string>edu.ucsd.ChronoVizTemplate</string>
+			<string>com.chronoviz.ChronoVizTemplate</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>

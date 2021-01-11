@@ -11,8 +11,6 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		8F44271424C1C8FD0000718A /* VideoFrameAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 8F44271224C1C8FD0000718A /* VideoFrameAnalyzer.m */; };
-		8FA1480924B72F45004667E9 /* Python.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; };
-		8FA1480A24B72F45004667E9 /* Python.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 8FA1480824B72F45004667E9 /* Python.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0159300EACE34300B41B99 /* AppController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB01592F0EACE34300B41B99 /* AppController.m */; };
 		BB0159470EACE4BC00B41B99 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159450EACE4BC00B41B99 /* play.png */; };
 		BB0159480EACE4BC00B41B99 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = BB0159460EACE4BC00B41B99 /* pause.png */; };
@@ -31,7 +29,7 @@
 		BB0AD1E213CCB46E0067E239 /* CompoundDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = BB0AD1E113CCB46E0067E239 /* CompoundDataSource.m */; };
 		BB12E97F1BC062F4001C4365 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E97E1BC062F4001C4365 /* AVFoundation.framework */; };
 		BB12E9811BC06B30001C4365 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB12E9801BC06B30001C4365 /* Sparkle.framework */; };
-		BB12E9831BC06B72001C4365 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BB12E9801BC06B30001C4365 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BB12E9831BC06B72001C4365 /* Sparkle.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = BB12E9801BC06B30001C4365 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BB14982E0F49D2580073AAF3 /* AFMovieView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB14982D0F49D2580073AAF3 /* AFMovieView.m */; };
 		BB163F311440BD8A003A0654 /* DPMaskedSelectionArea.m in Sources */ = {isa = PBXBuildFile; fileRef = BB163F301440BD8A003A0654 /* DPMaskedSelectionArea.m */; };
 		BB198EA112E4D1A700575B02 /* rabbit.png in Resources */ = {isa = PBXBuildFile; fileRef = BB198E9F12E4D1A700575B02 /* rabbit.png */; };
@@ -78,7 +76,6 @@
 		BB3E6AFA119389E500F2AD0F /* DPExportPDF.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E6AF9119389E500F2AD0F /* DPExportPDF.m */; };
 		BB3E88AD0FF0475600B4AB4F /* AnnotationXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */; };
 		BB3E88B40FF04A8C00B4AB4F /* Annotation.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3E88B30FF04A8C00B4AB4F /* Annotation.m */; };
-		BB3F72EC125A458000BF226C /* FeedbackWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB3F72EB125A458000BF226C /* FeedbackWindow.xib */; };
 		BB40616113D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m in Sources */ = {isa = PBXBuildFile; fileRef = BB40616013D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m */; };
 		BB43E3850F29421E00083EC6 /* TimelineView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB43E3840F29421E00083EC6 /* TimelineView.m */; };
 		BB440C510F3CA1CE0058483C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB440C500F3CA1CE0058483C /* QuartzCore.framework */; };
@@ -315,15 +312,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		BBCC3CCC1185F24400477D82 /* CopyFiles */ = {
+		BBCC3CCC1185F24400477D82 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8FA1480A24B72F45004667E9 /* Python.framework in CopyFiles */,
-				BB12E9831BC06B72001C4365 /* Sparkle.framework in CopyFiles */,
+				BB12E9831BC06B72001C4365 /* Sparkle.framework in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -456,7 +453,6 @@
 		BB3E88AC0FF0475600B4AB4F /* AnnotationXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationXMLParser.m; sourceTree = "<group>"; };
 		BB3E88B20FF04A8C00B4AB4F /* Annotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Annotation.h; sourceTree = "<group>"; };
 		BB3E88B30FF04A8C00B4AB4F /* Annotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Annotation.m; sourceTree = "<group>"; };
-		BB3F72EB125A458000BF226C /* FeedbackWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeedbackWindow.xib; sourceTree = "<group>"; };
 		BB40615F13D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorMappedTimeSeriesVisualizer.h; sourceTree = "<group>"; };
 		BB40616013D7853C005A1522 /* ColorMappedTimeSeriesVisualizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorMappedTimeSeriesVisualizer.m; sourceTree = "<group>"; };
 		BB43E3830F29421E00083EC6 /* TimelineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimelineView.h; sourceTree = "<group>"; };
@@ -516,6 +512,7 @@
 		BB6E5A53148D7E60008AC067 /* DPExportTimeSeries.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPExportTimeSeries.m; sourceTree = "<group>"; };
 		BB6F1F8A24A7BE7600E49B0C /* PluginAnnotationSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PluginAnnotationSet.h; sourceTree = "<group>"; };
 		BB6F1F8B24A7BE7600E49B0C /* PluginAnnotationSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PluginAnnotationSet.m; sourceTree = "<group>"; };
+		BB7054372516D9FB00ABB8A3 /* ChronoViz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ChronoViz.entitlements; sourceTree = "<group>"; };
 		BB7071D2158A527900F798E2 /* DPDataSelectionPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DPDataSelectionPanel.h; sourceTree = "<group>"; };
 		BB7071D3158A527900F798E2 /* DPDataSelectionPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DPDataSelectionPanel.m; sourceTree = "<group>"; };
 		BB7071D5158A52C300F798E2 /* DPDataSelectionPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DPDataSelectionPanel.xib; sourceTree = "<group>"; };
@@ -786,7 +783,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FA1480924B72F45004667E9 /* Python.framework in Frameworks */,
 				BBA73E7C1F6383840086098F /* QTKit.framework in Frameworks */,
 				BBA73E6B1F5CDB9C0086098F /* CoreMedia.framework in Frameworks */,
 				BBA73E691F5CDADB0086098F /* libsqlite3.tbd in Frameworks */,
@@ -869,6 +865,7 @@
 		29B97314FDCFA39411CA2CEA /* Annotation */ = {
 			isa = PBXGroup;
 			children = (
+				BB7054372516D9FB00ABB8A3 /* ChronoViz.entitlements */,
 				A98624CD24AA4D4E00E5618C /* Plugin Examples */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -912,7 +909,6 @@
 				BBF8735E10448598002D311A /* DataImport.xib */,
 				BB3E695C1193193300F2AD0F /* DataPrism.clr */,
 				BB90B5B813E35CF50021DFA0 /* DocumentVariablesWindow.xib */,
-				BB3F72EB125A458000BF226C /* FeedbackWindow.xib */,
 				BB8B2B6C125BE8480074B289 /* FileUploadSheet.xib */,
 				BB8EBC6011C6B6A5008A0181 /* ForwardArrow.png */,
 				BB08C25410A3478800F188AD /* ImageSequence.xib */,
@@ -1478,8 +1474,8 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
-				BBCC3CCC1185F24400477D82 /* CopyFiles */,
-				BBCC3D271185F97900477D82 /* ShellScript */,
+				BBCC3CCC1185F24400477D82 /* Copy Files */,
+				BB7054382516DBED00ABB8A3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1532,6 +1528,12 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1100;
+				TargetAttributes = {
+					8D1107260486CEB800E47090 = {
+						DevelopmentTeam = E22CZCR322;
+						ProvisioningStyle = Automatic;
+					};
+				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "ChronoViz" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1612,7 +1614,6 @@
 				BB8EBC5E11C6B46D008A0181 /* BackArrow.png in Resources */,
 				BB8EBC6111C6B6A5008A0181 /* ForwardArrow.png in Resources */,
 				BB342EE111D2780000893573 /* DPConsoleWindow.xib in Resources */,
-				BB3F72EC125A458000BF226C /* FeedbackWindow.xib in Resources */,
 				BB8B2B6D125BE8480074B289 /* FileUploadSheet.xib in Resources */,
 				BB198EA112E4D1A700575B02 /* rabbit.png in Resources */,
 				BB198EA212E4D1A700575B02 /* turtle.png in Resources */,
@@ -1638,18 +1639,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		BBCC3D271185F97900477D82 /* ShellScript */ = {
+		BB7054382516DBED00ABB8A3 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
+			);
+			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -fR \"${CONFIGURATION_BUILD_DIR}/${WRAPPER_NAME}/Contents/Frameworks/BGHUDAppKit.framework/Versions/Current/Resources\"";
+			shellScript = "LOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\nIDENTITY=${EXPANDED_CODE_SIGN_IDENTITY_NAME}\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A/Resources/AutoUpdate.app\"\ncodesign --verbose --force -o runtime --sign \"$IDENTITY\" \"$LOCATION/Sparkle.framework/Versions/A\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1999,9 +2004,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_ENTITLEMENTS = ChronoViz.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 6.0.2;
+				DEVELOPMENT_TEAM = E22CZCR322;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -2019,9 +2029,9 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsd.DataPrism;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chronoviz.chronoviz;
 				PRODUCT_NAME = ChronoViz;
-				VALID_ARCHS = x86_64;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -2032,9 +2042,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_ENTITLEMENTS = ChronoViz.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 6.0.2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = E22CZCR322;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
@@ -2050,9 +2065,9 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.ucsd.DataPrism;
+				PRODUCT_BUNDLE_IDENTIFIER = com.chronoviz.chronoviz;
 				PRODUCT_NAME = ChronoViz;
-				VALID_ARCHS = x86_64;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2092,7 +2107,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
 			};
 			name = Debug;
 		};
@@ -2129,7 +2143,6 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				SDKROOT = macosx;
-				VALID_ARCHS = x86_64;
 			};
 			name = Release;
 		};

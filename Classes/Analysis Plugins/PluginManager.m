@@ -139,8 +139,16 @@ static PluginManager* defaultPluginManager = nil;
 }
 
 -(void)reloadPlugins
-{	
-	
+{
+
+#define DISABLE_PYTHON
+    
+#ifdef DISABLE_PYTHON
+    
+    NSLog(@"Attempting to reload plugins, but Python is disabled in this ChronoViz build.");
+    
+#else
+    
 	NSError *err;
 	NSBundle *mainBundle = [NSBundle mainBundle];
 	NSString *resourcePath = [mainBundle resourcePath];
@@ -254,6 +262,9 @@ static PluginManager* defaultPluginManager = nil;
 	}
 	
 	fclose(mainFile);
+    
+#endif
+    
 }
 
 -(NSString*)tempDirectory

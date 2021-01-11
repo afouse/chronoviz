@@ -72,7 +72,7 @@
 
 - (NSData *) imageData
 {
-	NSMutableData				*imgData			= [NSMutableData data];
+	NSMutableData				*imgData			= [NSMutableData dataWithCapacity:1024];
 	
 	CGImageDestinationRef		destRef				= CGImageDestinationCreateWithData((CFMutableDataRef) imgData, kUTTypeTIFF, 1, NULL);
 	
