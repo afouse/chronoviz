@@ -686,8 +686,7 @@ static VideoProperties* initVideoPropertiesFromFile(NSString *videoPropertiesFil
     }
     else
     {
-        // [[AppController currentApp] setMovie:movie];
-        // TODO: Since we mutated videoProperties, we do not need to set them again, right?
+        [[AppController currentApp] setMainVideo:movie];
     }
 
 	return movie;
@@ -1092,8 +1091,7 @@ static NSString* createVideoFileWithDuration(CMTime duration, NSString *director
                     [properties retain];
                     [videoProperties release];
                     videoProperties = properties;
-                    // [[AppController currentApp] setMovie:[videoProperties loadMovie]];
-                    // TODO: Since we mutated videoProperties, we do not need to set them again, right?
+                    [[AppController currentApp] setMainVideo:videoProperties];
                     [self saveVideoProperties:videoProperties];
                     
                     [[NSNotificationCenter defaultCenter]
